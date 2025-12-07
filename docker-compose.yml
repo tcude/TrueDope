@@ -21,7 +21,7 @@ services:
       - MinIO__SecretKey=${MINIO_SECRET_KEY:-minioadmin}
       - MinIO__UseSSL=false
       - MinIO__BucketName=${MINIO_BUCKET:-truedope}
-      - Redis__ConnectionString=redis:6379
+      - ConnectionStrings__Redis=redis:6379
     networks:
       - truedope-network
     restart: unless-stopped

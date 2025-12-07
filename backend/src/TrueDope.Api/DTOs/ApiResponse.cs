@@ -43,6 +43,21 @@ public class ApiErrorResponse
     public bool Success { get; set; } = false;
     public ApiError? Error { get; set; }
     public string? Message { get; set; }
+
+    public static ApiErrorResponse Create(string code, string message, Dictionary<string, string[]>? validationErrors = null) => new()
+    {
+        Success = false,
+        Message = message,
+        Error = new ApiError
+        {
+            Code = code,
+            Description = message,
+            ValidationErrors = validationErrors
+        }
+    };
+
+    public static ApiErrorResponse ValidationError(string message, Dictionary<string, string[]> errors) =>
+        Create("VALIDATION_ERROR", message, errors);
 }
 
 public class ApiError
