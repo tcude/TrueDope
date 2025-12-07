@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using Minio;
 using Serilog;
 using Serilog.Events;
 using StackExchange.Redis;
@@ -100,6 +101,32 @@ try
     builder.Services.AddScoped<IJwtService, JwtService>();
     builder.Services.AddScoped<IEmailService, EmailService>();
     builder.Services.AddScoped<DbSeeder>();
+
+    // Register Phase 3 services
+    builder.Services.AddScoped<ISessionService, SessionService>();
+    builder.Services.AddScoped<IRifleService, RifleService>();
+    builder.Services.AddScoped<IAmmoService, AmmoService>();
+    builder.Services.AddScoped<ILocationService, LocationService>();
+    builder.Services.AddScoped<IImageService, ImageService>();
+    builder.Services.AddScoped<IStorageService, MinioStorageService>();
+
+    // Configure MinIO
+    var minioEndpoint = builder.Configuration["MinIO:Endpoint"] ?? "localhost:9000";
+    var minioAccessKey = builder.Configuration["MinIO:AccessKey"] ?? "minioadmin";
+    var minioSecretKey = builder.Configuration["MinIO:SecretKey"] ?? "minioadmin";
+    var minioUseSsl = builder.Configuration.GetValue<bool>("MinIO:UseSSL", false);
+
+    builder.Services.AddSingleton<IMinioClient>(sp =>
+    {
+        var client = new MinioClient()
+            .WithEndpoint(minioEndpoint)
+            .WithCredentials(minioAccessKey, minioSecretKey);
+
+        if (minioUseSsl)
+            client.WithSSL();
+
+        return client.Build();
+    });
 
     // Add services to the container
     builder.Services.AddControllers();
