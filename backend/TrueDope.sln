@@ -1,0 +1,36 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.31903.59
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{2DD1AC3D-CB68-4B1B-826D-049D798D3134}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TrueDope.Api", "src\TrueDope.Api\TrueDope.Api.csproj", "{6876C87C-1830-4612-A0B1-03AF73D0DCF1}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{12CBB228-00B3-440F-A53E-E3BD5E063854}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TrueDope.Api.Tests", "tests\TrueDope.Api.Tests\TrueDope.Api.Tests.csproj", "{DADDAB6D-70B1-4FA6-876E-16ED2B628A21}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{6876C87C-1830-4612-A0B1-03AF73D0DCF1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6876C87C-1830-4612-A0B1-03AF73D0DCF1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6876C87C-1830-4612-A0B1-03AF73D0DCF1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6876C87C-1830-4612-A0B1-03AF73D0DCF1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DADDAB6D-70B1-4FA6-876E-16ED2B628A21}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DADDAB6D-70B1-4FA6-876E-16ED2B628A21}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DADDAB6D-70B1-4FA6-876E-16ED2B628A21}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DADDAB6D-70B1-4FA6-876E-16ED2B628A21}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{6876C87C-1830-4612-A0B1-03AF73D0DCF1} = {2DD1AC3D-CB68-4B1B-826D-049D798D3134}
+		{DADDAB6D-70B1-4FA6-876E-16ED2B628A21} = {12CBB228-00B3-440F-A53E-E3BD5E063854}
+	EndGlobalSection
+EndGlobal
