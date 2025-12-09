@@ -1,6 +1,6 @@
 import api, { tokenStorage } from './api';
+import type { ApiResponse } from '../types/common';
 import type {
-  ApiResponse,
   LoginRequest,
   LoginResponse,
   RegisterRequest,

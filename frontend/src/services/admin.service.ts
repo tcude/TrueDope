@@ -1,5 +1,5 @@
 import api from './api';
-import type { ApiResponse } from '../types/auth';
+import type { ApiResponse } from '../types/common';
 import type {
   UserListItem,
   UserDetail,

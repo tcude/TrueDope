@@ -162,10 +162,15 @@ public class SessionService : ISessionService
                 throw new ArgumentException("Location not found or does not belong to user");
         }
 
+        // Ensure SessionDate is UTC for PostgreSQL
+        var sessionDate = dto.SessionDate.Kind == DateTimeKind.Unspecified
+            ? DateTime.SpecifyKind(dto.SessionDate, DateTimeKind.Utc)
+            : dto.SessionDate.ToUniversalTime();
+
         var session = new RangeSession
         {
             UserId = userId,
-            SessionDate = dto.SessionDate,
+            SessionDate = sessionDate,
             SessionTime = dto.SessionTime,
             RifleSetupId = dto.RifleSetupId,
             SavedLocationId = dto.SavedLocationId,
@@ -279,7 +284,12 @@ public class SessionService : ISessionService
 
         // Update fields if provided
         if (dto.SessionDate.HasValue)
-            session.SessionDate = dto.SessionDate.Value;
+        {
+            // Ensure SessionDate is UTC for PostgreSQL
+            session.SessionDate = dto.SessionDate.Value.Kind == DateTimeKind.Unspecified
+                ? DateTime.SpecifyKind(dto.SessionDate.Value, DateTimeKind.Utc)
+                : dto.SessionDate.Value.ToUniversalTime();
+        }
 
         if (dto.SessionTime.HasValue)
             session.SessionTime = dto.SessionTime;

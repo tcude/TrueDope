@@ -1,3 +1,6 @@
+// Re-export common pagination types for backwards compatibility
+export type { PaginatedResponse, PaginationInfo } from './common';
+
 export interface UserListItem {
   userId: string;
   email: string;
@@ -23,17 +26,4 @@ export interface UpdateUserRequest {
 
 export interface ResetPasswordResponse {
   temporaryPassword: string;
-}
-
-export interface PaginatedResponse<T> {
-  success: boolean;
-  items: T[];
-  pagination: PaginationInfo;
-}
-
-export interface PaginationInfo {
-  currentPage: number;
-  pageSize: number;
-  totalItems: number;
-  totalPages: number;
 }

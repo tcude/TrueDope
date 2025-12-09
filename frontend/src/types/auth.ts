@@ -62,16 +62,3 @@ export interface UpdateProfileRequest {
   firstName?: string;
   lastName?: string;
 }
-
-export interface ApiResponse<T = void> {
-  success: boolean;
-  data?: T;
-  message?: string;
-  error?: ApiError;
-}
-
-export interface ApiError {
-  code: string;
-  description: string;
-  validationErrors?: Record<string, string[]>;
-}
