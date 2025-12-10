@@ -18,6 +18,7 @@ import { Button } from '../../components/ui/button';
 import { Select } from '../../components/ui/select';
 import { Input } from '../../components/ui/input';
 import { StatCard, StatIcons } from '../../components/ui/stat-card';
+import { PageHeader } from '../../components/ui/page-header';
 import { analyticsService, ammunitionService } from '../../services';
 import type {
   VelocityTrendsDto,
@@ -149,19 +150,18 @@ export default function VelocityTrends() {
     })) || [];
 
   return (
-    <div className="space-y-6">
-      {/* Header */}
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-2xl font-bold text-gray-900">Velocity Trends</h1>
-          <p className="text-gray-600">Track velocity changes and environmental correlations</p>
-        </div>
-        <Button variant="outline" onClick={() => navigate('/analytics')}>
-          Back to Analytics
-        </Button>
-      </div>
+    <div className="container mx-auto px-4 py-8">
+      <PageHeader
+        title="Velocity Trends"
+        description="Track velocity changes and environmental correlations"
+        breadcrumbs={[
+          { label: 'Analytics', href: '/analytics' },
+          { label: 'Velocity Trends' },
+        ]}
+      />
 
-      {/* Selection Panel */}
+      <div className="space-y-6">
+        {/* Selection Panel */}
       <Card>
         <CardHeader>
           <CardTitle>Select Ammunition</CardTitle>
@@ -665,6 +665,7 @@ export default function VelocityTrends() {
           )}
         </>
       )}
+      </div>
     </div>
   );
 }

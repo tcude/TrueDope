@@ -12,7 +12,7 @@ import {
 } from 'recharts';
 import { analyticsService, riflesService } from '../../services';
 import type { DopeChartDataDto, DopeChartFilterDto, RifleListDto } from '../../types';
-import { Button, Skeleton, Select, Input, Label } from '../../components/ui';
+import { Button, Skeleton, Select, Input, Label, PageHeader } from '../../components/ui';
 import { useToast } from '../../hooks';
 
 // Data source badge component
@@ -225,28 +225,34 @@ export default function DopeChart() {
 
   return (
     <div className="container mx-auto px-4 py-8">
-      {/* Header */}
-      <div className="flex items-center justify-between mb-6">
-        <h1 className="text-2xl font-bold text-gray-900">DOPE Chart</h1>
-        <div className="flex items-center gap-4">
-          <Select
-            value={selectedRifleId?.toString() || ''}
-            onChange={handleRifleChange}
-            className="w-64"
-            placeholder="Select Rifle"
-            options={rifles.map((rifle) => ({
-              value: rifle.id.toString(),
-              label: `${rifle.name} (${rifle.caliber})`,
-            }))}
-          />
-          <Button
-            variant="outline"
-            onClick={() => setShowFilters(!showFilters)}
-          >
-            {showFilters ? 'Hide Filters' : 'Show Filters'}
-          </Button>
-        </div>
-      </div>
+      <PageHeader
+        title="DOPE Chart"
+        description="View and filter your Data On Previous Engagements"
+        breadcrumbs={[
+          { label: 'Analytics', href: '/analytics' },
+          { label: 'DOPE Chart' },
+        ]}
+        actions={
+          <div className="flex items-center gap-4">
+            <Select
+              value={selectedRifleId?.toString() || ''}
+              onChange={handleRifleChange}
+              className="w-64"
+              placeholder="Select Rifle"
+              options={rifles.map((rifle) => ({
+                value: rifle.id.toString(),
+                label: `${rifle.name} (${rifle.caliber})`,
+              }))}
+            />
+            <Button
+              variant="outline"
+              onClick={() => setShowFilters(!showFilters)}
+            >
+              {showFilters ? 'Hide Filters' : 'Show Filters'}
+            </Button>
+          </div>
+        }
+      />
 
       {/* Filters Panel */}
       {showFilters && (

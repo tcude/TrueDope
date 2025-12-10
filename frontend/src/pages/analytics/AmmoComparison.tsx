@@ -1,5 +1,4 @@
 import { useState, useEffect, useCallback } from 'react';
-import { useNavigate } from 'react-router-dom';
 import {
   BarChart,
   Bar,
@@ -12,6 +11,7 @@ import {
 } from 'recharts';
 import { Card, CardContent, CardHeader, CardTitle } from '../../components/ui/card';
 import { Button } from '../../components/ui/button';
+import { PageHeader } from '../../components/ui/page-header';
 import { analyticsService, ammunitionService } from '../../services';
 import type { AmmoComparisonDto, AmmoListDto } from '../../types';
 
@@ -19,8 +19,6 @@ import type { AmmoComparisonDto, AmmoListDto } from '../../types';
 const COLORS = ['#2563eb', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6', '#ec4899'];
 
 export default function AmmoComparison() {
-  const navigate = useNavigate();
-
   // State
   const [ammunition, setAmmunition] = useState<AmmoListDto[]>([]);
   const [selectedAmmoIds, setSelectedAmmoIds] = useState<number[]>([]);
@@ -97,19 +95,18 @@ export default function AmmoComparison() {
     })) || [];
 
   return (
-    <div className="space-y-6">
-      {/* Header */}
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-2xl font-bold text-gray-900">Ammunition Comparison</h1>
-          <p className="text-gray-600">Compare velocity and group data across ammunition types</p>
-        </div>
-        <Button variant="outline" onClick={() => navigate('/analytics')}>
-          Back to Analytics
-        </Button>
-      </div>
+    <div className="container mx-auto px-4 py-8">
+      <PageHeader
+        title="Ammunition Comparison"
+        description="Compare velocity and group data across ammunition types"
+        breadcrumbs={[
+          { label: 'Analytics', href: '/analytics' },
+          { label: 'Ammo Comparison' },
+        ]}
+      />
 
-      {/* Selection Panel */}
+      <div className="space-y-6">
+        {/* Selection Panel */}
       <Card>
         <CardHeader>
           <div className="flex items-center justify-between">
@@ -427,6 +424,7 @@ export default function AmmoComparison() {
           </CardContent>
         </Card>
       )}
+      </div>
     </div>
   );
 }

@@ -20,3 +20,4 @@ export { StatCard, StatIcons } from './stat-card';
 export { EmptyState, EmptyStateIcons } from './empty-state';
 export { Skeleton, SkeletonText, SkeletonCard, SkeletonStatCard, SkeletonTable, SkeletonTableRow } from './skeleton';
 export { Collapsible } from './collapsible';
+export { PageHeader } from './page-header';

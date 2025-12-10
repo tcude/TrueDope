@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { analyticsService, sessionsService } from '../../services';
 import type { AnalyticsSummaryDto, SessionListDto } from '../../types';
-import { StatCard, StatIcons, Skeleton, Button, DopeBadge, VelocityBadge, GroupBadge } from '../../components/ui';
+import { StatCard, StatIcons, Skeleton, Button, DopeBadge, VelocityBadge, GroupBadge, PageHeader } from '../../components/ui';
 import { useToast } from '../../hooks';
 
 // Achievement Card Component
@@ -96,10 +96,10 @@ export default function AnalyticsDashboard() {
 
   return (
     <div className="container mx-auto px-4 py-8">
-      <div className="flex items-center justify-between mb-8">
-        <h1 className="text-2xl font-bold text-gray-900">Analytics Dashboard</h1>
-        <Button onClick={() => navigate('/sessions/new')}>+ New Session</Button>
-      </div>
+      <PageHeader
+        title="Analytics Dashboard"
+        description="Overview of your shooting performance and statistics"
+      />
 
       {/* Main Stats Grid */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">

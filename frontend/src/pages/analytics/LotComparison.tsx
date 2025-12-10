@@ -1,5 +1,4 @@
 import { useState, useEffect, useCallback } from 'react';
-import { useNavigate } from 'react-router-dom';
 import {
   BarChart,
   Bar,
@@ -13,6 +12,7 @@ import {
 import { Card, CardContent, CardHeader, CardTitle } from '../../components/ui/card';
 import { Button } from '../../components/ui/button';
 import { Select } from '../../components/ui/select';
+import { PageHeader } from '../../components/ui/page-header';
 import { analyticsService, ammunitionService } from '../../services';
 import type { LotComparisonDto, AmmoListDto } from '../../types';
 
@@ -20,8 +20,6 @@ import type { LotComparisonDto, AmmoListDto } from '../../types';
 const COLORS = ['#2563eb', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6', '#ec4899', '#06b6d4', '#84cc16'];
 
 export default function LotComparison() {
-  const navigate = useNavigate();
-
   // State
   const [ammunition, setAmmunition] = useState<AmmoListDto[]>([]);
   const [selectedAmmoId, setSelectedAmmoId] = useState<number | null>(null);
@@ -96,19 +94,18 @@ export default function LotComparison() {
     })) || [];
 
   return (
-    <div className="space-y-6">
-      {/* Header */}
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-2xl font-bold text-gray-900">Lot Comparison</h1>
-          <p className="text-gray-600">Compare performance across lots of the same ammunition</p>
-        </div>
-        <Button variant="outline" onClick={() => navigate('/analytics')}>
-          Back to Analytics
-        </Button>
-      </div>
+    <div className="container mx-auto px-4 py-8">
+      <PageHeader
+        title="Lot Comparison"
+        description="Compare performance across lots of the same ammunition"
+        breadcrumbs={[
+          { label: 'Analytics', href: '/analytics' },
+          { label: 'Lot Comparison' },
+        ]}
+      />
 
-      {/* Selection Panel */}
+      <div className="space-y-6">
+        {/* Selection Panel */}
       <Card>
         <CardHeader>
           <CardTitle>Select Ammunition</CardTitle>
@@ -424,6 +421,7 @@ export default function LotComparison() {
           </CardContent>
         </Card>
       )}
+      </div>
     </div>
   );
 }
