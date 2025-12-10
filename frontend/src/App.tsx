@@ -37,8 +37,9 @@ const SessionDetail = lazy(() => import('./pages/sessions/SessionDetail'));
 const SessionCreate = lazy(() => import('./pages/sessions/SessionCreate'));
 const SessionEdit = lazy(() => import('./pages/sessions/SessionEdit'));
 
-// Analytics placeholder
+// Analytics
 const AnalyticsDashboard = lazy(() => import('./pages/analytics/AnalyticsDashboard'));
+const DopeChart = lazy(() => import('./pages/analytics/DopeChart'));
 
 // Loading fallback
 function PageLoader() {
@@ -274,6 +275,16 @@ function AppContent() {
             <ProtectedRoute>
               <Suspense fallback={<PageLoader />}>
                 <AnalyticsDashboard />
+              </Suspense>
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/analytics/dope-chart"
+          element={
+            <ProtectedRoute>
+              <Suspense fallback={<PageLoader />}>
+                <DopeChart />
               </Suspense>
             </ProtectedRoute>
           }

@@ -190,21 +190,27 @@ export default function AnalyticsDashboard() {
         </div>
       </div>
 
-      {/* Quick Actions */}
+      {/* Analytics Links */}
       <div className="mb-8">
-        <h2 className="text-lg font-semibold text-gray-900 mb-4">Quick Actions</h2>
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-          <Button variant="outline" className="justify-center" onClick={() => navigate('/rifles')}>
-            View Rifles
+        <h2 className="text-lg font-semibold text-gray-900 mb-4">Analytics</h2>
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
+          <Button variant="outline" className="justify-center" onClick={() => navigate('/analytics/dope-chart')}>
+            DOPE Chart
           </Button>
-          <Button variant="outline" className="justify-center" onClick={() => navigate('/ammo')}>
-            View Ammunition
+          <Button variant="outline" className="justify-center" onClick={() => navigate('/analytics/velocity-trends')}>
+            Velocity Trends
           </Button>
-          <Button variant="outline" className="justify-center" onClick={() => navigate('/locations')}>
-            View Locations
+          <Button variant="outline" className="justify-center" onClick={() => navigate('/analytics/ammo-comparison')}>
+            Ammo Comparison
+          </Button>
+          <Button variant="outline" className="justify-center" onClick={() => navigate('/analytics/lot-comparison')}>
+            Lot Comparison
+          </Button>
+          <Button variant="outline" className="justify-center" onClick={() => navigate('/analytics/cost-analysis')}>
+            Cost Analysis
           </Button>
           <Button variant="outline" className="justify-center" onClick={() => navigate('/sessions')}>
-            View All Sessions
+            All Sessions
           </Button>
         </div>
       </div>
