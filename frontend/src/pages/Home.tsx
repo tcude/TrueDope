@@ -105,25 +105,25 @@ export default function Home() {
             <StatCard
               label="Sessions"
               value={stats.totalSessions}
-              icon={StatIcons.session}
+              icon={<StatIcons.session />}
               onClick={() => navigate('/sessions')}
             />
             <StatCard
               label="Rifles"
               value={stats.totalRifles}
-              icon={StatIcons.rifle}
+              icon={<StatIcons.rifle />}
               onClick={() => navigate('/rifles')}
             />
             <StatCard
               label="Ammunition"
               value={stats.totalAmmo}
-              icon={StatIcons.target}
+              icon={<StatIcons.target />}
               onClick={() => navigate('/ammunition')}
             />
             <StatCard
               label="Locations"
               value={stats.totalLocations}
-              icon={StatIcons.distance}
+              icon={<StatIcons.distance />}
               onClick={() => navigate('/locations')}
             />
           </div>

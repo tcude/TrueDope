@@ -113,6 +113,9 @@ try
     builder.Services.AddScoped<IImageService, ImageService>();
     builder.Services.AddScoped<IStorageService, MinioStorageService>();
 
+    // Register Phase 6 services
+    builder.Services.AddScoped<IAnalyticsService, AnalyticsService>();
+
     // Register Weather service with HttpClient
     builder.Services.AddHttpClient<IWeatherService, WeatherService>();
     builder.Services.AddMemoryCache();

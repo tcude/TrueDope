@@ -155,24 +155,24 @@ export default function SessionDetail() {
         <StatCard
           label="DOPE Entries"
           value={session.dopeEntries.length}
-          icon={StatIcons.distance}
+          icon={<StatIcons.distance />}
         />
         <StatCard
           label="Velocity Readings"
           value={chronoRounds}
           subValue={avgVelocity ? `Avg: ${Math.round(avgVelocity)} fps` : undefined}
-          icon={StatIcons.velocity}
+          icon={<StatIcons.velocity />}
         />
         <StatCard
           label="Groups"
           value={session.groupEntries.length}
           subValue={bestGroup ? `Best: ${bestGroup.toFixed(2)} MOA` : undefined}
-          icon={StatIcons.target}
+          icon={<StatIcons.target />}
         />
         <StatCard
           label="Temperature"
           value={session.temperature ? `${session.temperature}°F` : '-'}
-          icon={StatIcons.temperature}
+          icon={<StatIcons.temperature />}
         />
       </div>
 
