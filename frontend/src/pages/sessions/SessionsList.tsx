@@ -67,8 +67,8 @@ export default function SessionsList() {
   const activeFilterCount = [
     filters.search,
     filters.rifleId,
-    filters.startDate,
-    filters.endDate,
+    filters.fromDate,
+    filters.toDate,
     filters.hasDopeData,
     filters.hasChronoData,
     filters.hasGroupData,
@@ -160,8 +160,8 @@ export default function SessionsList() {
                 <label className="block text-sm font-medium text-gray-700 mb-1">From Date</label>
                 <input
                   type="date"
-                  value={filters.startDate || ''}
-                  onChange={(e) => handleFilterChange('startDate', e.target.value || undefined)}
+                  value={filters.fromDate || ''}
+                  onChange={(e) => handleFilterChange('fromDate', e.target.value || undefined)}
                   className="w-full h-10 px-3 rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
                 />
               </div>
@@ -169,8 +169,8 @@ export default function SessionsList() {
                 <label className="block text-sm font-medium text-gray-700 mb-1">To Date</label>
                 <input
                   type="date"
-                  value={filters.endDate || ''}
-                  onChange={(e) => handleFilterChange('endDate', e.target.value || undefined)}
+                  value={filters.toDate || ''}
+                  onChange={(e) => handleFilterChange('toDate', e.target.value || undefined)}
                   className="w-full h-10 px-3 rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
                 />
               </div>

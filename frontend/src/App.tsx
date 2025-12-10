@@ -40,6 +40,10 @@ const SessionEdit = lazy(() => import('./pages/sessions/SessionEdit'));
 // Analytics
 const AnalyticsDashboard = lazy(() => import('./pages/analytics/AnalyticsDashboard'));
 const DopeChart = lazy(() => import('./pages/analytics/DopeChart'));
+const VelocityTrends = lazy(() => import('./pages/analytics/VelocityTrends'));
+const AmmoComparison = lazy(() => import('./pages/analytics/AmmoComparison'));
+const LotComparison = lazy(() => import('./pages/analytics/LotComparison'));
+const CostAnalysis = lazy(() => import('./pages/analytics/CostAnalysis'));
 
 // Loading fallback
 function PageLoader() {
@@ -285,6 +289,46 @@ function AppContent() {
             <ProtectedRoute>
               <Suspense fallback={<PageLoader />}>
                 <DopeChart />
+              </Suspense>
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/analytics/velocity-trends"
+          element={
+            <ProtectedRoute>
+              <Suspense fallback={<PageLoader />}>
+                <VelocityTrends />
+              </Suspense>
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/analytics/ammo-comparison"
+          element={
+            <ProtectedRoute>
+              <Suspense fallback={<PageLoader />}>
+                <AmmoComparison />
+              </Suspense>
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/analytics/lot-comparison"
+          element={
+            <ProtectedRoute>
+              <Suspense fallback={<PageLoader />}>
+                <LotComparison />
+              </Suspense>
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/analytics/cost-analysis"
+          element={
+            <ProtectedRoute>
+              <Suspense fallback={<PageLoader />}>
+                <CostAnalysis />
               </Suspense>
             </ProtectedRoute>
           }

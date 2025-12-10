@@ -8,6 +8,7 @@ const navLinks = [
   { label: 'Rifles', path: '/rifles' },
   { label: 'Ammunition', path: '/ammunition' },
   { label: 'Locations', path: '/locations' },
+  { label: 'Analytics', path: '/analytics' },
 ];
 
 export function Header() {
