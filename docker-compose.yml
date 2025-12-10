@@ -35,6 +35,7 @@ services:
       - Smtp__FromEmail=${SMTP_FROM_EMAIL}
       - Smtp__FromName=${SMTP_FROM_NAME}
       - FrontendUrl=${FRONTEND_URL}
+      - OpenWeatherMap__ApiKey=${OPENWEATHERMAP_API_KEY}
     networks:
       - truedope-network
     restart: unless-stopped

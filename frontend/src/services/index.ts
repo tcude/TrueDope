@@ -5,3 +5,4 @@ export { riflesService } from './rifles.service';
 export { ammunitionService } from './ammunition.service';
 export { locationsService } from './locations.service';
 export { sessionsService } from './sessions.service';
+export { weatherService } from './weather.service';

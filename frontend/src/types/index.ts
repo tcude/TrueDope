@@ -12,3 +12,4 @@ export * from './rifles';
 export * from './ammunition';
 export * from './locations';
 export * from './sessions';
+export * from './weather';

@@ -172,7 +172,7 @@ export default function SessionDetail() {
         <StatCard
           label="Temperature"
           value={session.temperature ? `${session.temperature}°F` : '-'}
-          icon={StatIcons.calendar}
+          icon={StatIcons.temperature}
         />
       </div>
 

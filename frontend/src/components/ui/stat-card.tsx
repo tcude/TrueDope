@@ -101,4 +101,9 @@ export const StatIcons = {
       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
     </svg>
   ),
+  temperature: (
+    <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9V3m0 0L9 6m3-3l3 3M12 21a4 4 0 100-8 4 4 0 000 8z" />
+    </svg>
+  ),
 };

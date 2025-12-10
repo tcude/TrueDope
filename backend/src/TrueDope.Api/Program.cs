@@ -97,6 +97,9 @@ try
     // Configure SMTP Settings
     builder.Services.Configure<SmtpSettings>(builder.Configuration.GetSection(SmtpSettings.SectionName));
 
+    // Configure OpenWeatherMap Settings
+    builder.Services.Configure<WeatherSettings>(builder.Configuration.GetSection(WeatherSettings.SectionName));
+
     // Register services
     builder.Services.AddScoped<IJwtService, JwtService>();
     builder.Services.AddScoped<IEmailService, EmailService>();
@@ -109,6 +112,10 @@ try
     builder.Services.AddScoped<ILocationService, LocationService>();
     builder.Services.AddScoped<IImageService, ImageService>();
     builder.Services.AddScoped<IStorageService, MinioStorageService>();
+
+    // Register Weather service with HttpClient
+    builder.Services.AddHttpClient<IWeatherService, WeatherService>();
+    builder.Services.AddMemoryCache();
 
     // Configure MinIO
     var minioEndpoint = builder.Configuration["MinIO:Endpoint"] ?? "localhost:9000";
