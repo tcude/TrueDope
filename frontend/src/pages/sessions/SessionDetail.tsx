@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { sessionsService } from '../../services';
 import type { SessionDetailDto } from '../../types';
-import { Button, ConfirmDialog, Skeleton, Tabs, StatCard, StatIcons } from '../../components/ui';
+import { Button, ConfirmDialog, LoadingPage, Tabs, StatCard, StatIcons } from '../../components/ui';
 import { DopeTab, ChronoTab, GroupsTab, ImagesTab } from '../../components/sessions';
 import { useToast } from '../../hooks';
 
@@ -52,14 +52,7 @@ export default function SessionDetail() {
   if (loading) {
     return (
       <div className="container mx-auto px-4 py-8">
-        <Skeleton className="h-8 w-64 mb-4" />
-        <Skeleton className="h-4 w-32 mb-8" />
-        <div className="grid grid-cols-4 gap-4 mb-6">
-          <Skeleton className="h-24 w-full" />
-          <Skeleton className="h-24 w-full" />
-          <Skeleton className="h-24 w-full" />
-          <Skeleton className="h-24 w-full" />
-        </div>
+        <LoadingPage message="Loading session..." />
       </div>
     );
   }

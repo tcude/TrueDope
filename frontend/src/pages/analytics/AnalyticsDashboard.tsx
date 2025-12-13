@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { analyticsService, sessionsService } from '../../services';
 import type { AnalyticsSummaryDto, SessionListDto } from '../../types';
-import { StatCard, StatIcons, Skeleton, Button, DopeBadge, VelocityBadge, GroupBadge, PageHeader } from '../../components/ui';
+import { StatCard, StatIcons, LoadingPage, Button, DopeBadge, VelocityBadge, GroupBadge, PageHeader } from '../../components/ui';
 import { useToast } from '../../hooks';
 
 // Achievement Card Component
@@ -21,15 +21,15 @@ function AchievementCard({
 }) {
   return (
     <div
-      className={`bg-white rounded-lg border border-gray-200 p-4 ${onClick ? 'cursor-pointer hover:border-blue-300 hover:shadow-sm transition-all' : ''}`}
+      className={`bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-4 ${onClick ? 'cursor-pointer hover:border-blue-300 dark:hover:border-blue-600 hover:shadow-sm transition-all' : ''}`}
       onClick={onClick}
     >
       <div className="flex items-start gap-3">
-        <div className="p-2 bg-blue-50 rounded-lg text-blue-600">{icon}</div>
+        <div className="p-2 bg-blue-50 dark:bg-blue-900/30 rounded-lg text-blue-600 dark:text-blue-400">{icon}</div>
         <div className="flex-1 min-w-0">
-          <p className="text-sm font-medium text-gray-500">{title}</p>
-          <p className="text-lg font-semibold text-gray-900 truncate">{value}</p>
-          {subtitle && <p className="text-xs text-gray-500 mt-1">{subtitle}</p>}
+          <p className="text-sm font-medium text-gray-500 dark:text-gray-400">{title}</p>
+          <p className="text-lg font-semibold text-gray-900 dark:text-gray-100 truncate">{value}</p>
+          {subtitle && <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">{subtitle}</p>}
         </div>
       </div>
     </div>
@@ -77,19 +77,7 @@ export default function AnalyticsDashboard() {
   if (loading) {
     return (
       <div className="container mx-auto px-4 py-8">
-        <Skeleton className="h-8 w-48 mb-8" />
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
-          <Skeleton className="h-32 w-full" />
-          <Skeleton className="h-32 w-full" />
-          <Skeleton className="h-32 w-full" />
-        </div>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
-          <Skeleton className="h-24 w-full" />
-          <Skeleton className="h-24 w-full" />
-          <Skeleton className="h-24 w-full" />
-          <Skeleton className="h-24 w-full" />
-        </div>
-        <Skeleton className="h-64 w-full" />
+        <LoadingPage message="Loading analytics..." />
       </div>
     );
   }
@@ -123,7 +111,7 @@ export default function AnalyticsDashboard() {
 
       {/* Achievement Cards */}
       <div className="mb-8">
-        <h2 className="text-lg font-semibold text-gray-900 mb-4">Personal Bests</h2>
+        <h2 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-4">Personal Bests</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
           {/* Longest Shot */}
           <AchievementCard
@@ -192,7 +180,7 @@ export default function AnalyticsDashboard() {
 
       {/* Analytics Links */}
       <div className="mb-8">
-        <h2 className="text-lg font-semibold text-gray-900 mb-4">Analytics</h2>
+        <h2 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-4">Analytics</h2>
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
           <Button variant="outline" className="justify-center" onClick={() => navigate('/analytics/dope-chart')}>
             DOPE Chart
@@ -216,55 +204,55 @@ export default function AnalyticsDashboard() {
       </div>
 
       {/* Recent Sessions */}
-      <div className="bg-white rounded-lg border border-gray-200 p-6">
+      <div className="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-6">
         <div className="flex items-center justify-between mb-4">
-          <h2 className="text-lg font-semibold text-gray-900">Recent Sessions</h2>
+          <h2 className="text-lg font-semibold text-gray-900 dark:text-gray-100">Recent Sessions</h2>
           <Button variant="outline" size="sm" onClick={() => navigate('/sessions')}>
             View All
           </Button>
         </div>
         {recentSessions.length === 0 ? (
           <div className="text-center py-8">
-            <p className="text-gray-500 mb-4">No sessions yet. Record your first range session!</p>
+            <p className="text-gray-500 dark:text-gray-400 mb-4">No sessions yet. Record your first range session!</p>
             <Button onClick={() => navigate('/sessions/new')}>New Session</Button>
           </div>
         ) : (
           <div className="overflow-x-auto">
-            <table className="min-w-full divide-y divide-gray-200">
-              <thead className="bg-gray-50">
+            <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+              <thead className="bg-gray-50 dark:bg-gray-900">
                 <tr>
-                  <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
                     Date
                   </th>
-                  <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
                     Rifle
                   </th>
-                  <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
                     Location
                   </th>
-                  <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
                     DOPE
                   </th>
-                  <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
                     Chrono
                   </th>
-                  <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
                     Groups
                   </th>
                 </tr>
               </thead>
-              <tbody className="bg-white divide-y divide-gray-200">
+              <tbody className="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
                 {recentSessions.map((session) => (
                   <tr
                     key={session.id}
-                    className="hover:bg-gray-50 cursor-pointer"
+                    className="hover:bg-gray-50 dark:hover:bg-gray-700 cursor-pointer transition-colors"
                     onClick={() => navigate(`/sessions/${session.id}`)}
                   >
-                    <td className="px-4 py-3 text-sm text-gray-900">
+                    <td className="px-4 py-3 text-sm text-gray-900 dark:text-gray-100">
                       {new Date(session.sessionDate).toLocaleDateString()}
                     </td>
-                    <td className="px-4 py-3 text-sm text-gray-900">{session.rifleName}</td>
-                    <td className="px-4 py-3 text-sm text-gray-500">{session.locationName || '-'}</td>
+                    <td className="px-4 py-3 text-sm text-gray-900 dark:text-gray-100">{session.rifleName}</td>
+                    <td className="px-4 py-3 text-sm text-gray-500 dark:text-gray-400">{session.locationName || '-'}</td>
                     <td className="px-4 py-3 text-sm">
                       {session.dopeCount > 0 ? <DopeBadge count={session.dopeCount} /> : '-'}
                     </td>

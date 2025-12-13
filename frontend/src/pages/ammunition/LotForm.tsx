@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { ammunitionService } from '../../services';
 import type { CreateAmmoLotDto, AmmoDetailDto } from '../../types';
-import { Button, Skeleton } from '../../components/ui';
+import { Button, LoadingPage } from '../../components/ui';
 import { useToast } from '../../hooks';
 
 export default function LotForm() {
@@ -65,10 +65,7 @@ export default function LotForm() {
   if (loading) {
     return (
       <div className="container mx-auto px-4 py-8 max-w-2xl">
-        <Skeleton className="h-8 w-48 mb-8" />
-        <div className="bg-white rounded-lg border border-gray-200 p-6">
-          <Skeleton className="h-10 w-full" />
-        </div>
+        <LoadingPage message="Loading..." />
       </div>
     );
   }

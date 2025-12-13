@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { ammunitionService } from '../../services';
 import type { CreateAmmoDto, UpdateAmmoDto } from '../../types';
-import { Button, Combobox, Select, Skeleton } from '../../components/ui';
+import { Button, Combobox, Select, LoadingPage } from '../../components/ui';
 import { useToast } from '../../hooks';
 import { COMMON_CALIBERS } from '../../constants/calibers';
 import { COMMON_MANUFACTURERS } from '../../constants/manufacturers';
@@ -100,14 +100,7 @@ export default function AmmoForm({ mode }: AmmoFormProps) {
   if (loading) {
     return (
       <div className="container mx-auto px-4 py-8 max-w-2xl">
-        <Skeleton className="h-8 w-48 mb-8" />
-        <div className="bg-white rounded-lg border border-gray-200 p-6">
-          <div className="space-y-4">
-            <Skeleton className="h-10 w-full" />
-            <Skeleton className="h-10 w-full" />
-            <Skeleton className="h-10 w-full" />
-          </div>
-        </div>
+        <LoadingPage message="Loading ammunition..." />
       </div>
     );
   }

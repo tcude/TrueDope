@@ -19,6 +19,7 @@ export { Badge, DopeBadge, VelocityBadge, GroupBadge } from './badge';
 export { StatCard, StatIcons } from './stat-card';
 export { EmptyState, EmptyStateIcons } from './empty-state';
 export { Skeleton, SkeletonText, SkeletonCard, SkeletonStatCard, SkeletonTable, SkeletonTableRow } from './skeleton';
+export { LoadingSpinner, LoadingPage, LoadingOverlay } from './loading';
 export { Collapsible } from './collapsible';
 export { PageHeader } from './page-header';
 

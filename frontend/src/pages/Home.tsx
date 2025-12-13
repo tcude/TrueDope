@@ -5,7 +5,7 @@ import { riflesService, sessionsService, ammunitionService, locationsService } f
 import type { SessionListDto } from '../types';
 import { Button } from '../components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../components/ui/card';
-import { StatCard, StatIcons, Skeleton, DopeBadge, VelocityBadge, GroupBadge } from '../components/ui';
+import { StatCard, StatIcons, LoadingSpinner, DopeBadge, VelocityBadge, GroupBadge } from '../components/ui';
 
 interface DashboardStats {
   totalRifles: number;
@@ -85,8 +85,8 @@ export default function Home() {
       <div className="container mx-auto px-4 py-8">
         <div className="flex items-center justify-between mb-8">
           <div>
-            <h1 className="text-2xl font-bold text-gray-900">Dashboard</h1>
-            <p className="text-gray-500">
+            <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100">Dashboard</h1>
+            <p className="text-gray-500 dark:text-gray-400">
               Welcome back, {user?.firstName || user?.email}
             </p>
           </div>
@@ -95,10 +95,8 @@ export default function Home() {
 
         {/* Stats Grid */}
         {statsLoading ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
-            {[...Array(4)].map((_, i) => (
-              <Skeleton key={i} className="h-32 w-full" />
-            ))}
+          <div className="flex items-center justify-center py-8">
+            <LoadingSpinner size="lg" />
           </div>
         ) : stats && (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
@@ -131,19 +129,19 @@ export default function Home() {
 
         {/* Quick Actions */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
-          <Card className="cursor-pointer hover:border-gray-300 transition-colors" onClick={() => navigate('/sessions/new')}>
+          <Card className="cursor-pointer hover:border-gray-300 dark:hover:border-gray-600 transition-colors" onClick={() => navigate('/sessions/new')}>
             <CardHeader>
               <CardTitle className="text-lg">Record Session</CardTitle>
               <CardDescription>Log a new range session with DOPE, chrono, and group data</CardDescription>
             </CardHeader>
           </Card>
-          <Card className="cursor-pointer hover:border-gray-300 transition-colors" onClick={() => navigate('/rifles/new')}>
+          <Card className="cursor-pointer hover:border-gray-300 dark:hover:border-gray-600 transition-colors" onClick={() => navigate('/rifles/new')}>
             <CardHeader>
               <CardTitle className="text-lg">Add Rifle</CardTitle>
               <CardDescription>Add a new rifle to your collection</CardDescription>
             </CardHeader>
           </Card>
-          <Card className="cursor-pointer hover:border-gray-300 transition-colors" onClick={() => navigate('/ammunition/new')}>
+          <Card className="cursor-pointer hover:border-gray-300 dark:hover:border-gray-600 transition-colors" onClick={() => navigate('/ammunition/new')}>
             <CardHeader>
               <CardTitle className="text-lg">Add Ammunition</CardTitle>
               <CardDescription>Track a new ammunition in your library</CardDescription>
@@ -152,47 +150,49 @@ export default function Home() {
         </div>
 
         {/* Recent Sessions */}
-        <div className="bg-white rounded-lg border border-gray-200 p-6">
+        <div className="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-6 transition-colors">
           <div className="flex items-center justify-between mb-4">
-            <h2 className="text-lg font-semibold text-gray-900">Recent Sessions</h2>
+            <h2 className="text-lg font-semibold text-gray-900 dark:text-gray-100">Recent Sessions</h2>
             <Button variant="outline" size="sm" onClick={() => navigate('/sessions')}>
               View All
             </Button>
           </div>
           {statsLoading ? (
-            <Skeleton className="h-48 w-full" />
+            <div className="flex items-center justify-center py-8">
+              <LoadingSpinner />
+            </div>
           ) : stats && stats.recentSessions.length === 0 ? (
             <div className="text-center py-8">
-              <p className="text-gray-500 mb-4">No sessions recorded yet. Start by logging your first range session!</p>
+              <p className="text-gray-500 dark:text-gray-400 mb-4">No sessions recorded yet. Start by logging your first range session!</p>
               <Button onClick={() => navigate('/sessions/new')}>Record Session</Button>
             </div>
           ) : stats && (
             <div className="overflow-x-auto">
-              <table className="min-w-full divide-y divide-gray-200">
-                <thead className="bg-gray-50">
+              <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+                <thead className="bg-gray-50 dark:bg-gray-900">
                   <tr>
-                    <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date</th>
-                    <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Rifle</th>
-                    <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Location</th>
-                    <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">DOPE</th>
-                    <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Chrono</th>
-                    <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Groups</th>
+                    <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Date</th>
+                    <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Rifle</th>
+                    <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Location</th>
+                    <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">DOPE</th>
+                    <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Chrono</th>
+                    <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Groups</th>
                   </tr>
                 </thead>
-                <tbody className="bg-white divide-y divide-gray-200">
+                <tbody className="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
                   {stats.recentSessions.map((session) => (
                     <tr
                       key={session.id}
-                      className="hover:bg-gray-50 cursor-pointer"
+                      className="hover:bg-gray-50 dark:hover:bg-gray-700 cursor-pointer transition-colors"
                       onClick={() => navigate(`/sessions/${session.id}`)}
                     >
                       <td className="px-4 py-3 text-sm">
-                        <Link to={`/sessions/${session.id}`} className="text-blue-600 hover:underline font-medium">
+                        <Link to={`/sessions/${session.id}`} className="text-blue-600 dark:text-blue-400 hover:underline font-medium">
                           {new Date(session.sessionDate).toLocaleDateString()}
                         </Link>
                       </td>
-                      <td className="px-4 py-3 text-sm text-gray-900">{session.rifleName}</td>
-                      <td className="px-4 py-3 text-sm text-gray-500">{session.locationName || '-'}</td>
+                      <td className="px-4 py-3 text-sm text-gray-900 dark:text-gray-100">{session.rifleName}</td>
+                      <td className="px-4 py-3 text-sm text-gray-500 dark:text-gray-400">{session.locationName || '-'}</td>
                       <td className="px-4 py-3 text-sm">
                         {session.dopeCount > 0 ? <DopeBadge count={session.dopeCount} /> : '-'}
                       </td>
@@ -219,8 +219,8 @@ export default function Home() {
       <div className="mx-auto max-w-4xl">
         {/* Hero Section */}
         <div className="mb-12 text-center">
-          <h1 className="mb-4 text-4xl font-bold text-gray-900">Welcome to TrueDope</h1>
-          <p className="mb-8 text-xl text-gray-600">
+          <h1 className="mb-4 text-4xl font-bold text-gray-900 dark:text-gray-100">Welcome to TrueDope</h1>
+          <p className="mb-8 text-xl text-gray-600 dark:text-gray-400">
             Professional ballistics data logging and analysis
           </p>
 
@@ -273,8 +273,8 @@ export default function Home() {
           <CardContent>
             {healthLoading ? (
               <div className="flex items-center gap-2">
-                <div className="h-4 w-4 animate-spin rounded-full border-2 border-gray-300 border-t-blue-600" />
-                <span className="text-gray-600">Checking status...</span>
+                <div className="h-4 w-4 animate-spin rounded-full border-2 border-gray-300 dark:border-gray-600 border-t-blue-600" />
+                <span className="text-gray-600 dark:text-gray-400">Checking status...</span>
               </div>
             ) : health ? (
               <div className="space-y-4">
@@ -284,25 +284,25 @@ export default function Home() {
                       health.status === 'Healthy' ? 'bg-green-500' : 'bg-red-500'
                     }`}
                   />
-                  <span className="font-medium text-gray-900">
+                  <span className="font-medium text-gray-900 dark:text-gray-100">
                     API Status: {health.status}
                   </span>
                 </div>
 
                 <div className="grid grid-cols-2 gap-4 text-sm">
                   <div>
-                    <span className="text-gray-500">Version:</span>
-                    <span className="ml-2 font-medium">{health.version}</span>
+                    <span className="text-gray-500 dark:text-gray-400">Version:</span>
+                    <span className="ml-2 font-medium text-gray-900 dark:text-gray-100">{health.version}</span>
                   </div>
                   <div>
-                    <span className="text-gray-500">Environment:</span>
-                    <span className="ml-2 font-medium">{health.environment}</span>
+                    <span className="text-gray-500 dark:text-gray-400">Environment:</span>
+                    <span className="ml-2 font-medium text-gray-900 dark:text-gray-100">{health.environment}</span>
                   </div>
                 </div>
 
                 {health.checks && Object.keys(health.checks).length > 0 && (
-                  <div className="border-t pt-4">
-                    <p className="mb-2 text-sm font-medium text-gray-700">Service Checks:</p>
+                  <div className="border-t border-gray-200 dark:border-gray-700 pt-4">
+                    <p className="mb-2 text-sm font-medium text-gray-700 dark:text-gray-300">Service Checks:</p>
                     <div className="grid gap-2 text-sm">
                       {Object.entries(health.checks).map(([service, status]) => (
                         <div key={service} className="flex items-center gap-2">
@@ -311,8 +311,8 @@ export default function Home() {
                               status === 'Healthy' ? 'bg-green-500' : 'bg-yellow-500'
                             }`}
                           />
-                          <span className="text-gray-600">{service}:</span>
-                          <span className="font-medium">{status}</span>
+                          <span className="text-gray-600 dark:text-gray-400">{service}:</span>
+                          <span className="font-medium text-gray-900 dark:text-gray-100">{status}</span>
                         </div>
                       ))}
                     </div>
@@ -320,7 +320,7 @@ export default function Home() {
                 )}
               </div>
             ) : (
-              <p className="text-gray-500">Unable to fetch status</p>
+              <p className="text-gray-500 dark:text-gray-400">Unable to fetch status</p>
             )}
           </CardContent>
         </Card>

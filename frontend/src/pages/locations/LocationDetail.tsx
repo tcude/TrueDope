@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { locationsService } from '../../services';
 import type { LocationDetailDto } from '../../types';
-import { Button, ConfirmDialog, Skeleton } from '../../components/ui';
+import { Button, ConfirmDialog, LoadingPage } from '../../components/ui';
 import { useToast } from '../../hooks';
 import { LocationPreview } from '../../components/map';
 
@@ -52,15 +52,7 @@ export default function LocationDetail() {
   if (loading) {
     return (
       <div className="container mx-auto px-4 py-8">
-        <Skeleton className="h-8 w-64 mb-4" />
-        <Skeleton className="h-4 w-32 mb-8" />
-        <div className="bg-white rounded-lg border border-gray-200 p-6">
-          <Skeleton className="h-6 w-24 mb-4" />
-          <div className="grid grid-cols-2 gap-4">
-            <Skeleton className="h-4 w-full" />
-            <Skeleton className="h-4 w-full" />
-          </div>
-        </div>
+        <LoadingPage message="Loading location..." />
       </div>
     );
   }

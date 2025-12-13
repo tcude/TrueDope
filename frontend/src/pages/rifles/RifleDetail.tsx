@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { riflesService } from '../../services';
 import type { RifleDetailDto } from '../../types';
-import { Button, ConfirmDialog, Skeleton } from '../../components/ui';
+import { Button, ConfirmDialog, LoadingPage } from '../../components/ui';
 import { ImagesTab } from '../../components/sessions';
 import { useToast } from '../../hooks';
 
@@ -52,17 +52,7 @@ export default function RifleDetail() {
   if (loading) {
     return (
       <div className="container mx-auto px-4 py-8">
-        <Skeleton className="h-8 w-48 mb-4" />
-        <Skeleton className="h-4 w-32 mb-8" />
-        <div className="bg-white rounded-lg border border-gray-200 p-6">
-          <Skeleton className="h-6 w-24 mb-4" />
-          <div className="grid grid-cols-2 gap-4">
-            <Skeleton className="h-4 w-full" />
-            <Skeleton className="h-4 w-full" />
-            <Skeleton className="h-4 w-full" />
-            <Skeleton className="h-4 w-full" />
-          </div>
-        </div>
+        <LoadingPage message="Loading rifle..." />
       </div>
     );
   }

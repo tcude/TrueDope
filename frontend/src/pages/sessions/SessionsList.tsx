@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { sessionsService, riflesService } from '../../services';
 import type { SessionListDto, SessionFilterDto, RifleListDto } from '../../types';
-import { Button, Select, EmptyState, EmptyStateIcons, Skeleton, Collapsible, Badge } from '../../components/ui';
+import { Button, Select, EmptyState, EmptyStateIcons, LoadingPage, Collapsible, Badge } from '../../components/ui';
 import { useToast } from '../../hooks';
 
 export default function SessionsList() {
@@ -77,15 +77,7 @@ export default function SessionsList() {
   if (loading && sessions.length === 0) {
     return (
       <div className="container mx-auto px-4 py-8">
-        <div className="flex items-center justify-between mb-8">
-          <Skeleton className="h-8 w-32" />
-          <Skeleton className="h-10 w-32" />
-        </div>
-        <div className="space-y-4">
-          {[...Array(5)].map((_, i) => (
-            <Skeleton key={i} className="h-16 w-full" />
-          ))}
-        </div>
+        <LoadingPage message="Loading sessions..." />
       </div>
     );
   }
@@ -94,7 +86,7 @@ export default function SessionsList() {
     return (
       <div className="container mx-auto px-4 py-8">
         <div className="flex items-center justify-between mb-8">
-          <h1 className="text-2xl font-bold text-gray-900">Sessions</h1>
+          <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100">Sessions</h1>
         </div>
         <EmptyState
           icon={EmptyStateIcons.session}
@@ -112,7 +104,7 @@ export default function SessionsList() {
   return (
     <div className="container mx-auto px-4 py-8">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
-        <h1 className="text-2xl font-bold text-gray-900">Sessions</h1>
+        <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100">Sessions</h1>
         <Button onClick={() => navigate('/sessions/new')}>
           + New Session
         </Button>
@@ -131,17 +123,17 @@ export default function SessionsList() {
             {/* Search and Rifle Filter Row */}
             <div className="flex flex-wrap gap-3">
               <div className="flex-1 min-w-[200px]">
-                <label className="block text-sm font-medium text-gray-700 mb-1">Search</label>
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Search</label>
                 <input
                   type="text"
                   value={filters.search || ''}
                   onChange={(e) => handleFilterChange('search', e.target.value || undefined)}
                   placeholder="Search notes, location..."
-                  className="w-full h-10 px-3 rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="w-full h-10 px-3 rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500"
                 />
               </div>
               <div className="w-48">
-                <label className="block text-sm font-medium text-gray-700 mb-1">Rifle</label>
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Rifle</label>
                 <Select
                   value={filters.rifleId?.toString() || ''}
                   onChange={(value) => handleFilterChange('rifleId', value ? parseInt(value) : undefined)}
@@ -157,62 +149,62 @@ export default function SessionsList() {
             {/* Date Range Row */}
             <div className="flex flex-wrap gap-3">
               <div className="w-40">
-                <label className="block text-sm font-medium text-gray-700 mb-1">From Date</label>
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">From Date</label>
                 <input
                   type="date"
                   value={filters.fromDate || ''}
                   onChange={(e) => handleFilterChange('fromDate', e.target.value || undefined)}
-                  className="w-full h-10 px-3 rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="w-full h-10 px-3 rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500"
                 />
               </div>
               <div className="w-40">
-                <label className="block text-sm font-medium text-gray-700 mb-1">To Date</label>
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">To Date</label>
                 <input
                   type="date"
                   value={filters.toDate || ''}
                   onChange={(e) => handleFilterChange('toDate', e.target.value || undefined)}
-                  className="w-full h-10 px-3 rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="w-full h-10 px-3 rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500"
                 />
               </div>
             </div>
 
             {/* Data Type Checkboxes Row */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">Data Type</label>
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Data Type</label>
               <div className="flex flex-wrap gap-4">
                 <label className="flex items-center gap-2 cursor-pointer">
                   <input
                     type="checkbox"
                     checked={filters.hasDopeData === true}
                     onChange={(e) => handleFilterChange('hasDopeData', e.target.checked ? true : undefined)}
-                    className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+                    className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 dark:border-gray-600 rounded bg-white dark:bg-gray-800"
                   />
-                  <span className="text-sm text-gray-700">Has DOPE</span>
+                  <span className="text-sm text-gray-700 dark:text-gray-300">Has DOPE</span>
                 </label>
                 <label className="flex items-center gap-2 cursor-pointer">
                   <input
                     type="checkbox"
                     checked={filters.hasChronoData === true}
                     onChange={(e) => handleFilterChange('hasChronoData', e.target.checked ? true : undefined)}
-                    className="h-4 w-4 text-green-600 focus:ring-green-500 border-gray-300 rounded"
+                    className="h-4 w-4 text-green-600 focus:ring-green-500 border-gray-300 dark:border-gray-600 rounded bg-white dark:bg-gray-800"
                   />
-                  <span className="text-sm text-gray-700">Has Chrono</span>
+                  <span className="text-sm text-gray-700 dark:text-gray-300">Has Chrono</span>
                 </label>
                 <label className="flex items-center gap-2 cursor-pointer">
                   <input
                     type="checkbox"
                     checked={filters.hasGroupData === true}
                     onChange={(e) => handleFilterChange('hasGroupData', e.target.checked ? true : undefined)}
-                    className="h-4 w-4 text-purple-600 focus:ring-purple-500 border-gray-300 rounded"
+                    className="h-4 w-4 text-purple-600 focus:ring-purple-500 border-gray-300 dark:border-gray-600 rounded bg-white dark:bg-gray-800"
                   />
-                  <span className="text-sm text-gray-700">Has Groups</span>
+                  <span className="text-sm text-gray-700 dark:text-gray-300">Has Groups</span>
                 </label>
               </div>
             </div>
 
             {/* Clear Filters Button */}
             {activeFilterCount > 0 && (
-              <div className="pt-2 border-t border-gray-200">
+              <div className="pt-2 border-t border-gray-200 dark:border-gray-700">
                 <Button type="button" variant="outline" size="sm" onClick={clearFilters}>
                   Clear All Filters
                 </Button>
@@ -224,18 +216,18 @@ export default function SessionsList() {
 
       {/* Results Count */}
       <div className="flex items-center justify-between mb-4">
-        <p className="text-sm text-gray-600">
+        <p className="text-sm text-gray-600 dark:text-gray-400">
           {pagination.totalItems} session{pagination.totalItems !== 1 ? 's' : ''} found
         </p>
         {loading && (
-          <span className="text-sm text-gray-500">Loading...</span>
+          <span className="text-sm text-gray-500 dark:text-gray-400">Loading...</span>
         )}
       </div>
 
       {/* No Results with Filters */}
       {sessions.length === 0 && activeFilterCount > 0 && (
-        <div className="bg-white rounded-lg border border-gray-200 p-8 text-center">
-          <p className="text-gray-500 mb-4">No sessions match your filters.</p>
+        <div className="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-8 text-center">
+          <p className="text-gray-500 dark:text-gray-400 mb-4">No sessions match your filters.</p>
           <Button variant="outline" onClick={clearFilters}>
             Clear Filters
           </Button>
@@ -244,53 +236,53 @@ export default function SessionsList() {
 
       {/* Sessions Table */}
       {sessions.length > 0 && (
-        <div className="bg-white rounded-lg border border-gray-200 overflow-hidden">
-          <table className="min-w-full divide-y divide-gray-200">
-            <thead className="bg-gray-50">
+        <div className="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 overflow-hidden">
+          <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+            <thead className="bg-gray-50 dark:bg-gray-900">
               <tr>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Rifle</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Location</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Data</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Date</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Rifle</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Location</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Data</th>
               </tr>
             </thead>
-            <tbody className="bg-white divide-y divide-gray-200">
+            <tbody className="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
               {sessions.map((session) => (
                 <tr
                   key={session.id}
                   onClick={() => navigate(`/sessions/${session.id}`)}
-                  className="hover:bg-gray-50 cursor-pointer"
+                  className="hover:bg-gray-50 dark:hover:bg-gray-700 cursor-pointer transition-colors"
                 >
                   <td className="px-6 py-4 whitespace-nowrap">
-                    <Link to={`/sessions/${session.id}`} className="text-blue-600 hover:underline font-medium">
+                    <Link to={`/sessions/${session.id}`} className="text-blue-600 dark:text-blue-400 hover:underline font-medium">
                       {new Date(session.sessionDate).toLocaleDateString()}
                     </Link>
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap">
+                  <td className="px-6 py-4 whitespace-nowrap text-gray-900 dark:text-gray-100">
                     {session.rifle?.name || '-'}
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap">
+                  <td className="px-6 py-4 whitespace-nowrap text-gray-500 dark:text-gray-400">
                     {session.locationName || '-'}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
                     <div className="flex gap-2">
                       {session.hasDopeData && (
-                        <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-700">
+                        <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-blue-100 dark:bg-blue-900 text-blue-700 dark:text-blue-300">
                           DOPE: {session.dopeEntryCount}
                         </span>
                       )}
                       {session.hasChronoData && (
-                        <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-700">
+                        <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-green-100 dark:bg-green-900 text-green-700 dark:text-green-300">
                           Chrono
                         </span>
                       )}
                       {session.hasGroupData && (
-                        <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-purple-100 text-purple-700">
+                        <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-purple-100 dark:bg-purple-900 text-purple-700 dark:text-purple-300">
                           Groups: {session.groupEntryCount}
                         </span>
                       )}
                       {session.imageCount > 0 && (
-                        <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-amber-100 text-amber-700">
+                        <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-amber-100 dark:bg-amber-900 text-amber-700 dark:text-amber-300">
                           Photos: {session.imageCount}
                         </span>
                       )}
@@ -306,7 +298,7 @@ export default function SessionsList() {
       {/* Pagination */}
       {pagination.totalPages > 1 && (
         <div className="flex items-center justify-between mt-4">
-          <p className="text-sm text-gray-500">
+          <p className="text-sm text-gray-500 dark:text-gray-400">
             Showing {((pagination.currentPage - 1) * pagination.pageSize) + 1} to{' '}
             {Math.min(pagination.currentPage * pagination.pageSize, pagination.totalItems)} of{' '}
             {pagination.totalItems} sessions

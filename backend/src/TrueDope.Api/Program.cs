@@ -128,6 +128,10 @@ try
     // Register Shared Location service
     builder.Services.AddScoped<ISharedLocationService, SharedLocationService>();
 
+    // Register Phase 9 services (Preferences & Unit Conversion)
+    builder.Services.AddScoped<IPreferencesService, PreferencesService>();
+    builder.Services.AddSingleton<IUnitConversionService, UnitConversionService>();
+
     builder.Services.AddMemoryCache();
 
     // Configure MinIO

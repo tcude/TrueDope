@@ -24,6 +24,7 @@ public class ApplicationDbContext : IdentityDbContext<User>
     public DbSet<VelocityReading> VelocityReadings => Set<VelocityReading>();
     public DbSet<GroupEntry> GroupEntries => Set<GroupEntry>();
     public DbSet<Image> Images => Set<Image>();
+    public DbSet<UserPreferences> UserPreferences => Set<UserPreferences>();
 
     protected override void OnModelCreating(ModelBuilder builder)
     {
@@ -44,6 +45,27 @@ public class ApplicationDbContext : IdentityDbContext<User>
             entity.Property(u => u.FirstName).HasMaxLength(100);
             entity.Property(u => u.LastName).HasMaxLength(100);
             entity.Property(u => u.PasswordResetToken).HasMaxLength(256);
+        });
+
+        // =====================
+        // UserPreferences (1:1 with User)
+        // =====================
+        builder.Entity<UserPreferences>(entity =>
+        {
+            entity.HasKey(p => p.UserId);
+
+            entity.HasOne(p => p.User)
+                .WithOne(u => u.Preferences)
+                .HasForeignKey<UserPreferences>(p => p.UserId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            // Store enums as strings for readability in DB
+            entity.Property(p => p.DistanceUnit).HasConversion<string>().HasMaxLength(20);
+            entity.Property(p => p.AdjustmentUnit).HasConversion<string>().HasMaxLength(20);
+            entity.Property(p => p.TemperatureUnit).HasConversion<string>().HasMaxLength(20);
+            entity.Property(p => p.PressureUnit).HasConversion<string>().HasMaxLength(20);
+            entity.Property(p => p.VelocityUnit).HasConversion<string>().HasMaxLength(20);
+            entity.Property(p => p.Theme).HasConversion<string>().HasMaxLength(20);
         });
 
         // =====================

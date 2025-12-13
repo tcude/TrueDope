@@ -24,6 +24,7 @@ public class AuthController : ControllerBase
     private readonly SignInManager<User> _signInManager;
     private readonly IJwtService _jwtService;
     private readonly IEmailService _emailService;
+    private readonly IPreferencesService _preferencesService;
     private readonly ApplicationDbContext _dbContext;
     private readonly JwtSettings _jwtSettings;
     private readonly ILogger<AuthController> _logger;
@@ -34,6 +35,7 @@ public class AuthController : ControllerBase
         SignInManager<User> signInManager,
         IJwtService jwtService,
         IEmailService emailService,
+        IPreferencesService preferencesService,
         ApplicationDbContext dbContext,
         IOptions<JwtSettings> jwtSettings,
         ILogger<AuthController> logger,
@@ -43,6 +45,7 @@ public class AuthController : ControllerBase
         _signInManager = signInManager;
         _jwtService = jwtService;
         _emailService = emailService;
+        _preferencesService = preferencesService;
         _dbContext = dbContext;
         _jwtSettings = jwtSettings.Value;
         _logger = logger;
@@ -98,6 +101,9 @@ public class AuthController : ControllerBase
                 );
             return BadRequest(ApiErrorResponse.ValidationError("Failed to create user account", errors));
         }
+
+        // Create default preferences for new user
+        await _preferencesService.CreateDefaultPreferencesAsync(user.Id);
 
         _logger.LogInformation("New user registered: {Email}", request.Email);
 

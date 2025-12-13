@@ -1,5 +1,5 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import { useAuthInit } from './hooks/useAuth';
+import { useAuthInit, useThemeInit } from './hooks/useAuth';
 import { Layout } from './components/layout';
 import { ProtectedRoute } from './components/ProtectedRoute';
 import { PublicRoute } from './components/PublicRoute';
@@ -55,8 +55,10 @@ function PageLoader() {
 }
 
 function AppContent() {
-  // Initialize auth state on app load
+  // Initialize auth state on app load (also fetches preferences when authenticated)
   useAuthInit();
+  // Initialize theme on app load (applies dark mode class to document)
+  useThemeInit();
 
   return (
     <Routes>

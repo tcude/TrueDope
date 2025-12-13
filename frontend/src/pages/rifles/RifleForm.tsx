@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { riflesService } from '../../services';
 import type { CreateRifleDto, UpdateRifleDto } from '../../types';
-import { Button, Combobox, Skeleton } from '../../components/ui';
+import { Button, Combobox, LoadingPage } from '../../components/ui';
 import { ImagesTab } from '../../components/sessions';
 import { useToast } from '../../hooks';
 import { COMMON_CALIBERS } from '../../constants/calibers';
@@ -94,14 +94,7 @@ export default function RifleForm({ mode }: RifleFormProps) {
   if (loading) {
     return (
       <div className="container mx-auto px-4 py-8 max-w-2xl">
-        <Skeleton className="h-8 w-48 mb-8" />
-        <div className="bg-white rounded-lg border border-gray-200 p-6">
-          <div className="space-y-4">
-            <Skeleton className="h-10 w-full" />
-            <Skeleton className="h-10 w-full" />
-            <Skeleton className="h-10 w-full" />
-          </div>
-        </div>
+        <LoadingPage message="Loading rifle..." />
       </div>
     );
   }

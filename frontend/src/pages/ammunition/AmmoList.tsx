@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { ammunitionService } from '../../services';
 import type { AmmoListDto, AmmoFilterDto } from '../../types';
-import { Button, EmptyState, EmptyStateIcons, Skeleton } from '../../components/ui';
+import { Button, EmptyState, EmptyStateIcons, LoadingPage } from '../../components/ui';
 import { useToast } from '../../hooks';
 
 export default function AmmoList() {
@@ -53,7 +53,7 @@ export default function AmmoList() {
     return (
       <div className="container mx-auto px-4 py-8">
         <div className="flex items-center justify-between mb-8">
-          <h1 className="text-2xl font-bold text-gray-900">Ammunition</h1>
+          <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100">Ammunition</h1>
         </div>
         <EmptyState
           icon={EmptyStateIcons.ammo}
@@ -71,7 +71,7 @@ export default function AmmoList() {
   return (
     <div className="container mx-auto px-4 py-8">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
-        <h1 className="text-2xl font-bold text-gray-900">Ammunition</h1>
+        <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100">Ammunition</h1>
         <Button onClick={() => navigate('/ammunition/new')}>
           + New Ammunition
         </Button>
@@ -85,14 +85,14 @@ export default function AmmoList() {
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             placeholder="Search by manufacturer or name..."
-            className="flex-1 min-w-[200px] h-10 px-3 rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="flex-1 min-w-[200px] h-10 px-3 rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500"
           />
           <input
             type="text"
             value={caliberFilter}
             onChange={(e) => setCaliberFilter(e.target.value)}
             placeholder="Filter by caliber..."
-            className="w-40 h-10 px-3 rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="w-40 h-10 px-3 rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500"
           />
           <Button type="submit" variant="outline">
             Search
@@ -101,46 +101,42 @@ export default function AmmoList() {
       </form>
 
       {loading ? (
-        <div className="space-y-2">
-          {[...Array(5)].map((_, i) => (
-            <Skeleton key={i} className="h-12 w-full" />
-          ))}
-        </div>
+        <LoadingPage message="Loading ammunition..." />
       ) : ammo.length === 0 ? (
-        <p className="text-center text-gray-500 py-8">No ammunition found</p>
+        <p className="text-center text-gray-500 dark:text-gray-400 py-8">No ammunition found</p>
       ) : (
         <>
-          <div className="bg-white rounded-lg border border-gray-200 overflow-hidden">
-            <table className="min-w-full divide-y divide-gray-200">
-              <thead className="bg-gray-50">
+          <div className="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 overflow-hidden">
+            <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+              <thead className="bg-gray-50 dark:bg-gray-900">
                 <tr>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Name</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Caliber</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Grain</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Type</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Lots</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Sessions</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Cost/Rd</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Name</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Caliber</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Grain</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Type</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Lots</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Sessions</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Cost/Rd</th>
                 </tr>
               </thead>
-              <tbody className="bg-white divide-y divide-gray-200">
+              <tbody className="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
                 {ammo.map((item) => (
                   <tr
                     key={item.id}
-                    className="hover:bg-gray-50 cursor-pointer"
+                    className="hover:bg-gray-50 dark:hover:bg-gray-700 cursor-pointer transition-colors"
                     onClick={() => navigate(`/ammunition/${item.id}`)}
                   >
                     <td className="px-6 py-4 whitespace-nowrap">
-                      <Link to={`/ammunition/${item.id}`} className="text-blue-600 hover:underline font-medium">
+                      <Link to={`/ammunition/${item.id}`} className="text-blue-600 dark:text-blue-400 hover:underline font-medium">
                         {item.displayName}
                       </Link>
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{item.caliber}</td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{item.grain}gr</td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{item.bulletType || '-'}</td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{item.lotCount}</td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{item.sessionCount}</td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-100">{item.caliber}</td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-100">{item.grain}gr</td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">{item.bulletType || '-'}</td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">{item.lotCount}</td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">{item.sessionCount}</td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
                       {item.costPerRound ? `$${item.costPerRound.toFixed(2)}` : '-'}
                     </td>
                   </tr>
@@ -158,7 +154,7 @@ export default function AmmoList() {
               >
                 Previous
               </Button>
-              <span className="px-4 py-2 text-sm text-gray-600">
+              <span className="px-4 py-2 text-sm text-gray-600 dark:text-gray-400">
                 Page {pagination.currentPage} of {pagination.totalPages}
               </span>
               <Button

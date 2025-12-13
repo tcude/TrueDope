@@ -1,2 +1,46 @@
 @import "tailwindcss";
 @import "leaflet/dist/leaflet.css";
+
+/* Configure dark mode to use class selector */
+@variant dark (&:where(.dark, .dark *));
+
+/* Light Mode Color Tokens */
+:root {
+  --color-bg-primary: theme('colors.white');
+  --color-bg-secondary: theme('colors.gray.50');
+  --color-bg-tertiary: theme('colors.gray.100');
+  --color-text-primary: theme('colors.gray.900');
+  --color-text-secondary: theme('colors.gray.600');
+  --color-text-tertiary: theme('colors.gray.500');
+  --color-border: theme('colors.gray.200');
+  --color-border-light: theme('colors.gray.100');
+  --color-accent: theme('colors.blue.600');
+  --color-accent-hover: theme('colors.blue.700');
+  --color-success: theme('colors.green.600');
+  --color-error: theme('colors.red.600');
+  --color-warning: theme('colors.yellow.600');
+}
+
+/* Dark Mode Color Tokens */
+.dark {
+  --color-bg-primary: theme('colors.gray.900');
+  --color-bg-secondary: theme('colors.gray.800');
+  --color-bg-tertiary: theme('colors.gray.700');
+  --color-text-primary: theme('colors.gray.50');
+  --color-text-secondary: theme('colors.gray.400');
+  --color-text-tertiary: theme('colors.gray.500');
+  --color-border: theme('colors.gray.700');
+  --color-border-light: theme('colors.gray.800');
+  --color-accent: theme('colors.blue.500');
+  --color-accent-hover: theme('colors.blue.400');
+  --color-success: theme('colors.green.500');
+  --color-error: theme('colors.red.500');
+  --color-warning: theme('colors.yellow.500');
+}
+
+/* Base styles */
+body {
+  background-color: var(--color-bg-secondary);
+  color: var(--color-text-primary);
+  transition: background-color 0.2s ease-in-out, color 0.2s ease-in-out;
+}

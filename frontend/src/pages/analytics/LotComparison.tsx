@@ -113,7 +113,7 @@ export default function LotComparison() {
         <CardContent>
           <div className="flex gap-4 items-end">
             <div className="flex-1 max-w-md">
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                 Ammunition
               </label>
               <Select
@@ -134,7 +134,7 @@ export default function LotComparison() {
           </div>
 
           {ammunition.length === 0 && (
-            <p className="text-gray-500 text-center py-4 mt-4">
+            <p className="text-gray-500 dark:text-gray-400 text-center py-4 mt-4">
               No ammunition with multiple lots found. Add lots to your ammunition to enable comparison.
             </p>
           )}
@@ -143,9 +143,9 @@ export default function LotComparison() {
 
       {/* Error Display */}
       {error && (
-        <Card className="border-red-200 bg-red-50">
+        <Card className="border-red-200 dark:border-red-800 bg-red-50 dark:bg-red-900/20">
           <CardContent className="pt-6">
-            <p className="text-red-600">{error}</p>
+            <p className="text-red-600 dark:text-red-400">{error}</p>
           </CardContent>
         </Card>
       )}
@@ -158,8 +158,8 @@ export default function LotComparison() {
             <CardContent className="pt-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <h2 className="text-lg font-semibold text-gray-900">{data.ammoName}</h2>
-                  <p className="text-sm text-gray-500">{data.lots.length} lots with recorded data</p>
+                  <h2 className="text-lg font-semibold text-gray-900 dark:text-gray-100">{data.ammoName}</h2>
+                  <p className="text-sm text-gray-500 dark:text-gray-400">{data.lots.length} lots with recorded data</p>
                 </div>
               </div>
             </CardContent>
@@ -171,13 +171,13 @@ export default function LotComparison() {
               <Card>
                 <CardContent className="pt-6">
                   <div className="text-center">
-                    <p className="text-sm text-gray-500 uppercase tracking-wide">
+                    <p className="text-sm text-gray-500 dark:text-gray-400 uppercase tracking-wide">
                       Lot-to-Lot Velocity Spread
                     </p>
-                    <p className="mt-2 text-2xl font-semibold text-gray-900">
+                    <p className="mt-2 text-2xl font-semibold text-gray-900 dark:text-gray-100">
                       {data.comparison.velocitySpread.toFixed(0)} fps
                     </p>
-                    <p className="text-sm text-gray-500">Between fastest and slowest lots</p>
+                    <p className="text-sm text-gray-500 dark:text-gray-400">Between fastest and slowest lots</p>
                   </div>
                 </CardContent>
               </Card>
@@ -187,13 +187,13 @@ export default function LotComparison() {
               <Card>
                 <CardContent className="pt-6">
                   <div className="text-center">
-                    <p className="text-sm text-gray-500 uppercase tracking-wide">
+                    <p className="text-sm text-gray-500 dark:text-gray-400 uppercase tracking-wide">
                       Most Consistent Lot
                     </p>
-                    <p className="mt-2 text-xl font-semibold text-green-600">
+                    <p className="mt-2 text-xl font-semibold text-green-600 dark:text-green-400">
                       {data.lots.find((l) => l.lotId === data.comparison.bestLotForConsistency)?.lotNumber || 'N/A'}
                     </p>
-                    <p className="text-sm text-gray-500">Lowest average SD</p>
+                    <p className="text-sm text-gray-500 dark:text-gray-400">Lowest average SD</p>
                   </div>
                 </CardContent>
               </Card>
@@ -203,13 +203,13 @@ export default function LotComparison() {
               <Card>
                 <CardContent className="pt-6">
                   <div className="text-center">
-                    <p className="text-sm text-gray-500 uppercase tracking-wide">
+                    <p className="text-sm text-gray-500 dark:text-gray-400 uppercase tracking-wide">
                       Best Groups
                     </p>
-                    <p className="mt-2 text-xl font-semibold text-blue-600">
+                    <p className="mt-2 text-xl font-semibold text-blue-600 dark:text-blue-400">
                       {data.lots.find((l) => l.lotId === data.comparison.bestLotForGroups)?.lotNumber || 'N/A'}
                     </p>
-                    <p className="text-sm text-gray-500">Smallest average groups</p>
+                    <p className="text-sm text-gray-500 dark:text-gray-400">Smallest average groups</p>
                   </div>
                 </CardContent>
               </Card>
@@ -245,7 +245,7 @@ export default function LotComparison() {
 
                 {/* SD/ES Chart */}
                 <div className="mt-6">
-                  <h4 className="text-sm font-medium text-gray-700 mb-2">
+                  <h4 className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                     Standard Deviation & Extreme Spread by Lot
                   </h4>
                   <ResponsiveContainer width="100%" height={250}>
@@ -313,81 +313,81 @@ export default function LotComparison() {
             </CardHeader>
             <CardContent>
               <div className="overflow-x-auto">
-                <table className="min-w-full divide-y divide-gray-200">
-                  <thead className="bg-gray-50">
+                <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+                  <thead className="bg-gray-50 dark:bg-gray-900">
                     <tr>
-                      <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+                      <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase">
                         Lot Number
                       </th>
-                      <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+                      <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase">
                         Purchase Date
                       </th>
-                      <th className="px-4 py-3 text-right text-xs font-medium text-gray-500 uppercase">
+                      <th className="px-4 py-3 text-right text-xs font-medium text-gray-500 dark:text-gray-400 uppercase">
                         Avg Velocity
                       </th>
-                      <th className="px-4 py-3 text-right text-xs font-medium text-gray-500 uppercase">
+                      <th className="px-4 py-3 text-right text-xs font-medium text-gray-500 dark:text-gray-400 uppercase">
                         Avg SD
                       </th>
-                      <th className="px-4 py-3 text-right text-xs font-medium text-gray-500 uppercase">
+                      <th className="px-4 py-3 text-right text-xs font-medium text-gray-500 dark:text-gray-400 uppercase">
                         Avg ES
                       </th>
-                      <th className="px-4 py-3 text-right text-xs font-medium text-gray-500 uppercase">
+                      <th className="px-4 py-3 text-right text-xs font-medium text-gray-500 dark:text-gray-400 uppercase">
                         Avg Group
                       </th>
-                      <th className="px-4 py-3 text-right text-xs font-medium text-gray-500 uppercase">
+                      <th className="px-4 py-3 text-right text-xs font-medium text-gray-500 dark:text-gray-400 uppercase">
                         Best Group
                       </th>
-                      <th className="px-4 py-3 text-right text-xs font-medium text-gray-500 uppercase">
+                      <th className="px-4 py-3 text-right text-xs font-medium text-gray-500 dark:text-gray-400 uppercase">
                         Sessions
                       </th>
                     </tr>
                   </thead>
-                  <tbody className="bg-white divide-y divide-gray-200">
+                  <tbody className="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
                     {data.lots.map((lot, index) => {
                       const isBestConsistency = lot.lotId === data.comparison.bestLotForConsistency;
                       const isBestGroups = lot.lotId === data.comparison.bestLotForGroups;
                       return (
-                        <tr key={lot.lotId} className="hover:bg-gray-50">
+                        <tr key={lot.lotId} className="hover:bg-gray-50 dark:hover:bg-gray-700">
                           <td className="px-4 py-3 text-sm">
                             <div className="flex items-center gap-2">
                               <div
                                 className="w-3 h-3 rounded-full"
                                 style={{ backgroundColor: COLORS[index % COLORS.length] }}
                               />
-                              <span className="font-medium text-gray-900">{lot.lotNumber}</span>
+                              <span className="font-medium text-gray-900 dark:text-gray-100">{lot.lotNumber}</span>
                               {isBestConsistency && (
-                                <span className="px-1.5 py-0.5 text-xs bg-green-100 text-green-700 rounded">
+                                <span className="px-1.5 py-0.5 text-xs bg-green-100 dark:bg-green-900 text-green-700 dark:text-green-300 rounded">
                                   Best SD
                                 </span>
                               )}
                               {isBestGroups && (
-                                <span className="px-1.5 py-0.5 text-xs bg-blue-100 text-blue-700 rounded">
+                                <span className="px-1.5 py-0.5 text-xs bg-blue-100 dark:bg-blue-900 text-blue-700 dark:text-blue-300 rounded">
                                   Best Groups
                                 </span>
                               )}
                             </div>
                           </td>
-                          <td className="px-4 py-3 text-sm text-gray-600">
+                          <td className="px-4 py-3 text-sm text-gray-600 dark:text-gray-400">
                             {lot.purchaseDate
                               ? new Date(lot.purchaseDate).toLocaleDateString()
                               : '-'}
                           </td>
-                          <td className="px-4 py-3 text-sm text-right text-gray-900">
+                          <td className="px-4 py-3 text-sm text-right text-gray-900 dark:text-gray-100">
                             {lot.velocity ? `${lot.velocity.averageVelocity.toFixed(0)} fps` : '-'}
                           </td>
-                          <td className="px-4 py-3 text-sm text-right text-gray-600">
+                          <td className="px-4 py-3 text-sm text-right text-gray-600 dark:text-gray-400">
                             {lot.velocity ? lot.velocity.averageSd.toFixed(1) : '-'}
                           </td>
-                          <td className="px-4 py-3 text-sm text-right text-gray-600">
+                          <td className="px-4 py-3 text-sm text-right text-gray-600 dark:text-gray-400">
                             {lot.velocity ? lot.velocity.averageEs.toFixed(1) : '-'}
                           </td>
-                          <td className="px-4 py-3 text-sm text-right text-gray-900">
+                          <td className="px-4 py-3 text-sm text-right text-gray-900 dark:text-gray-100">
                             {lot.groups ? `${lot.groups.averageGroupSizeMoa.toFixed(2)} MOA` : '-'}
                           </td>
-                          <td className="px-4 py-3 text-sm text-right text-green-600">
+                          <td className="px-4 py-3 text-sm text-right text-green-600 dark:text-green-400">
                             {lot.groups ? `${lot.groups.bestGroupSizeMoa.toFixed(2)} MOA` : '-'}
                           </td>
-                          <td className="px-4 py-3 text-sm text-right text-gray-600">
+                          <td className="px-4 py-3 text-sm text-right text-gray-600 dark:text-gray-400">
                             {lot.velocity?.sessionCount || lot.groups?.groupCount || 0}
                           </td>
                         </tr>
@@ -403,8 +403,8 @@ export default function LotComparison() {
           {data.lots.length === 0 && (
             <Card>
               <CardContent className="py-12 text-center">
-                <p className="text-gray-500">No lot data found for this ammunition</p>
-                <p className="text-sm text-gray-400 mt-2">
+                <p className="text-gray-500 dark:text-gray-400">No lot data found for this ammunition</p>
+                <p className="text-sm text-gray-400 dark:text-gray-500 mt-2">
                   Record chrono sessions and shot groups using specific lots to enable comparison
                 </p>
               </CardContent>
@@ -417,7 +417,7 @@ export default function LotComparison() {
       {!data && !selectedAmmoId && (
         <Card>
           <CardContent className="py-12 text-center">
-            <p className="text-gray-500">Select an ammunition to compare its lots</p>
+            <p className="text-gray-500 dark:text-gray-400">Select an ammunition to compare its lots</p>
           </CardContent>
         </Card>
       )}

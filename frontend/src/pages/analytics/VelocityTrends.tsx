@@ -169,7 +169,7 @@ export default function VelocityTrends() {
         <CardContent>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                 Ammunition
               </label>
               <Select
@@ -184,7 +184,7 @@ export default function VelocityTrends() {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                 Lot (Optional)
               </label>
               <Select
@@ -203,7 +203,7 @@ export default function VelocityTrends() {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                 From Date
               </label>
               <Input
@@ -214,7 +214,7 @@ export default function VelocityTrends() {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                 To Date
               </label>
               <Input
@@ -237,9 +237,9 @@ export default function VelocityTrends() {
 
       {/* Error Display */}
       {error && (
-        <Card className="border-red-200 bg-red-50">
+        <Card className="border-red-200 dark:border-red-800 bg-red-50 dark:bg-red-900/20">
           <CardContent className="pt-6">
-            <p className="text-red-600">{error}</p>
+            <p className="text-red-600 dark:text-red-400">{error}</p>
           </CardContent>
         </Card>
       )}
@@ -248,7 +248,7 @@ export default function VelocityTrends() {
       {!selectedAmmoId && (
         <Card>
           <CardContent className="py-12 text-center">
-            <p className="text-gray-500">Select an ammunition to view velocity trends</p>
+            <p className="text-gray-500 dark:text-gray-400">Select an ammunition to view velocity trends</p>
           </CardContent>
         </Card>
       )}
@@ -261,17 +261,17 @@ export default function VelocityTrends() {
             <CardContent className="pt-6">
               <div className="flex flex-wrap items-center gap-4">
                 <div>
-                  <span className="text-sm text-gray-500">Ammunition:</span>
-                  <span className="ml-2 font-medium">{data.ammoName}</span>
+                  <span className="text-sm text-gray-500 dark:text-gray-400">Ammunition:</span>
+                  <span className="ml-2 font-medium text-gray-900 dark:text-gray-100">{data.ammoName}</span>
                 </div>
                 <div>
-                  <span className="text-sm text-gray-500">Caliber:</span>
-                  <span className="ml-2 font-medium">{data.caliber}</span>
+                  <span className="text-sm text-gray-500 dark:text-gray-400">Caliber:</span>
+                  <span className="ml-2 font-medium text-gray-900 dark:text-gray-100">{data.caliber}</span>
                 </div>
                 {data.lotNumber && (
                   <div>
-                    <span className="text-sm text-gray-500">Lot:</span>
-                    <span className="ml-2 font-medium">{data.lotNumber}</span>
+                    <span className="text-sm text-gray-500 dark:text-gray-400">Lot:</span>
+                    <span className="ml-2 font-medium text-gray-900 dark:text-gray-100">{data.lotNumber}</span>
                   </div>
                 )}
               </div>
@@ -315,22 +315,22 @@ export default function VelocityTrends() {
               <CardContent className="pt-6">
                 <div className="flex items-center justify-center gap-8">
                   <div className="text-center">
-                    <p className="text-sm text-gray-500">Low</p>
-                    <p className="text-xl font-semibold text-blue-600">
+                    <p className="text-sm text-gray-500 dark:text-gray-400">Low</p>
+                    <p className="text-xl font-semibold text-blue-600 dark:text-blue-400">
                       {data.aggregates.velocityRange.low.toFixed(0)} fps
                     </p>
                   </div>
-                  <div className="h-8 border-l border-gray-300" />
+                  <div className="h-8 border-l border-gray-300 dark:border-gray-600" />
                   <div className="text-center">
-                    <p className="text-sm text-gray-500">Spread</p>
-                    <p className="text-xl font-semibold text-gray-900">
+                    <p className="text-sm text-gray-500 dark:text-gray-400">Spread</p>
+                    <p className="text-xl font-semibold text-gray-900 dark:text-gray-100">
                       {(data.aggregates.velocityRange.high - data.aggregates.velocityRange.low).toFixed(0)} fps
                     </p>
                   </div>
-                  <div className="h-8 border-l border-gray-300" />
+                  <div className="h-8 border-l border-gray-300 dark:border-gray-600" />
                   <div className="text-center">
-                    <p className="text-sm text-gray-500">High</p>
-                    <p className="text-xl font-semibold text-red-600">
+                    <p className="text-sm text-gray-500 dark:text-gray-400">High</p>
+                    <p className="text-xl font-semibold text-red-600 dark:text-red-400">
                       {data.aggregates.velocityRange.high.toFixed(0)} fps
                     </p>
                   </div>
@@ -440,34 +440,34 @@ export default function VelocityTrends() {
               <CardContent>
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
                   {data.correlation.temperatureCorrelation !== null && (
-                    <div className="text-center p-4 bg-gray-50 rounded-lg">
-                      <p className="text-sm text-gray-500">Temp Correlation</p>
-                      <p className="text-xl font-semibold">
+                    <div className="text-center p-4 bg-gray-50 dark:bg-gray-700 rounded-lg">
+                      <p className="text-sm text-gray-500 dark:text-gray-400">Temp Correlation</p>
+                      <p className="text-xl font-semibold text-gray-900 dark:text-gray-100">
                         {(data.correlation.temperatureCorrelation * 100).toFixed(1)}%
                       </p>
                     </div>
                   )}
                   {data.correlation.velocityPerDegreeF !== null && (
-                    <div className="text-center p-4 bg-gray-50 rounded-lg">
-                      <p className="text-sm text-gray-500">Velocity per °F</p>
-                      <p className="text-xl font-semibold">
+                    <div className="text-center p-4 bg-gray-50 dark:bg-gray-700 rounded-lg">
+                      <p className="text-sm text-gray-500 dark:text-gray-400">Velocity per °F</p>
+                      <p className="text-xl font-semibold text-gray-900 dark:text-gray-100">
                         {data.correlation.velocityPerDegreeF >= 0 ? '+' : ''}
                         {data.correlation.velocityPerDegreeF.toFixed(2)} fps
                       </p>
                     </div>
                   )}
                   {data.correlation.densityAltitudeCorrelation !== null && (
-                    <div className="text-center p-4 bg-gray-50 rounded-lg">
-                      <p className="text-sm text-gray-500">DA Correlation</p>
-                      <p className="text-xl font-semibold">
+                    <div className="text-center p-4 bg-gray-50 dark:bg-gray-700 rounded-lg">
+                      <p className="text-sm text-gray-500 dark:text-gray-400">DA Correlation</p>
+                      <p className="text-xl font-semibold text-gray-900 dark:text-gray-100">
                         {(data.correlation.densityAltitudeCorrelation * 100).toFixed(1)}%
                       </p>
                     </div>
                   )}
                   {data.correlation.velocityPer1000ftDA !== null && (
-                    <div className="text-center p-4 bg-gray-50 rounded-lg">
-                      <p className="text-sm text-gray-500">Velocity per 1000ft DA</p>
-                      <p className="text-xl font-semibold">
+                    <div className="text-center p-4 bg-gray-50 dark:bg-gray-700 rounded-lg">
+                      <p className="text-sm text-gray-500 dark:text-gray-400">Velocity per 1000ft DA</p>
+                      <p className="text-xl font-semibold text-gray-900 dark:text-gray-100">
                         {data.correlation.velocityPer1000ftDA >= 0 ? '+' : ''}
                         {data.correlation.velocityPer1000ftDA.toFixed(2)} fps
                       </p>
@@ -480,7 +480,7 @@ export default function VelocityTrends() {
                   {/* Temperature Correlation Scatter */}
                   {tempCorrelationData.length >= 3 && (
                     <div>
-                      <h4 className="text-sm font-medium text-gray-700 mb-2">
+                      <h4 className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                         Temperature vs Velocity
                       </h4>
                       <ResponsiveContainer width="100%" height={250}>
@@ -521,7 +521,7 @@ export default function VelocityTrends() {
                   {/* Density Altitude Correlation Scatter */}
                   {daCorrelationData.length >= 3 && (
                     <div>
-                      <h4 className="text-sm font-medium text-gray-700 mb-2">
+                      <h4 className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                         Density Altitude vs Velocity
                       </h4>
                       <ResponsiveContainer width="100%" height={250}>
@@ -561,7 +561,7 @@ export default function VelocityTrends() {
                 </div>
 
                 {tempCorrelationData.length < 3 && daCorrelationData.length < 3 && (
-                  <p className="text-center text-gray-500 mt-4">
+                  <p className="text-center text-gray-500 dark:text-gray-400 mt-4">
                     Need at least 3 sessions with environmental data to show correlation charts
                   </p>
                 )}
@@ -577,59 +577,59 @@ export default function VelocityTrends() {
               </CardHeader>
               <CardContent>
                 <div className="overflow-x-auto">
-                  <table className="min-w-full divide-y divide-gray-200">
-                    <thead className="bg-gray-50">
+                  <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+                    <thead className="bg-gray-50 dark:bg-gray-900">
                       <tr>
-                        <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+                        <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase">
                           Date
                         </th>
-                        <th className="px-4 py-3 text-right text-xs font-medium text-gray-500 uppercase">
+                        <th className="px-4 py-3 text-right text-xs font-medium text-gray-500 dark:text-gray-400 uppercase">
                           Avg Velocity
                         </th>
-                        <th className="px-4 py-3 text-right text-xs font-medium text-gray-500 uppercase">
+                        <th className="px-4 py-3 text-right text-xs font-medium text-gray-500 dark:text-gray-400 uppercase">
                           SD
                         </th>
-                        <th className="px-4 py-3 text-right text-xs font-medium text-gray-500 uppercase">
+                        <th className="px-4 py-3 text-right text-xs font-medium text-gray-500 dark:text-gray-400 uppercase">
                           ES
                         </th>
-                        <th className="px-4 py-3 text-right text-xs font-medium text-gray-500 uppercase">
+                        <th className="px-4 py-3 text-right text-xs font-medium text-gray-500 dark:text-gray-400 uppercase">
                           Rounds
                         </th>
-                        <th className="px-4 py-3 text-right text-xs font-medium text-gray-500 uppercase">
+                        <th className="px-4 py-3 text-right text-xs font-medium text-gray-500 dark:text-gray-400 uppercase">
                           Temp
                         </th>
-                        <th className="px-4 py-3 text-right text-xs font-medium text-gray-500 uppercase">
+                        <th className="px-4 py-3 text-right text-xs font-medium text-gray-500 dark:text-gray-400 uppercase">
                           DA
                         </th>
-                        <th className="px-4 py-3 text-center text-xs font-medium text-gray-500 uppercase">
+                        <th className="px-4 py-3 text-center text-xs font-medium text-gray-500 dark:text-gray-400 uppercase">
                           Actions
                         </th>
                       </tr>
                     </thead>
-                    <tbody className="bg-white divide-y divide-gray-200">
+                    <tbody className="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
                       {data.sessions.map((session) => (
-                        <tr key={session.sessionId} className="hover:bg-gray-50">
-                          <td className="px-4 py-3 text-sm text-gray-900">
+                        <tr key={session.sessionId} className="hover:bg-gray-50 dark:hover:bg-gray-700">
+                          <td className="px-4 py-3 text-sm text-gray-900 dark:text-gray-100">
                             {new Date(session.sessionDate).toLocaleDateString()}
                           </td>
-                          <td className="px-4 py-3 text-sm text-right font-medium text-gray-900">
+                          <td className="px-4 py-3 text-sm text-right font-medium text-gray-900 dark:text-gray-100">
                             {session.averageVelocity.toFixed(0)} fps
                           </td>
-                          <td className="px-4 py-3 text-sm text-right text-gray-600">
+                          <td className="px-4 py-3 text-sm text-right text-gray-600 dark:text-gray-400">
                             {session.standardDeviation.toFixed(1)}
                           </td>
-                          <td className="px-4 py-3 text-sm text-right text-gray-600">
+                          <td className="px-4 py-3 text-sm text-right text-gray-600 dark:text-gray-400">
                             {session.extremeSpread.toFixed(1)}
                           </td>
-                          <td className="px-4 py-3 text-sm text-right text-gray-600">
+                          <td className="px-4 py-3 text-sm text-right text-gray-600 dark:text-gray-400">
                             {session.roundsFired}
                           </td>
-                          <td className="px-4 py-3 text-sm text-right text-gray-600">
+                          <td className="px-4 py-3 text-sm text-right text-gray-600 dark:text-gray-400">
                             {session.conditions?.temperature !== null
                               ? `${session.conditions?.temperature}°F`
                               : '-'}
                           </td>
-                          <td className="px-4 py-3 text-sm text-right text-gray-600">
+                          <td className="px-4 py-3 text-sm text-right text-gray-600 dark:text-gray-400">
                             {session.conditions?.densityAltitude !== null
                               ? `${session.conditions?.densityAltitude.toFixed(0)} ft`
                               : '-'}
@@ -656,8 +656,8 @@ export default function VelocityTrends() {
           {data.sessions.length === 0 && (
             <Card>
               <CardContent className="py-12 text-center">
-                <p className="text-gray-500">No velocity data found for this ammunition</p>
-                <p className="text-sm text-gray-400 mt-2">
+                <p className="text-gray-500 dark:text-gray-400">No velocity data found for this ammunition</p>
+                <p className="text-sm text-gray-400 dark:text-gray-500 mt-2">
                   Record chrono sessions to start tracking velocity trends
                 </p>
               </CardContent>

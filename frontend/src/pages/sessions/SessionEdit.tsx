@@ -10,7 +10,7 @@ import type {
 import {
   Button,
   Select,
-  Skeleton,
+  LoadingPage,
   Tabs,
 } from '../../components/ui';
 import { DopeTab, ChronoTab, GroupsTab, ImagesTab } from '../../components/sessions';
@@ -91,8 +91,7 @@ export default function SessionEdit() {
   if (loading) {
     return (
       <div className="container mx-auto px-4 py-8">
-        <Skeleton className="h-8 w-64 mb-8" />
-        <Skeleton className="h-96 w-full" />
+        <LoadingPage message="Loading session..." />
       </div>
     );
   }

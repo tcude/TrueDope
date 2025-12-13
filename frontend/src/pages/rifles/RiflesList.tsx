@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { riflesService } from '../../services';
 import type { RifleListDto, RifleFilterDto } from '../../types';
-import { Button, EmptyState, EmptyStateIcons, SkeletonCard } from '../../components/ui';
+import { Button, EmptyState, EmptyStateIcons, LoadingPage } from '../../components/ui';
 import { useToast } from '../../hooks';
 
 export default function RiflesList() {
@@ -36,14 +36,7 @@ export default function RiflesList() {
   if (loading) {
     return (
       <div className="container mx-auto px-4 py-8">
-        <div className="flex items-center justify-between mb-8">
-          <h1 className="text-2xl font-bold text-gray-900">Rifles</h1>
-        </div>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {[...Array(6)].map((_, i) => (
-            <SkeletonCard key={i} />
-          ))}
-        </div>
+        <LoadingPage message="Loading rifles..." />
       </div>
     );
   }
@@ -51,7 +44,7 @@ export default function RiflesList() {
   return (
     <div className="container mx-auto px-4 py-8">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
-        <h1 className="text-2xl font-bold text-gray-900">Rifles</h1>
+        <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100">Rifles</h1>
         <Button onClick={() => navigate('/rifles/new')}>
           + New Rifle
         </Button>
@@ -65,7 +58,7 @@ export default function RiflesList() {
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             placeholder="Search by name or caliber..."
-            className="flex-1 h-10 px-3 rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="flex-1 h-10 px-3 rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500"
           />
           <Button type="submit" variant="outline">
             Search
@@ -89,20 +82,20 @@ export default function RiflesList() {
             <Link
               key={rifle.id}
               to={`/rifles/${rifle.id}`}
-              className="block bg-white rounded-lg border border-gray-200 p-6 hover:border-gray-300 hover:shadow-sm transition-all"
+              className="block bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-6 hover:border-gray-300 dark:hover:border-gray-600 hover:shadow-sm transition-all"
             >
-              <h3 className="text-lg font-semibold text-gray-900 mb-1">
+              <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-1">
                 {rifle.name}
               </h3>
               {rifle.manufacturer && (
-                <p className="text-sm text-gray-500 mb-2">
+                <p className="text-sm text-gray-500 dark:text-gray-400 mb-2">
                   {rifle.manufacturer} {rifle.model && `- ${rifle.model}`}
                 </p>
               )}
-              <p className="text-sm font-medium text-blue-600 mb-4">
+              <p className="text-sm font-medium text-blue-600 dark:text-blue-400 mb-4">
                 {rifle.caliber}
               </p>
-              <div className="flex items-center justify-between text-sm text-gray-500">
+              <div className="flex items-center justify-between text-sm text-gray-500 dark:text-gray-400">
                 <span>
                   {rifle.sessionCount} sessions
                   {rifle.imageCount > 0 && ` · ${rifle.imageCount} photo${rifle.imageCount !== 1 ? 's' : ''}`}

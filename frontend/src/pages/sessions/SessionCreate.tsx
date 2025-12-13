@@ -2,7 +2,7 @@ import { useState, useEffect, useCallback } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { sessionsService, riflesService, weatherService } from '../../services';
 import type { RifleListDto, CreateSessionDto } from '../../types';
-import { Button, Select, Skeleton, Collapsible, Badge } from '../../components/ui';
+import { Button, Select, LoadingPage, Collapsible, Badge } from '../../components/ui';
 import { useToast } from '../../hooks';
 import { LocationCombobox, type LocationSelection } from '../../components/location';
 import { LocationPreview } from '../../components/map';
@@ -129,12 +129,7 @@ export default function SessionCreate() {
   if (loading) {
     return (
       <div className="container mx-auto px-4 py-8 max-w-2xl">
-        <Skeleton className="h-8 w-48 mb-8" />
-        <div className="bg-white rounded-lg border border-gray-200 p-6">
-          <Skeleton className="h-10 w-full mb-4" />
-          <Skeleton className="h-10 w-full mb-4" />
-          <Skeleton className="h-10 w-full" />
-        </div>
+        <LoadingPage message="Loading..." />
       </div>
     );
   }

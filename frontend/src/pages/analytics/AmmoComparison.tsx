@@ -139,7 +139,7 @@ export default function AmmoComparison() {
                   className={`px-3 py-2 rounded-lg text-sm font-medium transition-colors border ${
                     isSelected
                       ? 'text-white border-transparent'
-                      : 'bg-gray-50 text-gray-700 border-gray-200 hover:bg-gray-100'
+                      : 'bg-gray-50 dark:bg-gray-700 text-gray-700 dark:text-gray-300 border-gray-200 dark:border-gray-600 hover:bg-gray-100 dark:hover:bg-gray-600'
                   }`}
                   style={
                     isSelected
@@ -155,13 +155,13 @@ export default function AmmoComparison() {
           </div>
 
           {ammunition.length === 0 && (
-            <p className="text-gray-500 text-center py-4">
+            <p className="text-gray-500 dark:text-gray-400 text-center py-4">
               No ammunition found. Add ammunition to start comparing.
             </p>
           )}
 
           {selectedAmmoIds.length === 1 && (
-            <p className="text-amber-600 text-sm mt-4">
+            <p className="text-amber-600 dark:text-amber-500 text-sm mt-4">
               Select at least one more ammunition to compare
             </p>
           )}
@@ -170,9 +170,9 @@ export default function AmmoComparison() {
 
       {/* Error Display */}
       {error && (
-        <Card className="border-red-200 bg-red-50">
+        <Card className="border-red-200 dark:border-red-800 bg-red-50 dark:bg-red-900/20">
           <CardContent className="pt-6">
-            <p className="text-red-600">{error}</p>
+            <p className="text-red-600 dark:text-red-400">{error}</p>
           </CardContent>
         </Card>
       )}
@@ -186,15 +186,15 @@ export default function AmmoComparison() {
               <Card>
                 <CardContent className="pt-6">
                   <div className="text-center">
-                    <p className="text-sm text-gray-500 uppercase tracking-wide">
+                    <p className="text-sm text-gray-500 dark:text-gray-400 uppercase tracking-wide">
                       Best Velocity Consistency
                     </p>
-                    <p className="mt-2 text-xl font-semibold text-green-600">
+                    <p className="mt-2 text-xl font-semibold text-green-600 dark:text-green-400">
                       {data.ammunitions.find(
                         (a) => a.ammoId === data.comparison.bestVelocityConsistency
                       )?.ammoName || 'N/A'}
                     </p>
-                    <p className="text-sm text-gray-500">Lowest average SD</p>
+                    <p className="text-sm text-gray-500 dark:text-gray-400">Lowest average SD</p>
                   </div>
                 </CardContent>
               </Card>
@@ -204,15 +204,15 @@ export default function AmmoComparison() {
               <Card>
                 <CardContent className="pt-6">
                   <div className="text-center">
-                    <p className="text-sm text-gray-500 uppercase tracking-wide">
+                    <p className="text-sm text-gray-500 dark:text-gray-400 uppercase tracking-wide">
                       Best Group Size
                     </p>
-                    <p className="mt-2 text-xl font-semibold text-blue-600">
+                    <p className="mt-2 text-xl font-semibold text-blue-600 dark:text-blue-400">
                       {data.ammunitions.find(
                         (a) => a.ammoId === data.comparison.bestGroupSize
                       )?.ammoName || 'N/A'}
                     </p>
-                    <p className="text-sm text-gray-500">Smallest average groups</p>
+                    <p className="text-sm text-gray-500 dark:text-gray-400">Smallest average groups</p>
                   </div>
                 </CardContent>
               </Card>
@@ -222,15 +222,15 @@ export default function AmmoComparison() {
               <Card>
                 <CardContent className="pt-6">
                   <div className="text-center">
-                    <p className="text-sm text-gray-500 uppercase tracking-wide">
+                    <p className="text-sm text-gray-500 dark:text-gray-400 uppercase tracking-wide">
                       Most Data
                     </p>
-                    <p className="mt-2 text-xl font-semibold text-purple-600">
+                    <p className="mt-2 text-xl font-semibold text-purple-600 dark:text-purple-400">
                       {data.ammunitions.find(
                         (a) => a.ammoId === data.comparison.mostDataPoints
                       )?.ammoName || 'N/A'}
                     </p>
-                    <p className="text-sm text-gray-500">Most sessions recorded</p>
+                    <p className="text-sm text-gray-500 dark:text-gray-400">Most sessions recorded</p>
                   </div>
                 </CardContent>
               </Card>
@@ -268,7 +268,7 @@ export default function AmmoComparison() {
 
                 {/* SD/ES Chart */}
                 <div className="mt-6">
-                  <h4 className="text-sm font-medium text-gray-700 mb-2">
+                  <h4 className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                     Standard Deviation & Extreme Spread
                   </h4>
                   <ResponsiveContainer width="100%" height={250}>
@@ -332,64 +332,64 @@ export default function AmmoComparison() {
             </CardHeader>
             <CardContent>
               <div className="overflow-x-auto">
-                <table className="min-w-full divide-y divide-gray-200">
-                  <thead className="bg-gray-50">
+                <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+                  <thead className="bg-gray-50 dark:bg-gray-900">
                     <tr>
-                      <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+                      <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase">
                         Ammunition
                       </th>
-                      <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+                      <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase">
                         Caliber
                       </th>
-                      <th className="px-4 py-3 text-right text-xs font-medium text-gray-500 uppercase">
+                      <th className="px-4 py-3 text-right text-xs font-medium text-gray-500 dark:text-gray-400 uppercase">
                         Avg Velocity
                       </th>
-                      <th className="px-4 py-3 text-right text-xs font-medium text-gray-500 uppercase">
+                      <th className="px-4 py-3 text-right text-xs font-medium text-gray-500 dark:text-gray-400 uppercase">
                         Avg SD
                       </th>
-                      <th className="px-4 py-3 text-right text-xs font-medium text-gray-500 uppercase">
+                      <th className="px-4 py-3 text-right text-xs font-medium text-gray-500 dark:text-gray-400 uppercase">
                         Avg ES
                       </th>
-                      <th className="px-4 py-3 text-right text-xs font-medium text-gray-500 uppercase">
+                      <th className="px-4 py-3 text-right text-xs font-medium text-gray-500 dark:text-gray-400 uppercase">
                         Avg Group
                       </th>
-                      <th className="px-4 py-3 text-right text-xs font-medium text-gray-500 uppercase">
+                      <th className="px-4 py-3 text-right text-xs font-medium text-gray-500 dark:text-gray-400 uppercase">
                         Best Group
                       </th>
-                      <th className="px-4 py-3 text-right text-xs font-medium text-gray-500 uppercase">
+                      <th className="px-4 py-3 text-right text-xs font-medium text-gray-500 dark:text-gray-400 uppercase">
                         Sessions
                       </th>
                     </tr>
                   </thead>
-                  <tbody className="bg-white divide-y divide-gray-200">
+                  <tbody className="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
                     {data.ammunitions.map((ammo, index) => (
-                      <tr key={ammo.ammoId} className="hover:bg-gray-50">
+                      <tr key={ammo.ammoId} className="hover:bg-gray-50 dark:hover:bg-gray-700">
                         <td className="px-4 py-3 text-sm">
                           <div className="flex items-center gap-2">
                             <div
                               className="w-3 h-3 rounded-full"
                               style={{ backgroundColor: COLORS[index % COLORS.length] }}
                             />
-                            <span className="font-medium text-gray-900">{ammo.ammoName}</span>
+                            <span className="font-medium text-gray-900 dark:text-gray-100">{ammo.ammoName}</span>
                           </div>
                         </td>
-                        <td className="px-4 py-3 text-sm text-gray-600">{ammo.caliber}</td>
-                        <td className="px-4 py-3 text-sm text-right text-gray-900">
+                        <td className="px-4 py-3 text-sm text-gray-600 dark:text-gray-400">{ammo.caliber}</td>
+                        <td className="px-4 py-3 text-sm text-right text-gray-900 dark:text-gray-100">
                           {ammo.velocity ? `${ammo.velocity.averageVelocity.toFixed(0)} fps` : '-'}
                         </td>
-                        <td className="px-4 py-3 text-sm text-right text-gray-600">
+                        <td className="px-4 py-3 text-sm text-right text-gray-600 dark:text-gray-400">
                           {ammo.velocity ? ammo.velocity.averageSd.toFixed(1) : '-'}
                         </td>
-                        <td className="px-4 py-3 text-sm text-right text-gray-600">
+                        <td className="px-4 py-3 text-sm text-right text-gray-600 dark:text-gray-400">
                           {ammo.velocity ? ammo.velocity.averageEs.toFixed(1) : '-'}
                         </td>
-                        <td className="px-4 py-3 text-sm text-right text-gray-900">
+                        <td className="px-4 py-3 text-sm text-right text-gray-900 dark:text-gray-100">
                           {ammo.groups ? `${ammo.groups.averageGroupSizeMoa.toFixed(2)} MOA` : '-'}
                         </td>
-                        <td className="px-4 py-3 text-sm text-right text-green-600">
+                        <td className="px-4 py-3 text-sm text-right text-green-600 dark:text-green-400">
                           {ammo.groups ? `${ammo.groups.bestGroupSizeMoa.toFixed(2)} MOA` : '-'}
                         </td>
-                        <td className="px-4 py-3 text-sm text-right text-gray-600">
+                        <td className="px-4 py-3 text-sm text-right text-gray-600 dark:text-gray-400">
                           {ammo.velocity?.sessionCount || ammo.groups?.groupCount || 0}
                         </td>
                       </tr>
@@ -404,10 +404,10 @@ export default function AmmoComparison() {
           {velocityChartData.length === 0 && groupChartData.length === 0 && (
             <Card>
               <CardContent className="py-12 text-center">
-                <p className="text-gray-500">
+                <p className="text-gray-500 dark:text-gray-400">
                   No velocity or group data found for the selected ammunition
                 </p>
-                <p className="text-sm text-gray-400 mt-2">
+                <p className="text-sm text-gray-400 dark:text-gray-500 mt-2">
                   Record chrono sessions and shot groups to enable comparison
                 </p>
               </CardContent>
@@ -420,7 +420,7 @@ export default function AmmoComparison() {
       {!data && selectedAmmoIds.length < 2 && (
         <Card>
           <CardContent className="py-12 text-center">
-            <p className="text-gray-500">Select at least 2 ammunition types to compare</p>
+            <p className="text-gray-500 dark:text-gray-400">Select at least 2 ammunition types to compare</p>
           </CardContent>
         </Card>
       )}

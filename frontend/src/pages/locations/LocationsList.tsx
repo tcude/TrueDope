@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { locationsService } from '../../services';
 import type { LocationListDto } from '../../types';
-import { Button, EmptyState, EmptyStateIcons, Skeleton } from '../../components/ui';
+import { Button, EmptyState, EmptyStateIcons, LoadingPage } from '../../components/ui';
 import { useToast } from '../../hooks';
 import { LocationMap } from '../../components/map';
 
@@ -43,14 +43,7 @@ export default function LocationsList() {
   if (loading) {
     return (
       <div className="container mx-auto px-4 py-8">
-        <div className="flex items-center justify-between mb-8">
-          <h1 className="text-2xl font-bold text-gray-900">Locations</h1>
-        </div>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-          {[...Array(6)].map((_, i) => (
-            <Skeleton key={i} className="h-40 w-full" />
-          ))}
-        </div>
+        <LoadingPage message="Loading locations..." />
       </div>
     );
   }
@@ -59,7 +52,7 @@ export default function LocationsList() {
     return (
       <div className="container mx-auto px-4 py-8">
         <div className="flex items-center justify-between mb-8">
-          <h1 className="text-2xl font-bold text-gray-900">Locations</h1>
+          <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100">Locations</h1>
         </div>
         <EmptyState
           icon={EmptyStateIcons.location}
@@ -90,16 +83,16 @@ export default function LocationsList() {
           value={search}
           onChange={(e) => setSearch(e.target.value)}
           placeholder="Search locations..."
-          className="w-full sm:max-w-md h-10 px-3 rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
+          className="w-full sm:max-w-md h-10 px-3 rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500"
         />
-        <div className="flex bg-gray-100 rounded-md p-1">
+        <div className="flex bg-gray-100 dark:bg-gray-800 rounded-md p-1">
           <button
             type="button"
             onClick={() => setViewMode('list')}
             className={`px-3 py-1.5 text-sm font-medium rounded transition-colors ${
               viewMode === 'list'
-                ? 'bg-white text-gray-900 shadow-sm'
-                : 'text-gray-600 hover:text-gray-900'
+                ? 'bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 shadow-sm'
+                : 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100'
             }`}
           >
             <svg className="w-4 h-4 inline-block mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -112,8 +105,8 @@ export default function LocationsList() {
             onClick={() => setViewMode('map')}
             className={`px-3 py-1.5 text-sm font-medium rounded transition-colors ${
               viewMode === 'map'
-                ? 'bg-white text-gray-900 shadow-sm'
-                : 'text-gray-600 hover:text-gray-900'
+                ? 'bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 shadow-sm'
+                : 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100'
             }`}
           >
             <svg className="w-4 h-4 inline-block mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -125,17 +118,17 @@ export default function LocationsList() {
       </div>
 
       {filteredLocations.length === 0 ? (
-        <p className="text-center text-gray-500 py-8">No locations match your search.</p>
+        <p className="text-center text-gray-500 dark:text-gray-400 py-8">No locations match your search.</p>
       ) : viewMode === 'map' ? (
-        <div className="bg-white rounded-lg border border-gray-200 overflow-hidden">
+        <div className="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 overflow-hidden">
           <LocationMap
             locations={filteredLocations}
             onSelect={handleLocationSelect}
             height="500px"
             showClustering={true}
           />
-          <div className="p-4 border-t border-gray-200 bg-gray-50">
-            <p className="text-sm text-gray-600">
+          <div className="p-4 border-t border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900">
+            <p className="text-sm text-gray-600 dark:text-gray-400">
               Click a marker to view location details. Showing {filteredLocations.length} location{filteredLocations.length !== 1 ? 's' : ''}.
             </p>
           </div>
@@ -146,20 +139,20 @@ export default function LocationsList() {
             <Link
               key={location.id}
               to={`/locations/${location.id}`}
-              className="block bg-white rounded-lg border border-gray-200 p-6 hover:border-gray-300 hover:shadow-sm transition-all"
+              className="block bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-6 hover:border-gray-300 dark:hover:border-gray-600 hover:shadow-sm transition-all"
             >
-              <h3 className="text-lg font-semibold text-gray-900 mb-2">
+              <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-2">
                 {location.name}
               </h3>
-              <p className="text-sm text-gray-500 mb-4">
+              <p className="text-sm text-gray-500 dark:text-gray-400 mb-4">
                 {location.latitude.toFixed(4)}°, {location.longitude.toFixed(4)}°
               </p>
               {location.altitude && (
-                <p className="text-sm text-gray-500 mb-2">
+                <p className="text-sm text-gray-500 dark:text-gray-400 mb-2">
                   Altitude: {location.altitude} ft
                 </p>
               )}
-              <p className="text-sm text-gray-500">
+              <p className="text-sm text-gray-500 dark:text-gray-400">
                 {location.sessionCount} session{location.sessionCount !== 1 ? 's' : ''}
               </p>
             </Link>

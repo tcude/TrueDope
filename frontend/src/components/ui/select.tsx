@@ -24,12 +24,12 @@ export const Select = React.forwardRef<HTMLSelectElement, SelectProps>(
         onChange={(e) => onChange?.(e.target.value)}
         disabled={disabled}
         className={cn(
-          'flex h-10 w-full rounded-md border bg-white px-3 py-2 text-sm',
-          'focus:outline-none focus:ring-2 focus:ring-offset-2',
-          'disabled:cursor-not-allowed disabled:opacity-50',
+          'flex h-10 w-full rounded-md border bg-white dark:bg-gray-800 px-3 py-2 text-sm text-gray-900 dark:text-gray-100',
+          'focus:outline-none focus:ring-2 focus:ring-offset-2 dark:focus:ring-offset-gray-900',
+          'disabled:cursor-not-allowed disabled:opacity-50 transition-colors',
           error
             ? 'border-red-500 focus:ring-red-500'
-            : 'border-gray-300 focus:ring-blue-500',
+            : 'border-gray-300 dark:border-gray-600 focus:ring-blue-500',
           className
         )}
         {...props}
@@ -40,11 +40,7 @@ export const Select = React.forwardRef<HTMLSelectElement, SelectProps>(
           </option>
         )}
         {options.map((option) => (
-          <option
-            key={option.value}
-            value={option.value}
-            disabled={option.disabled}
-          >
+          <option key={option.value} value={option.value} disabled={option.disabled}>
             {option.label}
           </option>
         ))}
@@ -64,11 +60,16 @@ interface SelectGroupProps {
 export function SelectGroup({ label, error, children }: SelectGroupProps) {
   return (
     <div className="space-y-1.5">
-      <label className={cn('text-sm font-medium', error ? 'text-red-600' : 'text-gray-700')}>
+      <label
+        className={cn(
+          'text-sm font-medium',
+          error ? 'text-red-600 dark:text-red-400' : 'text-gray-700 dark:text-gray-300'
+        )}
+      >
         {label}
       </label>
       {children}
-      {error && <p className="text-sm text-red-600">{error}</p>}
+      {error && <p className="text-sm text-red-600 dark:text-red-400">{error}</p>}
     </div>
   );
 }

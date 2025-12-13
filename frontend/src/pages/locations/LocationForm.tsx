@@ -2,7 +2,7 @@ import { useState, useEffect, useCallback } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { locationsService } from '../../services';
 import type { CreateLocationDto, UpdateLocationDto } from '../../types';
-import { Button, Skeleton } from '../../components/ui';
+import { Button, LoadingPage } from '../../components/ui';
 import { LocationPicker } from '../../components/map';
 import { useToast } from '../../hooks';
 
@@ -96,13 +96,7 @@ export default function LocationForm({ mode }: LocationFormProps) {
   if (loading) {
     return (
       <div className="container mx-auto px-4 py-8 max-w-2xl">
-        <Skeleton className="h-8 w-48 mb-8" />
-        <div className="bg-white rounded-lg border border-gray-200 p-6">
-          <div className="space-y-4">
-            <Skeleton className="h-10 w-full" />
-            <Skeleton className="h-10 w-full" />
-          </div>
-        </div>
+        <LoadingPage message="Loading location..." />
       </div>
     );
   }

@@ -12,15 +12,15 @@ import {
 } from 'recharts';
 import { analyticsService, riflesService } from '../../services';
 import type { DopeChartDataDto, DopeChartFilterDto, RifleListDto } from '../../types';
-import { Button, Skeleton, Select, Input, Label, PageHeader } from '../../components/ui';
+import { Button, LoadingPage, Select, Input, Label, PageHeader } from '../../components/ui';
 import { useToast } from '../../hooks';
 
 // Data source badge component
 function DataSourceBadge({ source }: { source: 'direct' | 'interpolated' | 'no_data' }) {
   const styles = {
-    direct: 'bg-green-100 text-green-800',
-    interpolated: 'bg-yellow-100 text-yellow-800',
-    no_data: 'bg-gray-100 text-gray-500',
+    direct: 'bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-300',
+    interpolated: 'bg-yellow-100 dark:bg-yellow-900 text-yellow-800 dark:text-yellow-300',
+    no_data: 'bg-gray-100 dark:bg-gray-700 text-gray-500 dark:text-gray-400',
   };
 
   const labels = {
@@ -77,7 +77,7 @@ function MonthSelector({
           className={`px-2 py-1 text-xs rounded border transition-colors ${
             selected.includes(m.value)
               ? 'bg-blue-600 text-white border-blue-600'
-              : 'bg-white text-gray-700 border-gray-300 hover:border-blue-400'
+              : 'bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-300 border-gray-300 dark:border-gray-600 hover:border-blue-400 dark:hover:border-blue-500'
           }`}
         >
           {m.label}
@@ -217,8 +217,7 @@ export default function DopeChart() {
   if (loading && rifles.length === 0) {
     return (
       <div className="container mx-auto px-4 py-8">
-        <Skeleton className="h-8 w-48 mb-8" />
-        <Skeleton className="h-96 w-full" />
+        <LoadingPage message="Loading DOPE chart..." />
       </div>
     );
   }
@@ -256,8 +255,8 @@ export default function DopeChart() {
 
       {/* Filters Panel */}
       {showFilters && (
-        <div className="bg-white rounded-lg border border-gray-200 p-6 mb-6">
-          <h3 className="text-lg font-semibold text-gray-900 mb-4">Condition Filters</h3>
+        <div className="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-6 mb-6">
+          <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-4">Condition Filters</h3>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             {/* Date Range */}
@@ -357,7 +356,7 @@ export default function DopeChart() {
 
           {/* Conditions Range Info */}
           {chartData?.metadata?.conditionsRange && (
-            <div className="mt-4 p-3 bg-gray-50 rounded-lg text-sm text-gray-600">
+            <div className="mt-4 p-3 bg-gray-50 dark:bg-gray-700 rounded-lg text-sm text-gray-600 dark:text-gray-300">
               <span className="font-medium">Available data ranges:</span>
               <span className="ml-2">
                 Temp: {chartData.metadata.conditionsRange.temperature.min}°F - {chartData.metadata.conditionsRange.temperature.max}°F
@@ -377,29 +376,29 @@ export default function DopeChart() {
 
       {/* Rifle Info */}
       {chartData && (
-        <div className="bg-white rounded-lg border border-gray-200 p-4 mb-6">
+        <div className="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-4 mb-6">
           <div className="flex flex-wrap gap-6 text-sm">
             <div>
-              <span className="text-gray-500">Rifle:</span>
-              <span className="ml-2 font-medium">{chartData.rifleName}</span>
+              <span className="text-gray-500 dark:text-gray-400">Rifle:</span>
+              <span className="ml-2 font-medium text-gray-900 dark:text-gray-100">{chartData.rifleName}</span>
             </div>
             <div>
-              <span className="text-gray-500">Caliber:</span>
-              <span className="ml-2 font-medium">{chartData.caliber}</span>
+              <span className="text-gray-500 dark:text-gray-400">Caliber:</span>
+              <span className="ml-2 font-medium text-gray-900 dark:text-gray-100">{chartData.caliber}</span>
             </div>
             <div>
-              <span className="text-gray-500">Zero Distance:</span>
-              <span className="ml-2 font-medium">{chartData.zeroDistance} yds</span>
+              <span className="text-gray-500 dark:text-gray-400">Zero Distance:</span>
+              <span className="ml-2 font-medium text-gray-900 dark:text-gray-100">{chartData.zeroDistance} yds</span>
             </div>
             {chartData.muzzleVelocity && (
               <div>
-                <span className="text-gray-500">Muzzle Velocity:</span>
-                <span className="ml-2 font-medium">{chartData.muzzleVelocity} fps</span>
+                <span className="text-gray-500 dark:text-gray-400">Muzzle Velocity:</span>
+                <span className="ml-2 font-medium text-gray-900 dark:text-gray-100">{chartData.muzzleVelocity} fps</span>
               </div>
             )}
             <div>
-              <span className="text-gray-500">Sessions:</span>
-              <span className="ml-2 font-medium">
+              <span className="text-gray-500 dark:text-gray-400">Sessions:</span>
+              <span className="ml-2 font-medium text-gray-900 dark:text-gray-100">
                 {chartData.metadata.totalSessionsMatched} / {chartData.metadata.totalSessionsAll}
               </span>
             </div>
@@ -409,8 +408,8 @@ export default function DopeChart() {
 
       {/* Chart */}
       {chartData && chartDataPoints.length > 0 ? (
-        <div className="bg-white rounded-lg border border-gray-200 p-6 mb-6">
-          <h3 className="text-lg font-semibold text-gray-900 mb-4">Elevation & Windage</h3>
+        <div className="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-6 mb-6">
+          <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-4">Elevation & Windage</h3>
           <div className="h-96">
             <ResponsiveContainer width="100%" height="100%">
               <LineChart data={chartDataPoints} margin={{ top: 5, right: 30, left: 20, bottom: 5 }}>
@@ -451,77 +450,77 @@ export default function DopeChart() {
           </div>
         </div>
       ) : chartData && chartDataPoints.length === 0 ? (
-        <div className="bg-white rounded-lg border border-gray-200 p-12 mb-6 text-center">
-          <p className="text-gray-500">No DOPE data available for this rifle with the current filters.</p>
-          <p className="text-sm text-gray-400 mt-2">Try adjusting the filters or record some DOPE entries.</p>
+        <div className="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-12 mb-6 text-center">
+          <p className="text-gray-500 dark:text-gray-400">No DOPE data available for this rifle with the current filters.</p>
+          <p className="text-sm text-gray-400 dark:text-gray-500 mt-2">Try adjusting the filters or record some DOPE entries.</p>
         </div>
       ) : null}
 
       {/* Data Table */}
       {chartData && chartData.dataPoints.length > 0 && (
-        <div className="bg-white rounded-lg border border-gray-200 overflow-hidden">
-          <div className="p-4 border-b border-gray-200">
-            <h3 className="text-lg font-semibold text-gray-900">DOPE Table</h3>
+        <div className="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 overflow-hidden">
+          <div className="p-4 border-b border-gray-200 dark:border-gray-700">
+            <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100">DOPE Table</h3>
           </div>
           <div className="overflow-x-auto">
-            <table className="min-w-full divide-y divide-gray-200">
-              <thead className="bg-gray-50">
+            <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+              <thead className="bg-gray-50 dark:bg-gray-900">
                 <tr>
-                  <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
                     Distance
                   </th>
-                  <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
                     Elevation (MIL)
                   </th>
-                  <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
                     Windage (MIL)
                   </th>
-                  <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
                     Sessions
                   </th>
-                  <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
                     Source
                   </th>
                 </tr>
               </thead>
-              <tbody className="bg-white divide-y divide-gray-200">
+              <tbody className="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
                 {chartData.dataPoints.map((point) => (
                   <tr
                     key={point.distance}
-                    className={point.dataSource === 'no_data' ? 'bg-gray-50' : ''}
+                    className={point.dataSource === 'no_data' ? 'bg-gray-50 dark:bg-gray-900' : ''}
                   >
-                    <td className="px-4 py-3 text-sm font-medium text-gray-900">
+                    <td className="px-4 py-3 text-sm font-medium text-gray-900 dark:text-gray-100">
                       {point.distance} yds
                     </td>
-                    <td className="px-4 py-3 text-sm text-gray-900">
+                    <td className="px-4 py-3 text-sm text-gray-900 dark:text-gray-100">
                       {point.dataSource !== 'no_data' ? (
                         <>
                           {point.elevationMils.toFixed(2)}
                           {point.elevationMilsStdDev > 0 && (
-                            <span className="text-gray-400 text-xs ml-1">
+                            <span className="text-gray-400 dark:text-gray-500 text-xs ml-1">
                               (±{point.elevationMilsStdDev.toFixed(2)})
                             </span>
                           )}
                         </>
                       ) : (
-                        <span className="text-gray-400">-</span>
+                        <span className="text-gray-400 dark:text-gray-500">-</span>
                       )}
                     </td>
-                    <td className="px-4 py-3 text-sm text-gray-900">
+                    <td className="px-4 py-3 text-sm text-gray-900 dark:text-gray-100">
                       {point.dataSource !== 'no_data' ? (
                         <>
                           {point.windageMils.toFixed(2)}
                           {point.windageMilsStdDev > 0 && (
-                            <span className="text-gray-400 text-xs ml-1">
+                            <span className="text-gray-400 dark:text-gray-500 text-xs ml-1">
                               (±{point.windageMilsStdDev.toFixed(2)})
                             </span>
                           )}
                         </>
                       ) : (
-                        <span className="text-gray-400">-</span>
+                        <span className="text-gray-400 dark:text-gray-500">-</span>
                       )}
                     </td>
-                    <td className="px-4 py-3 text-sm text-gray-500">
+                    <td className="px-4 py-3 text-sm text-gray-500 dark:text-gray-400">
                       {point.sessionCount > 0 ? point.sessionCount : '-'}
                     </td>
                     <td className="px-4 py-3 text-sm">

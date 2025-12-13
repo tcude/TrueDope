@@ -23,4 +23,7 @@ public class User : IdentityUser
     public ICollection<SavedLocation> SavedLocations { get; set; } = new List<SavedLocation>();
     public ICollection<RangeSession> RangeSessions { get; set; } = new List<RangeSession>();
     public ICollection<Image> Images { get; set; } = new List<Image>();
+
+    // User preferences (1:1 relationship)
+    public UserPreferences? Preferences { get; set; }
 }

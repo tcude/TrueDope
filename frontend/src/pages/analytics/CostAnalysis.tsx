@@ -145,7 +145,7 @@ export default function CostAnalysis() {
           <CardContent>
             <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                   Rifle (Optional)
                 </label>
                 <Select
@@ -163,7 +163,7 @@ export default function CostAnalysis() {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                   From Date
                 </label>
                 <Input
@@ -174,7 +174,7 @@ export default function CostAnalysis() {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                   To Date
                 </label>
                 <Input
@@ -198,9 +198,9 @@ export default function CostAnalysis() {
 
         {/* Error Display */}
         {error && (
-          <Card className="border-red-200 bg-red-50">
+          <Card className="border-red-200 dark:border-red-800 bg-red-50 dark:bg-red-900/20">
             <CardContent className="pt-6">
-              <p className="text-red-600">{error}</p>
+              <p className="text-red-600 dark:text-red-400">{error}</p>
             </CardContent>
           </Card>
         )}
@@ -212,9 +212,9 @@ export default function CostAnalysis() {
             {(data.period.from || data.period.to) && (
               <Card>
                 <CardContent className="pt-6">
-                  <div className="flex items-center gap-4 text-sm text-gray-600">
+                  <div className="flex items-center gap-4 text-sm text-gray-600 dark:text-gray-400">
                     <span>Period:</span>
-                    <span className="font-medium">
+                    <span className="font-medium text-gray-900 dark:text-gray-100">
                       {data.period.from
                         ? new Date(data.period.from).toLocaleDateString()
                         : 'All time'}
@@ -404,44 +404,44 @@ export default function CostAnalysis() {
                 </CardHeader>
                 <CardContent>
                   <div className="overflow-x-auto">
-                    <table className="min-w-full divide-y divide-gray-200">
-                      <thead className="bg-gray-50">
+                    <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+                      <thead className="bg-gray-50 dark:bg-gray-900">
                         <tr>
-                          <th className="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase">
+                          <th className="px-3 py-2 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase">
                             Ammunition
                           </th>
-                          <th className="px-3 py-2 text-right text-xs font-medium text-gray-500 uppercase">
+                          <th className="px-3 py-2 text-right text-xs font-medium text-gray-500 dark:text-gray-400 uppercase">
                             Rounds
                           </th>
-                          <th className="px-3 py-2 text-right text-xs font-medium text-gray-500 uppercase">
+                          <th className="px-3 py-2 text-right text-xs font-medium text-gray-500 dark:text-gray-400 uppercase">
                             Cost
                           </th>
-                          <th className="px-3 py-2 text-right text-xs font-medium text-gray-500 uppercase">
+                          <th className="px-3 py-2 text-right text-xs font-medium text-gray-500 dark:text-gray-400 uppercase">
                             $/Rd
                           </th>
                         </tr>
                       </thead>
-                      <tbody className="bg-white divide-y divide-gray-200">
+                      <tbody className="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
                         {data.byAmmunition.map((ammo, index) => (
-                          <tr key={ammo.ammoId} className="hover:bg-gray-50">
+                          <tr key={ammo.ammoId} className="hover:bg-gray-50 dark:hover:bg-gray-700">
                             <td className="px-3 py-2 text-sm">
                               <div className="flex items-center gap-2">
                                 <div
                                   className="w-2 h-2 rounded-full flex-shrink-0"
                                   style={{ backgroundColor: COLORS[index % COLORS.length] }}
                                 />
-                                <span className="text-gray-900 truncate max-w-[150px]" title={ammo.ammoName}>
+                                <span className="text-gray-900 dark:text-gray-100 truncate max-w-[150px]" title={ammo.ammoName}>
                                   {ammo.ammoName}
                                 </span>
                               </div>
                             </td>
-                            <td className="px-3 py-2 text-sm text-right text-gray-600">
+                            <td className="px-3 py-2 text-sm text-right text-gray-600 dark:text-gray-400">
                               {ammo.roundsFired.toLocaleString()}
                             </td>
-                            <td className="px-3 py-2 text-sm text-right text-gray-900">
+                            <td className="px-3 py-2 text-sm text-right text-gray-900 dark:text-gray-100">
                               {formatCurrency(ammo.cost)}
                             </td>
-                            <td className="px-3 py-2 text-sm text-right text-gray-600">
+                            <td className="px-3 py-2 text-sm text-right text-gray-600 dark:text-gray-400">
                               {formatCurrency(ammo.costPerRound)}
                             </td>
                           </tr>
@@ -459,36 +459,36 @@ export default function CostAnalysis() {
                 </CardHeader>
                 <CardContent>
                   <div className="overflow-x-auto">
-                    <table className="min-w-full divide-y divide-gray-200">
-                      <thead className="bg-gray-50">
+                    <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+                      <thead className="bg-gray-50 dark:bg-gray-900">
                         <tr>
-                          <th className="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase">
+                          <th className="px-3 py-2 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase">
                             Rifle
                           </th>
-                          <th className="px-3 py-2 text-right text-xs font-medium text-gray-500 uppercase">
+                          <th className="px-3 py-2 text-right text-xs font-medium text-gray-500 dark:text-gray-400 uppercase">
                             Sessions
                           </th>
-                          <th className="px-3 py-2 text-right text-xs font-medium text-gray-500 uppercase">
+                          <th className="px-3 py-2 text-right text-xs font-medium text-gray-500 dark:text-gray-400 uppercase">
                             Rounds
                           </th>
-                          <th className="px-3 py-2 text-right text-xs font-medium text-gray-500 uppercase">
+                          <th className="px-3 py-2 text-right text-xs font-medium text-gray-500 dark:text-gray-400 uppercase">
                             Cost
                           </th>
                         </tr>
                       </thead>
-                      <tbody className="bg-white divide-y divide-gray-200">
+                      <tbody className="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
                         {data.byRifle.map((rifle) => (
-                          <tr key={rifle.rifleId} className="hover:bg-gray-50">
-                            <td className="px-3 py-2 text-sm text-gray-900 truncate max-w-[150px]" title={rifle.rifleName}>
+                          <tr key={rifle.rifleId} className="hover:bg-gray-50 dark:hover:bg-gray-700">
+                            <td className="px-3 py-2 text-sm text-gray-900 dark:text-gray-100 truncate max-w-[150px]" title={rifle.rifleName}>
                               {rifle.rifleName}
                             </td>
-                            <td className="px-3 py-2 text-sm text-right text-gray-600">
+                            <td className="px-3 py-2 text-sm text-right text-gray-600 dark:text-gray-400">
                               {rifle.sessions}
                             </td>
-                            <td className="px-3 py-2 text-sm text-right text-gray-600">
+                            <td className="px-3 py-2 text-sm text-right text-gray-600 dark:text-gray-400">
                               {rifle.roundsFired.toLocaleString()}
                             </td>
-                            <td className="px-3 py-2 text-sm text-right text-gray-900">
+                            <td className="px-3 py-2 text-sm text-right text-gray-900 dark:text-gray-100">
                               {formatCurrency(rifle.cost)}
                             </td>
                           </tr>
@@ -504,8 +504,8 @@ export default function CostAnalysis() {
             {data.totals.totalRoundsFired === 0 && (
               <Card>
                 <CardContent className="py-12 text-center">
-                  <p className="text-gray-500">No cost data found for the selected filters</p>
-                  <p className="text-sm text-gray-400 mt-2">
+                  <p className="text-gray-500 dark:text-gray-400">No cost data found for the selected filters</p>
+                  <p className="text-sm text-gray-400 dark:text-gray-500 mt-2">
                     Record sessions with ammunition that has cost data to track expenses
                   </p>
                 </CardContent>

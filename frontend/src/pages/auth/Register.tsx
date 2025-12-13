@@ -46,6 +46,7 @@ export function Register() {
     const result = await registerUser({
       email: data.email,
       password: data.password,
+      confirmPassword: data.confirmPassword,
       firstName: data.firstName || undefined,
       lastName: data.lastName || undefined,
     });
@@ -59,7 +60,7 @@ export function Register() {
 
   if (success) {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-gray-50 px-4 py-12">
+      <div className="flex min-h-screen items-center justify-center bg-gray-50 dark:bg-gray-900 px-4 py-12">
         <Card className="w-full max-w-md">
           <CardHeader>
             <CardTitle className="text-center text-2xl text-green-600">
@@ -75,7 +76,7 @@ export function Register() {
   }
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-gray-50 px-4 py-12 sm:px-6 lg:px-8">
+    <div className="flex min-h-screen items-center justify-center bg-gray-50 dark:bg-gray-900 px-4 py-12 sm:px-6 lg:px-8">
       <Card className="w-full max-w-md">
         <CardHeader className="space-y-1">
           <CardTitle className="text-center text-2xl">Create an account</CardTitle>
@@ -166,9 +167,9 @@ export function Register() {
             <Button type="submit" className="w-full" isLoading={isLoading}>
               Create account
             </Button>
-            <p className="text-center text-sm text-gray-600">
+            <p className="text-center text-sm text-gray-600 dark:text-gray-400">
               Already have an account?{' '}
-              <Link to="/login" className="text-blue-600 hover:text-blue-500">
+              <Link to="/login" className="text-blue-600 dark:text-blue-400 hover:text-blue-500 dark:hover:text-blue-300">
                 Sign in
               </Link>
             </p>

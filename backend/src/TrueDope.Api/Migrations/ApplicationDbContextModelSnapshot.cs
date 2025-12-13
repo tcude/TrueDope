@@ -846,6 +846,52 @@ namespace TrueDope.Api.Migrations
                     b.ToTable("Users", (string)null);
                 });
 
+            modelBuilder.Entity("TrueDope.Api.Data.Entities.UserPreferences", b =>
+                {
+                    b.Property<string>("UserId")
+                        .HasColumnType("text");
+
+                    b.Property<string>("AdjustmentUnit")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("character varying(20)");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("DistanceUnit")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("character varying(20)");
+
+                    b.Property<string>("PressureUnit")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("character varying(20)");
+
+                    b.Property<string>("TemperatureUnit")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("character varying(20)");
+
+                    b.Property<string>("Theme")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("character varying(20)");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("VelocityUnit")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("character varying(20)");
+
+                    b.HasKey("UserId");
+
+                    b.ToTable("UserPreferences");
+                });
+
             modelBuilder.Entity("TrueDope.Api.Data.Entities.VelocityReading", b =>
                 {
                     b.Property<int>("Id")
@@ -1110,6 +1156,17 @@ namespace TrueDope.Api.Migrations
                     b.Navigation("CreatedByUser");
                 });
 
+            modelBuilder.Entity("TrueDope.Api.Data.Entities.UserPreferences", b =>
+                {
+                    b.HasOne("TrueDope.Api.Data.Entities.User", "User")
+                        .WithOne("Preferences")
+                        .HasForeignKey("TrueDope.Api.Data.Entities.UserPreferences", "UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("TrueDope.Api.Data.Entities.VelocityReading", b =>
                 {
                     b.HasOne("TrueDope.Api.Data.Entities.ChronoSession", "ChronoSession")
@@ -1177,6 +1234,8 @@ namespace TrueDope.Api.Migrations
                     b.Navigation("Ammunition");
 
                     b.Navigation("Images");
+
+                    b.Navigation("Preferences");
 
                     b.Navigation("RangeSessions");
 
