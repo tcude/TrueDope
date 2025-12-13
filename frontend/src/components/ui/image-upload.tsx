@@ -1,6 +1,6 @@
 import { useCallback, useState } from 'react';
 import { useDropzone } from 'react-dropzone';
-import { Upload, X, AlertCircle, Loader2, Image as ImageIcon } from 'lucide-react';
+import { Upload, X, AlertCircle, Loader2, Image as ImageIcon, FileImage } from 'lucide-react';
 import { cn } from '../../lib/utils';
 import { Button } from './button';
 import { imagesService } from '../../services';
@@ -24,9 +24,16 @@ const ACCEPTED_TYPES = {
   'image/heif': ['.heif'],
 };
 
+// Check if a file type can be previewed in the browser
+const canPreviewInBrowser = (file: File): boolean => {
+  const type = file.type.toLowerCase();
+  // Browsers can preview JPEG and PNG, but not HEIC/HEIF
+  return type === 'image/jpeg' || type === 'image/png';
+};
+
 interface PendingFile {
   file: File;
-  preview: string;
+  preview: string | null; // null for HEIC/HEIF files that can't be previewed
   status: 'pending' | 'uploading' | 'success' | 'error';
   error?: string;
   result?: ImageUploadResult;
@@ -57,7 +64,8 @@ export function ImageUpload({
 
       const newFiles: PendingFile[] = filesToAdd.map((file) => ({
         file,
-        preview: URL.createObjectURL(file),
+        // Only create preview URL for formats browsers can display
+        preview: canPreviewInBrowser(file) ? URL.createObjectURL(file) : null,
         status: 'pending' as const,
       }));
 
@@ -89,7 +97,9 @@ export function ImageUpload({
   const removeFile = (index: number) => {
     setPendingFiles((prev) => {
       const newFiles = [...prev];
-      URL.revokeObjectURL(newFiles[index].preview);
+      if (newFiles[index].preview) {
+        URL.revokeObjectURL(newFiles[index].preview);
+      }
       newFiles.splice(index, 1);
       return newFiles;
     });
@@ -147,7 +157,7 @@ export function ImageUpload({
     setTimeout(() => {
       setPendingFiles((prev) => {
         prev.forEach((f) => {
-          if (f.status === 'success') {
+          if (f.status === 'success' && f.preview) {
             URL.revokeObjectURL(f.preview);
           }
         });
@@ -157,7 +167,11 @@ export function ImageUpload({
   };
 
   const clearAll = () => {
-    pendingFiles.forEach((f) => URL.revokeObjectURL(f.preview));
+    pendingFiles.forEach((f) => {
+      if (f.preview) {
+        URL.revokeObjectURL(f.preview);
+      }
+    });
     setPendingFiles([]);
   };
 
@@ -233,11 +247,19 @@ export function ImageUpload({
                 className="relative group rounded-lg overflow-hidden border border-gray-200"
               >
                 <div className="aspect-square bg-gray-100">
-                  <img
-                    src={pendingFile.preview}
-                    alt={pendingFile.file.name}
-                    className="w-full h-full object-cover"
-                  />
+                  {pendingFile.preview ? (
+                    <img
+                      src={pendingFile.preview}
+                      alt={pendingFile.file.name}
+                      className="w-full h-full object-cover"
+                    />
+                  ) : (
+                    // Placeholder for HEIC/HEIF files that can't be previewed
+                    <div className="w-full h-full flex flex-col items-center justify-center text-gray-400">
+                      <FileImage className="h-12 w-12 mb-2" />
+                      <span className="text-xs">HEIC Preview</span>
+                    </div>
+                  )}
                 </div>
 
                 {/* Status overlay */}
