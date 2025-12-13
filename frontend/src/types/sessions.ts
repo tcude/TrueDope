@@ -20,6 +20,7 @@ export interface SessionListDto {
   velocityReadingCount: number;
   groupCount: number; // groupEntryCount
   groupEntryCount: number;
+  imageCount: number;
   roundsFired: number | null;
   createdAt: string;
 }

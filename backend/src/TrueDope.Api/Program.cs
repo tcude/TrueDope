@@ -100,6 +100,9 @@ try
     // Configure OpenWeatherMap Settings
     builder.Services.Configure<WeatherSettings>(builder.Configuration.GetSection(WeatherSettings.SectionName));
 
+    // Configure Image Processing Settings
+    builder.Services.Configure<ImageSettings>(builder.Configuration.GetSection(ImageSettings.SectionName));
+
     // Register services
     builder.Services.AddScoped<IJwtService, JwtService>();
     builder.Services.AddScoped<IEmailService, EmailService>();

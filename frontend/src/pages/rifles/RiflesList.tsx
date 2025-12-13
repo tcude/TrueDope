@@ -103,7 +103,10 @@ export default function RiflesList() {
                 {rifle.caliber}
               </p>
               <div className="flex items-center justify-between text-sm text-gray-500">
-                <span>{rifle.sessionCount} sessions</span>
+                <span>
+                  {rifle.sessionCount} sessions
+                  {rifle.imageCount > 0 && ` · ${rifle.imageCount} photo${rifle.imageCount !== 1 ? 's' : ''}`}
+                </span>
                 {rifle.lastSessionDate && (
                   <span>
                     Last: {new Date(rifle.lastSessionDate).toLocaleDateString()}

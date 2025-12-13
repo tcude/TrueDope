@@ -3,6 +3,7 @@ import { useParams, useNavigate, Link } from 'react-router-dom';
 import { riflesService } from '../../services';
 import type { CreateRifleDto, UpdateRifleDto } from '../../types';
 import { Button, Combobox, Skeleton } from '../../components/ui';
+import { ImagesTab } from '../../components/sessions';
 import { useToast } from '../../hooks';
 import { COMMON_CALIBERS } from '../../constants/calibers';
 
@@ -309,6 +310,17 @@ export default function RifleForm({ mode }: RifleFormProps) {
             className="w-full px-3 py-2 rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
           />
         </div>
+
+        {/* Photos (only in edit mode when we have an ID) */}
+        {mode === 'edit' && id && (
+          <div className="bg-white rounded-lg border border-gray-200 p-6">
+            <h2 className="text-lg font-semibold text-gray-900 mb-4">Photos</h2>
+            <ImagesTab
+              parentType="rifle"
+              parentId={parseInt(id)}
+            />
+          </div>
+        )}
 
         {/* Actions */}
         <div className="flex justify-end gap-2">

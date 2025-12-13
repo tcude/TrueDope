@@ -24,6 +24,7 @@ public class SessionService : ISessionService
             .Include(s => s.ChronoSession)
             .Include(s => s.DopeEntries)
             .Include(s => s.GroupEntries)
+            .Include(s => s.Images)
             .Where(s => s.UserId == userId);
 
         // Apply filters
@@ -100,6 +101,7 @@ public class SessionService : ISessionService
                 DopeEntryCount = s.DopeEntries.Count,
                 VelocityReadingCount = s.ChronoSession != null ? s.ChronoSession.VelocityReadings.Count : 0,
                 GroupEntryCount = s.GroupEntries.Count,
+                ImageCount = s.Images.Count,
                 CreatedAt = s.CreatedAt
             })
             .ToListAsync();

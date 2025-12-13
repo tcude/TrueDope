@@ -21,6 +21,7 @@ public class RifleService : IRifleService
     {
         var query = _context.RifleSetups
             .Include(r => r.RangeSessions)
+            .Include(r => r.Images)
             .Where(r => r.UserId == userId);
 
         // Apply search
@@ -71,6 +72,7 @@ public class RifleService : IRifleService
                 Caliber = r.Caliber,
                 ZeroDistance = r.ZeroDistance,
                 SessionCount = r.RangeSessions.Count,
+                ImageCount = r.Images.Count,
                 LastSessionDate = r.RangeSessions.Any()
                     ? r.RangeSessions.Max(s => s.SessionDate)
                     : null,

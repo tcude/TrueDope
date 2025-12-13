@@ -6,4 +6,5 @@ public interface IStorageService
     Task<Stream?> GetFileAsync(string bucket, string objectName);
     Task DeleteFileAsync(string bucket, string objectName);
     Task EnsureBucketExistsAsync(string bucket);
+    Task<string> GetPreSignedUrlAsync(string bucket, string objectName, int expirySeconds = 3600);
 }

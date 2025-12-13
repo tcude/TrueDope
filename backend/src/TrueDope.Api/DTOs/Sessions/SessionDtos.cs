@@ -18,6 +18,7 @@ public class SessionListDto
     public int DopeEntryCount { get; set; }
     public int VelocityReadingCount { get; set; }
     public int GroupEntryCount { get; set; }
+    public int ImageCount { get; set; }
     public DateTime CreatedAt { get; set; }
 }
 

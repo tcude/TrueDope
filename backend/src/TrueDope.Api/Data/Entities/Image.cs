@@ -33,6 +33,9 @@ public class Image
     [MaxLength(500)]
     public string? Caption { get; set; }
 
+    // Display order for galleries
+    public int DisplayOrder { get; set; } = 0;
+
     // Processing status
     public bool IsProcessed { get; set; } = false;
 

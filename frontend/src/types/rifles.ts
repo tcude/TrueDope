@@ -9,6 +9,7 @@ export interface RifleListDto {
   caliber: string;
   zeroDistance: number;
   sessionCount: number;
+  imageCount: number;
   lastSessionDate: string | null;
   createdAt: string;
 }

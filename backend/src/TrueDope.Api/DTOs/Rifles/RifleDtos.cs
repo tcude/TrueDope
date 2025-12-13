@@ -11,6 +11,7 @@ public class RifleListDto
     public string Caliber { get; set; } = string.Empty;
     public int ZeroDistance { get; set; }
     public int SessionCount { get; set; }
+    public int ImageCount { get; set; }
     public DateTime? LastSessionDate { get; set; }
     public DateTime CreatedAt { get; set; }
 }

@@ -21,3 +21,8 @@ export { EmptyState, EmptyStateIcons } from './empty-state';
 export { Skeleton, SkeletonText, SkeletonCard, SkeletonStatCard, SkeletonTable, SkeletonTableRow } from './skeleton';
 export { Collapsible } from './collapsible';
 export { PageHeader } from './page-header';
+
+// Image components
+export { ImageUpload } from './image-upload';
+export { ImageGallery } from './image-gallery';
+export { ImageLightbox } from './image-lightbox';

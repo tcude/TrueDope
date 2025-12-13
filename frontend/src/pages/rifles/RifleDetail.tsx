@@ -3,6 +3,7 @@ import { useParams, useNavigate, Link } from 'react-router-dom';
 import { riflesService } from '../../services';
 import type { RifleDetailDto } from '../../types';
 import { Button, ConfirmDialog, Skeleton } from '../../components/ui';
+import { ImagesTab } from '../../components/sessions';
 import { useToast } from '../../hooks';
 
 export default function RifleDetail() {
@@ -168,6 +169,16 @@ export default function RifleDetail() {
           <p className="text-gray-600 whitespace-pre-wrap">{rifle.notes}</p>
         </div>
       )}
+
+      {/* Images Section */}
+      <div className="bg-white rounded-lg border border-gray-200 p-6 mb-6">
+        <h2 className="text-lg font-semibold text-gray-900 mb-4">Photos</h2>
+        <ImagesTab
+          parentType="rifle"
+          parentId={rifle.id}
+          readOnly
+        />
+      </div>
 
       {/* Delete Confirmation */}
       <ConfirmDialog

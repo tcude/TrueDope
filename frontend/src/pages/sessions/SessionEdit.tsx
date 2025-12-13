@@ -13,7 +13,7 @@ import {
   Skeleton,
   Tabs,
 } from '../../components/ui';
-import { DopeTab, ChronoTab, GroupsTab } from '../../components/sessions';
+import { DopeTab, ChronoTab, GroupsTab, ImagesTab } from '../../components/sessions';
 import { useToast } from '../../hooks';
 
 export default function SessionEdit() {
@@ -252,6 +252,18 @@ export default function SessionEdit() {
             sessionId={session.id}
             entries={session.groupEntries}
             onUpdate={handleRefresh}
+          />
+        </div>
+      ),
+    },
+    {
+      id: 'images',
+      label: 'Images',
+      content: (
+        <div className="bg-white rounded-lg border border-gray-200 p-6">
+          <ImagesTab
+            parentType="session"
+            parentId={session.id}
           />
         </div>
       ),

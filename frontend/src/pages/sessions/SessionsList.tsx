@@ -289,6 +289,11 @@ export default function SessionsList() {
                           Groups: {session.groupEntryCount}
                         </span>
                       )}
+                      {session.imageCount > 0 && (
+                        <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-amber-100 text-amber-700">
+                          Photos: {session.imageCount}
+                        </span>
+                      )}
                     </div>
                   </td>
                 </tr>

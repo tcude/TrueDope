@@ -92,4 +92,22 @@ public class MinioStorageService : IStorageService
             _logger.LogWarning(ex, "Failed to delete file: {Bucket}/{Object}", bucket, objectName);
         }
     }
+
+    public async Task<string> GetPreSignedUrlAsync(string bucket, string objectName, int expirySeconds = 3600)
+    {
+        try
+        {
+            var url = await _minioClient.PresignedGetObjectAsync(new PresignedGetObjectArgs()
+                .WithBucket(bucket)
+                .WithObject(objectName)
+                .WithExpiry(expirySeconds));
+
+            return url;
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Failed to generate pre-signed URL for: {Bucket}/{Object}", bucket, objectName);
+            throw;
+        }
+    }
 }
