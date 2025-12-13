@@ -1,8 +1,9 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { locationsService } from '../../services';
 import type { CreateLocationDto, UpdateLocationDto } from '../../types';
 import { Button, Skeleton } from '../../components/ui';
+import { LocationPicker } from '../../components/map';
 import { useToast } from '../../hooks';
 
 interface LocationFormProps {
@@ -77,6 +78,21 @@ export default function LocationForm({ mode }: LocationFormProps) {
     setFormData((prev) => ({ ...prev, [key]: value }));
   };
 
+  const handleMapCoordinateChange = useCallback((coords: { latitude: number; longitude: number }) => {
+    setFormData((prev) => ({
+      ...prev,
+      latitude: coords.latitude,
+      longitude: coords.longitude,
+    }));
+  }, []);
+
+  const handleElevationChange = useCallback((elevation: number) => {
+    setFormData((prev) => ({
+      ...prev,
+      altitude: Math.round(elevation),
+    }));
+  }, []);
+
   if (loading) {
     return (
       <div className="container mx-auto px-4 py-8 max-w-2xl">
@@ -101,6 +117,26 @@ export default function LocationForm({ mode }: LocationFormProps) {
       </h1>
 
       <form onSubmit={handleSubmit} className="space-y-6">
+        {/* Map Picker */}
+        <div className="bg-white rounded-lg border border-gray-200 p-6">
+          <h2 className="text-lg font-semibold text-gray-900 mb-4">Select Location on Map</h2>
+          <LocationPicker
+            value={formData.latitude && formData.longitude ? {
+              latitude: formData.latitude,
+              longitude: formData.longitude,
+            } : undefined}
+            onChange={handleMapCoordinateChange}
+            onElevationChange={handleElevationChange}
+            initialCenter={formData.latitude && formData.longitude ? {
+              lat: formData.latitude,
+              lng: formData.longitude,
+            } : undefined}
+            initialZoom={formData.latitude && formData.longitude ? 12 : 4}
+            autoFetchElevation={true}
+            height="350px"
+          />
+        </div>
+
         {/* Basic Info */}
         <div className="bg-white rounded-lg border border-gray-200 p-6">
           <h2 className="text-lg font-semibold text-gray-900 mb-4">Location Information</h2>
@@ -124,7 +160,7 @@ export default function LocationForm({ mode }: LocationFormProps) {
               </label>
               <input
                 type="number"
-                step="0.0001"
+                step="0.000001"
                 value={formData.latitude || ''}
                 onChange={(e) => updateField('latitude', e.target.value ? parseFloat(e.target.value) : 0)}
                 placeholder="e.g., 30.1902"
@@ -138,7 +174,7 @@ export default function LocationForm({ mode }: LocationFormProps) {
               </label>
               <input
                 type="number"
-                step="0.0001"
+                step="0.000001"
                 value={formData.longitude || ''}
                 onChange={(e) => updateField('longitude', e.target.value ? parseFloat(e.target.value) : 0)}
                 placeholder="e.g., -98.0867"
@@ -149,18 +185,21 @@ export default function LocationForm({ mode }: LocationFormProps) {
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">
                 Altitude (feet)
+                {formData.altitude && (
+                  <span className="ml-2 text-xs font-normal text-green-600">Auto-fetched</span>
+                )}
               </label>
               <input
                 type="number"
                 value={formData.altitude || ''}
                 onChange={(e) => updateField('altitude', e.target.value ? parseInt(e.target.value) : undefined)}
-                placeholder="e.g., 1200"
+                placeholder="Auto-fetched from coordinates"
                 className="w-full h-10 px-3 rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
               />
             </div>
           </div>
           <p className="text-sm text-gray-500 mt-2">
-            Coordinates are used for weather data and ballistic calculations.
+            Coordinates are used for weather data and ballistic calculations. Altitude is auto-fetched when you select a location.
           </p>
         </div>
 

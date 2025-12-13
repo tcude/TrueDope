@@ -4,6 +4,7 @@ import { locationsService } from '../../services';
 import type { LocationDetailDto } from '../../types';
 import { Button, ConfirmDialog, Skeleton } from '../../components/ui';
 import { useToast } from '../../hooks';
+import { LocationPreview } from '../../components/map';
 
 export default function LocationDetail() {
   const { id } = useParams<{ id: string }>();
@@ -88,14 +89,20 @@ export default function LocationDetail() {
         </div>
       </div>
 
-      {/* Details */}
+      {/* Map Preview */}
       <div className="bg-white rounded-lg border border-gray-200 p-6 mb-6">
-        <h2 className="text-lg font-semibold text-gray-900 mb-4">Details</h2>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <h2 className="text-lg font-semibold text-gray-900 mb-4">Location</h2>
+        <LocationPreview
+          latitude={location.latitude}
+          longitude={location.longitude}
+          name={location.name}
+          height="300px"
+        />
+        <div className="mt-4 flex flex-wrap items-center gap-4">
           <div>
             <p className="text-sm text-gray-500">Coordinates</p>
             <p className="font-medium">
-              {location.latitude.toFixed(4)}°, {location.longitude.toFixed(4)}°
+              {location.latitude.toFixed(6)}°, {location.longitude.toFixed(6)}°
             </p>
           </div>
           {location.altitude && (
@@ -104,6 +111,14 @@ export default function LocationDetail() {
               <p className="font-medium">{location.altitude.toLocaleString()} ft</p>
             </div>
           )}
+          <a
+            href={`https://www.google.com/maps/search/?api=1&query=${location.latitude},${location.longitude}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-sm text-blue-600 hover:text-blue-800 hover:underline"
+          >
+            Get Directions
+          </a>
         </div>
       </div>
 

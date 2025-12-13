@@ -15,3 +15,5 @@ export * from './sessions';
 export * from './weather';
 export * from './analytics';
 export * from './images';
+export * from './geocoding';
+export * from './sharedLocations';

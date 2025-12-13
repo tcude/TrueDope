@@ -8,3 +8,5 @@ export { sessionsService } from './sessions.service';
 export { weatherService } from './weather.service';
 export { analyticsService } from './analytics.service';
 export { imagesService } from './images.service';
+export { geocodingService } from './geocoding.service';
+export { sharedLocationsService } from './sharedLocations.service';

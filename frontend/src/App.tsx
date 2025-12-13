@@ -7,7 +7,7 @@ import { ToastProvider } from './components/ui/toast';
 import Home from './pages/Home';
 import { Login, Register, ForgotPassword, ResetPassword } from './pages/auth';
 import { Settings } from './pages/settings';
-import { AdminUsers } from './pages/admin';
+import { AdminDashboard, AdminUsers, AdminSharedLocations } from './pages/admin';
 
 // Lazy load pages for better code splitting
 import { lazy, Suspense } from 'react';
@@ -336,10 +336,26 @@ function AppContent() {
 
         {/* Admin routes */}
         <Route
+          path="/admin"
+          element={
+            <ProtectedRoute requireAdmin>
+              <AdminDashboard />
+            </ProtectedRoute>
+          }
+        />
+        <Route
           path="/admin/users"
           element={
             <ProtectedRoute requireAdmin>
               <AdminUsers />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/admin/shared-locations"
+          element={
+            <ProtectedRoute requireAdmin>
+              <AdminSharedLocations />
             </ProtectedRoute>
           }
         />

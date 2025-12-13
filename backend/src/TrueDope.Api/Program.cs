@@ -121,6 +121,13 @@ try
 
     // Register Weather service with HttpClient
     builder.Services.AddHttpClient<IWeatherService, WeatherService>();
+
+    // Register Geocoding service with HttpClient
+    builder.Services.AddHttpClient<IGeocodingService, GeocodingService>();
+
+    // Register Shared Location service
+    builder.Services.AddScoped<ISharedLocationService, SharedLocationService>();
+
     builder.Services.AddMemoryCache();
 
     // Configure MinIO

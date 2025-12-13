@@ -17,6 +17,7 @@ public class ApplicationDbContext : IdentityDbContext<User>
     public DbSet<Ammunition> Ammunition => Set<Ammunition>();
     public DbSet<AmmoLot> AmmoLots => Set<AmmoLot>();
     public DbSet<SavedLocation> SavedLocations => Set<SavedLocation>();
+    public DbSet<SharedLocation> SharedLocations => Set<SharedLocation>();
     public DbSet<RangeSession> RangeSessions => Set<RangeSession>();
     public DbSet<DopeEntry> DopeEntries => Set<DopeEntry>();
     public DbSet<ChronoSession> ChronoSessions => Set<ChronoSession>();
@@ -101,6 +102,21 @@ public class ApplicationDbContext : IdentityDbContext<User>
                 .OnDelete(DeleteBehavior.Cascade);
 
             entity.HasIndex(l => l.UserId);
+        });
+
+        // =====================
+        // SharedLocation
+        // =====================
+        builder.Entity<SharedLocation>(entity =>
+        {
+            entity.HasOne(l => l.CreatedByUser)
+                .WithMany()
+                .HasForeignKey(l => l.CreatedByUserId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            entity.HasIndex(l => l.IsActive);
+            entity.HasIndex(l => l.State);
+            entity.HasIndex(l => new { l.Latitude, l.Longitude });
         });
 
         // =====================

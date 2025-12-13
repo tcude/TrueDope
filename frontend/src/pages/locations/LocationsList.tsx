@@ -4,6 +4,9 @@ import { locationsService } from '../../services';
 import type { LocationListDto } from '../../types';
 import { Button, EmptyState, EmptyStateIcons, Skeleton } from '../../components/ui';
 import { useToast } from '../../hooks';
+import { LocationMap } from '../../components/map';
+
+type ViewMode = 'list' | 'map';
 
 export default function LocationsList() {
   const navigate = useNavigate();
@@ -11,6 +14,7 @@ export default function LocationsList() {
   const [locations, setLocations] = useState<LocationListDto[]>([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
+  const [viewMode, setViewMode] = useState<ViewMode>('list');
 
   useEffect(() => {
     loadLocations();
@@ -21,7 +25,7 @@ export default function LocationsList() {
       setLoading(true);
       const data = await locationsService.getAll();
       setLocations(data);
-    } catch (error) {
+    } catch {
       addToast({ type: 'error', message: 'Failed to load locations' });
     } finally {
       setLoading(false);
@@ -31,6 +35,10 @@ export default function LocationsList() {
   const filteredLocations = search
     ? locations.filter((l) => l.name.toLowerCase().includes(search.toLowerCase()))
     : locations;
+
+  const handleLocationSelect = (location: { id: number }) => {
+    navigate(`/locations/${location.id}`);
+  };
 
   if (loading) {
     return (
@@ -75,19 +83,63 @@ export default function LocationsList() {
         </Button>
       </div>
 
-      {/* Search */}
-      <div className="mb-6">
+      {/* Search and View Toggle */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
         <input
           type="text"
           value={search}
           onChange={(e) => setSearch(e.target.value)}
           placeholder="Search locations..."
-          className="w-full max-w-md h-10 px-3 rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
+          className="w-full sm:max-w-md h-10 px-3 rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
         />
+        <div className="flex bg-gray-100 rounded-md p-1">
+          <button
+            type="button"
+            onClick={() => setViewMode('list')}
+            className={`px-3 py-1.5 text-sm font-medium rounded transition-colors ${
+              viewMode === 'list'
+                ? 'bg-white text-gray-900 shadow-sm'
+                : 'text-gray-600 hover:text-gray-900'
+            }`}
+          >
+            <svg className="w-4 h-4 inline-block mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 10h16M4 14h16M4 18h16" />
+            </svg>
+            List
+          </button>
+          <button
+            type="button"
+            onClick={() => setViewMode('map')}
+            className={`px-3 py-1.5 text-sm font-medium rounded transition-colors ${
+              viewMode === 'map'
+                ? 'bg-white text-gray-900 shadow-sm'
+                : 'text-gray-600 hover:text-gray-900'
+            }`}
+          >
+            <svg className="w-4 h-4 inline-block mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7" />
+            </svg>
+            Map
+          </button>
+        </div>
       </div>
 
       {filteredLocations.length === 0 ? (
         <p className="text-center text-gray-500 py-8">No locations match your search.</p>
+      ) : viewMode === 'map' ? (
+        <div className="bg-white rounded-lg border border-gray-200 overflow-hidden">
+          <LocationMap
+            locations={filteredLocations}
+            onSelect={handleLocationSelect}
+            height="500px"
+            showClustering={true}
+          />
+          <div className="p-4 border-t border-gray-200 bg-gray-50">
+            <p className="text-sm text-gray-600">
+              Click a marker to view location details. Showing {filteredLocations.length} location{filteredLocations.length !== 1 ? 's' : ''}.
+            </p>
+          </div>
+        </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           {filteredLocations.map((location) => (

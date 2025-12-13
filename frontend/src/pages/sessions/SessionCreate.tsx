@@ -1,21 +1,22 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import { sessionsService, riflesService, locationsService, weatherService } from '../../services';
-import type { RifleListDto, LocationListDto, CreateSessionDto } from '../../types';
+import { sessionsService, riflesService, weatherService } from '../../services';
+import type { RifleListDto, CreateSessionDto } from '../../types';
 import { Button, Select, Skeleton, Collapsible, Badge } from '../../components/ui';
-import { useToast, useGeolocation } from '../../hooks';
+import { useToast } from '../../hooks';
+import { LocationCombobox, type LocationSelection } from '../../components/location';
+import { LocationPreview } from '../../components/map';
 
 export default function SessionCreate() {
   const navigate = useNavigate();
   const { addToast } = useToast();
-  const { position, error: geoError, loading: geoLoading, getCurrentPosition } = useGeolocation();
 
   const [rifles, setRifles] = useState<RifleListDto[]>([]);
-  const [locations, setLocations] = useState<LocationListDto[]>([]);
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
   const [fetchingWeather, setFetchingWeather] = useState(false);
   const [weatherFetched, setWeatherFetched] = useState(false);
+  const [selectedLocation, setSelectedLocation] = useState<LocationSelection | undefined>();
 
   const [formData, setFormData] = useState<CreateSessionDto>({
     rifleSetupId: 0,
@@ -26,74 +27,20 @@ export default function SessionCreate() {
     loadData();
   }, []);
 
-  // Auto-fetch weather when we have coordinates
-  useEffect(() => {
-    if (position && !weatherFetched) {
-      fetchWeather(position.latitude, position.longitude);
-    }
-  }, [position]);
-
-  // Update form with GPS coordinates when position changes
-  useEffect(() => {
-    if (position) {
-      setFormData(prev => ({
-        ...prev,
-        latitude: position.latitude,
-        longitude: position.longitude,
-        locationName: prev.locationName || 'Current Location',
-      }));
-    }
-  }, [position]);
-
   const loadData = async () => {
     try {
       setLoading(true);
-      const [riflesRes, locationsRes] = await Promise.all([
-        riflesService.getAll({ pageSize: 100 }),
-        locationsService.getAll(),
-      ]);
+      const riflesRes = await riflesService.getAll({ pageSize: 100 });
       setRifles(riflesRes.items);
-      setLocations(locationsRes);
 
       // Default to first rifle if available
       if (riflesRes.items.length > 0) {
         setFormData((prev) => ({ ...prev, rifleSetupId: riflesRes.items[0].id }));
       }
-    } catch (error) {
+    } catch {
       addToast({ type: 'error', message: 'Failed to load data' });
     } finally {
       setLoading(false);
-    }
-  };
-
-  const handleLocationChange = async (locationId: string) => {
-    if (!locationId) {
-      // Clear location data
-      setFormData(prev => ({
-        ...prev,
-        savedLocationId: undefined,
-        latitude: undefined,
-        longitude: undefined,
-        locationName: undefined,
-      }));
-      setWeatherFetched(false);
-      return;
-    }
-
-    const selectedLocation = locations.find(l => l.id === parseInt(locationId));
-    if (selectedLocation) {
-      setFormData(prev => ({
-        ...prev,
-        savedLocationId: selectedLocation.id,
-        latitude: selectedLocation.latitude,
-        longitude: selectedLocation.longitude,
-        locationName: selectedLocation.name,
-      }));
-
-      // Auto-fetch weather for saved location
-      if (selectedLocation.latitude && selectedLocation.longitude) {
-        await fetchWeather(selectedLocation.latitude, selectedLocation.longitude, selectedLocation.altitude ?? undefined);
-      }
     }
   };
 
@@ -122,15 +69,33 @@ export default function SessionCreate() {
     }
   };
 
-  const handleUseGPS = () => {
-    // Clear saved location when using GPS
+  const handleLocationSelect = useCallback(async (location: LocationSelection | undefined) => {
+    setSelectedLocation(location);
+    setWeatherFetched(false);
+
+    if (!location) {
+      setFormData(prev => ({
+        ...prev,
+        savedLocationId: undefined,
+        latitude: undefined,
+        longitude: undefined,
+        locationName: undefined,
+      }));
+      return;
+    }
+
+    // Update form data with location
     setFormData(prev => ({
       ...prev,
-      savedLocationId: undefined,
+      savedLocationId: location.type === 'saved' ? location.id : undefined,
+      latitude: location.latitude,
+      longitude: location.longitude,
+      locationName: location.name,
     }));
-    setWeatherFetched(false);
-    getCurrentPosition();
-  };
+
+    // Auto-fetch weather for any location with coordinates
+    await fetchWeather(location.latitude, location.longitude, location.altitude);
+  }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -234,77 +199,32 @@ export default function SessionCreate() {
         {/* Location Section */}
         <div className="bg-white rounded-lg border border-gray-200 p-6">
           <h2 className="text-lg font-semibold text-gray-900 mb-4">Location</h2>
-          <div className="space-y-4">
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Saved Location
-              </label>
-              <Select
-                value={formData.savedLocationId?.toString() || ''}
-                onChange={handleLocationChange}
-                options={[
-                  { value: '', label: 'No saved location' },
-                  ...locations.map((l) => ({ value: l.id.toString(), label: l.name })),
-                ]}
-                placeholder="Select location..."
+          <LocationCombobox
+            value={selectedLocation}
+            onChange={handleLocationSelect}
+            placeholder="Search or select location..."
+            showGpsButton={true}
+            allowCustom={true}
+          />
+          {fetchingWeather && (
+            <div className="flex items-center gap-2 mt-3 text-blue-600 text-sm">
+              <svg className="animate-spin h-4 w-4" fill="none" viewBox="0 0 24 24">
+                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
+              </svg>
+              <span>Fetching weather...</span>
+            </div>
+          )}
+          {selectedLocation && (
+            <div className="mt-4">
+              <LocationPreview
+                latitude={selectedLocation.latitude}
+                longitude={selectedLocation.longitude}
+                name={selectedLocation.name}
+                height="180px"
               />
             </div>
-
-            <div className="flex items-center gap-2">
-              <span className="text-sm text-gray-500">or</span>
-              <Button
-                type="button"
-                variant="outline"
-                size="sm"
-                onClick={handleUseGPS}
-                disabled={geoLoading}
-              >
-                {geoLoading ? (
-                  <>
-                    <svg className="animate-spin -ml-1 mr-2 h-4 w-4" fill="none" viewBox="0 0 24 24">
-                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
-                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
-                    </svg>
-                    Getting Location...
-                  </>
-                ) : (
-                  <>
-                    <svg className="w-4 h-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
-                    </svg>
-                    Use Current GPS
-                  </>
-                )}
-              </Button>
-            </div>
-
-            {geoError && (
-              <p className="text-sm text-red-600">{geoError}</p>
-            )}
-
-            {formData.latitude && formData.longitude && (
-              <div className="text-sm text-gray-600 bg-gray-50 rounded-md p-3">
-                <div className="flex items-center gap-2">
-                  <svg className="w-4 h-4 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                  </svg>
-                  <span>
-                    {formData.locationName || 'Location set'}: {formData.latitude.toFixed(4)}, {formData.longitude.toFixed(4)}
-                  </span>
-                </div>
-                {fetchingWeather && (
-                  <div className="flex items-center gap-2 mt-2 text-blue-600">
-                    <svg className="animate-spin h-4 w-4" fill="none" viewBox="0 0 24 24">
-                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
-                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
-                    </svg>
-                    <span>Fetching weather...</span>
-                  </div>
-                )}
-              </div>
-            )}
-          </div>
+          )}
         </div>
 
         {/* Conditions Section (Collapsible) */}

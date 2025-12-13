@@ -60,7 +60,7 @@ export function Header() {
             <>
               {isAdmin && (
                 <Link
-                  to="/admin/users"
+                  to="/admin"
                   className={`text-sm font-medium ${
                     isActive('/admin') ? 'text-gray-900' : 'text-gray-600 hover:text-gray-900'
                   }`}
