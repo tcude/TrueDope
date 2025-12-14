@@ -6,6 +6,7 @@ import type {
   UpdateUserRequest,
   ResetPasswordResponse,
   PaginatedResponse,
+  SystemStats,
 } from '../types/admin';
 
 export interface GetUsersParams {
@@ -46,6 +47,11 @@ export const adminService = {
 
   async enableUser(userId: string): Promise<ApiResponse> {
     const response = await api.post<ApiResponse>(`/admin/users/${userId}/enable`);
+    return response.data;
+  },
+
+  async getSystemStats(): Promise<ApiResponse<SystemStats>> {
+    const response = await api.get<ApiResponse<SystemStats>>('/admin/stats');
     return response.data;
   },
 };

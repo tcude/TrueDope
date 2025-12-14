@@ -110,4 +110,61 @@ public class MinioStorageService : IStorageService
             throw;
         }
     }
+
+    public async Task<List<StorageObjectInfo>> ListObjectsAsync(string bucket, string? prefix = null)
+    {
+        var objects = new List<StorageObjectInfo>();
+
+        try
+        {
+            var found = await _minioClient.BucketExistsAsync(new BucketExistsArgs().WithBucket(bucket));
+            if (!found)
+            {
+                _logger.LogWarning("Bucket does not exist: {Bucket}", bucket);
+                return objects;
+            }
+
+            var listArgs = new ListObjectsArgs()
+                .WithBucket(bucket)
+                .WithRecursive(true);
+
+            if (!string.IsNullOrEmpty(prefix))
+            {
+                listArgs = listArgs.WithPrefix(prefix);
+            }
+
+            var observable = _minioClient.ListObjectsEnumAsync(listArgs);
+            await foreach (var item in observable)
+            {
+                objects.Add(new StorageObjectInfo
+                {
+                    ObjectName = item.Key,
+                    Size = (long)item.Size,
+                    LastModified = item.LastModifiedDateTime ?? DateTime.UtcNow
+                });
+            }
+
+            _logger.LogInformation("Listed {Count} objects in bucket {Bucket}", objects.Count, bucket);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Failed to list objects in bucket: {Bucket}", bucket);
+        }
+
+        return objects;
+    }
+
+    public async Task<long> GetBucketSizeAsync(string bucket)
+    {
+        try
+        {
+            var objects = await ListObjectsAsync(bucket);
+            return objects.Sum(o => o.Size);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Failed to get bucket size for: {Bucket}", bucket);
+            return 0;
+        }
+    }
 }

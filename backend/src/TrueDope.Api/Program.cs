@@ -132,6 +132,10 @@ try
     builder.Services.AddScoped<IPreferencesService, PreferencesService>();
     builder.Services.AddSingleton<IUnitConversionService, UnitConversionService>();
 
+    // Register Phase 10 services (Admin Panel)
+    builder.Services.AddScoped<IAdminStatsService, AdminStatsService>();
+    builder.Services.AddScoped<IImageMaintenanceService, ImageMaintenanceService>();
+
     builder.Services.AddMemoryCache();
 
     // Configure MinIO

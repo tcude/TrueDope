@@ -20,18 +20,32 @@ public class AdminController : ControllerBase
     private readonly UserManager<User> _userManager;
     private readonly ApplicationDbContext _dbContext;
     private readonly IJwtService _jwtService;
+    private readonly IAdminStatsService _statsService;
     private readonly ILogger<AdminController> _logger;
 
     public AdminController(
         UserManager<User> userManager,
         ApplicationDbContext dbContext,
         IJwtService jwtService,
+        IAdminStatsService statsService,
         ILogger<AdminController> logger)
     {
         _userManager = userManager;
         _dbContext = dbContext;
         _jwtService = jwtService;
+        _statsService = statsService;
         _logger = logger;
+    }
+
+    /// <summary>
+    /// Get system statistics (admin only)
+    /// </summary>
+    [HttpGet("stats")]
+    [ProducesResponseType(typeof(ApiResponse<SystemStatsDto>), StatusCodes.Status200OK)]
+    public async Task<IActionResult> GetStats()
+    {
+        var stats = await _statsService.GetSystemStatsAsync();
+        return Ok(ApiResponse<SystemStatsDto>.Ok(stats));
     }
 
     /// <summary>
