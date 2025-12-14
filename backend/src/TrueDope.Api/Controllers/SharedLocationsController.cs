@@ -13,13 +13,16 @@ namespace TrueDope.Api.Controllers;
 public class SharedLocationsController : ControllerBase
 {
     private readonly ISharedLocationService _sharedLocationService;
+    private readonly IAdminAuditService _auditService;
     private readonly ILogger<SharedLocationsController> _logger;
 
     public SharedLocationsController(
         ISharedLocationService sharedLocationService,
+        IAdminAuditService auditService,
         ILogger<SharedLocationsController> logger)
     {
         _sharedLocationService = sharedLocationService;
+        _auditService = auditService;
         _logger = logger;
     }
 
@@ -116,6 +119,18 @@ public class SharedLocationsController : ControllerBase
         var userId = GetUserId();
         var id = await _sharedLocationService.CreateAsync(userId, dto);
 
+        // Log the admin action
+        await _auditService.LogActionAsync(new AdminAuditLogEntry
+        {
+            AdminUserId = userId,
+            ActionType = "SharedLocationCreated",
+            TargetEntityType = "SharedLocation",
+            TargetEntityId = id,
+            Details = new { dto.Name, dto.City, dto.State },
+            IpAddress = GetClientIpAddress(),
+            UserAgent = Request.Headers.UserAgent.ToString()
+        });
+
         return CreatedAtAction(nameof(GetById), new { id }, ApiResponse<int>.Ok(id, "Shared location created"));
     }
 
@@ -133,8 +148,22 @@ public class SharedLocationsController : ControllerBase
 
         try
         {
+            var userId = GetUserId();
             await _sharedLocationService.UpdateAsync(id, dto);
             var updated = await _sharedLocationService.GetByIdAsync(id);
+
+            // Log the admin action
+            await _auditService.LogActionAsync(new AdminAuditLogEntry
+            {
+                AdminUserId = userId,
+                ActionType = "SharedLocationUpdated",
+                TargetEntityType = "SharedLocation",
+                TargetEntityId = id,
+                Details = dto,
+                IpAddress = GetClientIpAddress(),
+                UserAgent = Request.Headers.UserAgent.ToString()
+            });
+
             return Ok(ApiResponse<SharedLocationAdminDto?>.Ok(updated, "Shared location updated"));
         }
         catch (KeyNotFoundException)
@@ -152,12 +181,47 @@ public class SharedLocationsController : ControllerBase
     {
         try
         {
+            var userId = GetUserId();
+
+            // Get location info before deleting for audit log
+            var location = await _sharedLocationService.GetByIdAsync(id);
+            if (location == null)
+            {
+                return NotFound(ApiResponse<object>.Fail("Shared location not found"));
+            }
+
             await _sharedLocationService.DeleteAsync(id);
+
+            // Log the admin action
+            await _auditService.LogActionAsync(new AdminAuditLogEntry
+            {
+                AdminUserId = userId,
+                ActionType = "SharedLocationDeleted",
+                TargetEntityType = "SharedLocation",
+                TargetEntityId = id,
+                Details = new { location.Name, location.City, location.State },
+                IpAddress = GetClientIpAddress(),
+                UserAgent = Request.Headers.UserAgent.ToString()
+            });
+
             return Ok(ApiResponse<object>.Ok(new { }, "Shared location deleted"));
         }
         catch (KeyNotFoundException)
         {
             return NotFound(ApiResponse<object>.Fail("Shared location not found"));
         }
+    }
+
+    private string? GetClientIpAddress()
+    {
+        // Check for X-Forwarded-For header first (for reverse proxies)
+        var forwardedFor = Request.Headers["X-Forwarded-For"].FirstOrDefault();
+        if (!string.IsNullOrEmpty(forwardedFor))
+        {
+            // Take the first IP in the list (original client)
+            return forwardedFor.Split(',')[0].Trim();
+        }
+
+        return HttpContext.Connection.RemoteIpAddress?.ToString();
     }
 }

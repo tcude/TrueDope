@@ -19,20 +19,20 @@ public class RifleService : IRifleService
 
     public async Task<PaginatedResponse<RifleListDto>> GetRiflesAsync(string userId, RifleFilterDto filter)
     {
+        // Note: No .Include() needed - we use Select() projection below
+        // which allows EF to generate efficient SQL with subqueries for counts
         var query = _context.RifleSetups
-            .Include(r => r.RangeSessions)
-            .Include(r => r.Images)
             .Where(r => r.UserId == userId);
 
-        // Apply search
+        // Apply search - use EF.Functions.ILike for case-insensitive PostgreSQL search
         if (!string.IsNullOrWhiteSpace(filter.Search))
         {
-            var search = filter.Search.ToLower();
+            var searchPattern = $"%{filter.Search}%";
             query = query.Where(r =>
-                r.Name.ToLower().Contains(search) ||
-                r.Caliber.ToLower().Contains(search) ||
-                (r.Manufacturer != null && r.Manufacturer.ToLower().Contains(search)) ||
-                (r.Model != null && r.Model.ToLower().Contains(search)));
+                EF.Functions.ILike(r.Name, searchPattern) ||
+                EF.Functions.ILike(r.Caliber, searchPattern) ||
+                (r.Manufacturer != null && EF.Functions.ILike(r.Manufacturer, searchPattern)) ||
+                (r.Model != null && EF.Functions.ILike(r.Model, searchPattern)));
         }
 
         // Count total

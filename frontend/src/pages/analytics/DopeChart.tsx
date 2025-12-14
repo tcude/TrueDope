@@ -232,7 +232,7 @@ export default function DopeChart() {
           { label: 'DOPE Chart' },
         ]}
         actions={
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-4 no-print">
             <Select
               value={selectedRifleId?.toString() || ''}
               onChange={handleRifleChange}
@@ -249,13 +249,25 @@ export default function DopeChart() {
             >
               {showFilters ? 'Hide Filters' : 'Show Filters'}
             </Button>
+            {chartData && chartData.dataPoints.length > 0 && (
+              <Button
+                variant="outline"
+                onClick={() => window.print()}
+                className="print-button"
+              >
+                <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z" />
+                </svg>
+                Print
+              </Button>
+            )}
           </div>
         }
       />
 
-      {/* Filters Panel */}
+      {/* Filters Panel - hidden when printing */}
       {showFilters && (
-        <div className="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-6 mb-6">
+        <div className="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-6 mb-6 no-print">
           <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-4">Condition Filters</h3>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -374,9 +386,9 @@ export default function DopeChart() {
         </div>
       )}
 
-      {/* Rifle Info */}
+      {/* Rifle Info - hidden when printing (shown in table header instead) */}
       {chartData && (
-        <div className="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-4 mb-6">
+        <div className="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-4 mb-6 no-print">
           <div className="flex flex-wrap gap-6 text-sm">
             <div>
               <span className="text-gray-500 dark:text-gray-400">Rifle:</span>
@@ -406,9 +418,9 @@ export default function DopeChart() {
         </div>
       )}
 
-      {/* Chart */}
+      {/* Chart - hidden when printing */}
       {chartData && chartDataPoints.length > 0 ? (
-        <div className="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-6 mb-6">
+        <div className="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-6 mb-6 no-print">
           <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-4">Elevation & Windage</h3>
           <div className="h-96">
             <ResponsiveContainer width="100%" height="100%">
@@ -450,20 +462,28 @@ export default function DopeChart() {
           </div>
         </div>
       ) : chartData && chartDataPoints.length === 0 ? (
-        <div className="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-12 mb-6 text-center">
+        <div className="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-12 mb-6 text-center no-print">
           <p className="text-gray-500 dark:text-gray-400">No DOPE data available for this rifle with the current filters.</p>
           <p className="text-sm text-gray-400 dark:text-gray-500 mt-2">Try adjusting the filters or record some DOPE entries.</p>
         </div>
       ) : null}
 
-      {/* Data Table */}
+      {/* Data Table - printable */}
       {chartData && chartData.dataPoints.length > 0 && (
-        <div className="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 overflow-hidden">
-          <div className="p-4 border-b border-gray-200 dark:border-gray-700">
+        <div className="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 overflow-hidden print-avoid-break">
+          {/* Print-only header with rifle info */}
+          <div className="hidden print:block p-4 border-b border-gray-200 text-center">
+            <h2 className="text-xl font-bold">{chartData.rifleName}</h2>
+            <p className="text-sm">
+              {chartData.caliber} | Zero: {chartData.zeroDistance} yds
+              {chartData.muzzleVelocity && ` | MV: ${chartData.muzzleVelocity} fps`}
+            </p>
+          </div>
+          <div className="p-4 border-b border-gray-200 dark:border-gray-700 print:hidden">
             <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100">DOPE Table</h3>
           </div>
           <div className="overflow-x-auto">
-            <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+            <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700 dope-table-printable">
               <thead className="bg-gray-50 dark:bg-gray-900">
                 <tr>
                   <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
@@ -475,10 +495,10 @@ export default function DopeChart() {
                   <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
                     Windage (MIL)
                   </th>
-                  <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                  <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider print:hidden">
                     Sessions
                   </th>
-                  <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                  <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider print:hidden">
                     Source
                   </th>
                 </tr>
@@ -520,10 +540,10 @@ export default function DopeChart() {
                         <span className="text-gray-400 dark:text-gray-500">-</span>
                       )}
                     </td>
-                    <td className="px-4 py-3 text-sm text-gray-500 dark:text-gray-400">
+                    <td className="px-4 py-3 text-sm text-gray-500 dark:text-gray-400 print:hidden">
                       {point.sessionCount > 0 ? point.sessionCount : '-'}
                     </td>
-                    <td className="px-4 py-3 text-sm">
+                    <td className="px-4 py-3 text-sm print:hidden">
                       <DataSourceBadge source={point.dataSource} />
                     </td>
                   </tr>

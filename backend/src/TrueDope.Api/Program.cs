@@ -136,6 +136,9 @@ try
     builder.Services.AddScoped<IAdminStatsService, AdminStatsService>();
     builder.Services.AddScoped<IImageMaintenanceService, ImageMaintenanceService>();
 
+    // Register Phase 11 services (Security & Audit)
+    builder.Services.AddScoped<IAdminAuditService, AdminAuditService>();
+
     builder.Services.AddMemoryCache();
 
     // Configure MinIO
@@ -220,6 +223,20 @@ try
 
     // Configure the HTTP request pipeline
     app.UseMiddleware<ExceptionHandlingMiddleware>();
+
+    // Add security headers to all responses
+    app.UseSecurityHeaders();
+
+    // Add rate limiting (before authentication so we can rate limit login attempts)
+    app.UseRateLimiting(options =>
+    {
+        options.LoginAttemptsPerMinute = 5;
+        options.RegistrationsPerHour = 3;
+        options.PasswordResetsPerHour = 3;
+        options.AuthRequestsPerMinute = 20;
+        options.ApiRequestsPerMinutePerUser = 100;
+        options.ApiRequestsPerMinutePerIp = 30;
+    });
 
     if (app.Environment.IsDevelopment())
     {

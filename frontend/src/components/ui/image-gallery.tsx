@@ -1,9 +1,52 @@
 import { useState, useCallback } from 'react';
-import { Trash2, GripVertical, Pencil, Loader2 } from 'lucide-react';
+import { Trash2, GripVertical, Pencil, Loader2, ImageOff } from 'lucide-react';
 import { cn } from '../../lib/utils';
 import { ImageLightbox } from './image-lightbox';
 import { imagesService } from '../../services';
 import type { ImageDetail } from '../../types/images';
+
+// Image component with loading state and error handling
+function LazyImage({
+  src,
+  alt,
+  className,
+}: {
+  src: string;
+  alt: string;
+  className?: string;
+}) {
+  const [loaded, setLoaded] = useState(false);
+  const [error, setError] = useState(false);
+
+  return (
+    <div className="relative w-full h-full">
+      {/* Shimmer placeholder while loading */}
+      {!loaded && !error && (
+        <div className="absolute inset-0 bg-gray-200 dark:bg-gray-700 animate-pulse" />
+      )}
+      {/* Error state */}
+      {error && (
+        <div className="absolute inset-0 bg-gray-100 dark:bg-gray-800 flex items-center justify-center">
+          <ImageOff className="h-8 w-8 text-gray-400" aria-hidden="true" />
+        </div>
+      )}
+      {/* Actual image */}
+      <img
+        src={src}
+        alt={alt}
+        className={cn(
+          className,
+          'transition-opacity duration-200',
+          loaded ? 'opacity-100' : 'opacity-0'
+        )}
+        loading="lazy"
+        decoding="async"
+        onLoad={() => setLoaded(true)}
+        onError={() => setError(true)}
+      />
+    </div>
+  );
+}
 
 interface ImageGalleryProps {
   images: ImageDetail[];
@@ -100,12 +143,11 @@ export function ImageGallery({
             onDragOver={(e) => handleDragOver(e, index)}
             onDragEnd={handleDragEnd}
           >
-            <div className="aspect-square bg-gray-100">
-              <img
+            <div className="aspect-square bg-gray-100 dark:bg-gray-800">
+              <LazyImage
                 src={image.thumbnailUrl}
                 alt={image.caption || image.originalFileName}
                 className="w-full h-full object-cover"
-                loading="lazy"
               />
             </div>
 

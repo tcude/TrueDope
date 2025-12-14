@@ -4,6 +4,7 @@ import { Layout } from './components/layout';
 import { ProtectedRoute } from './components/ProtectedRoute';
 import { PublicRoute } from './components/PublicRoute';
 import { ToastProvider } from './components/ui/toast';
+import { ErrorBoundary } from './components/ui/error-boundary';
 import Home from './pages/Home';
 import { Login, Register, ForgotPassword, ResetPassword } from './pages/auth';
 import { Settings } from './pages/settings';
@@ -376,11 +377,13 @@ function AppContent() {
 
 function App() {
   return (
-    <Router>
-      <ToastProvider>
-        <AppContent />
-      </ToastProvider>
-    </Router>
+    <ErrorBoundary>
+      <Router>
+        <ToastProvider>
+          <AppContent />
+        </ToastProvider>
+      </Router>
+    </ErrorBoundary>
   );
 }
 

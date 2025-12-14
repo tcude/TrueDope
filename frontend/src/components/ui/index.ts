@@ -22,6 +22,7 @@ export { Skeleton, SkeletonText, SkeletonCard, SkeletonStatCard, SkeletonTable, 
 export { LoadingSpinner, LoadingPage, LoadingOverlay } from './loading';
 export { Collapsible } from './collapsible';
 export { PageHeader } from './page-header';
+export { ErrorBoundary, useErrorHandler } from './error-boundary';
 
 // Image components
 export { ImageUpload } from './image-upload';

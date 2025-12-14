@@ -199,13 +199,14 @@ export function ConfirmDialog({
           type="button"
           onClick={onConfirm}
           disabled={isLoading}
+          aria-busy={isLoading}
           className={cn(
             'px-4 py-2 text-sm font-medium text-white rounded-md focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 dark:focus-visible:ring-offset-gray-800 disabled:opacity-50 inline-flex items-center transition-colors',
             confirmButtonClasses[variant]
           )}
         >
           {isLoading && (
-            <svg className="w-4 h-4 mr-2 animate-spin" fill="none" viewBox="0 0 24 24">
+            <svg className="w-4 h-4 mr-2 animate-spin" fill="none" viewBox="0 0 24 24" aria-hidden="true">
               <circle
                 className="opacity-25"
                 cx="12"

@@ -19,12 +19,10 @@ public class SessionService : ISessionService
 
     public async Task<PaginatedResponse<SessionListDto>> GetSessionsAsync(string userId, SessionFilterDto filter)
     {
+        // Note: AsNoTracking() is implicit when using Select() projection
+        // We don't need .Include() statements here since we use Select() projection below
+        // which allows EF to generate efficient SQL without loading full entities
         var query = _context.RangeSessions
-            .Include(s => s.RifleSetup)
-            .Include(s => s.ChronoSession)
-            .Include(s => s.DopeEntries)
-            .Include(s => s.GroupEntries)
-            .Include(s => s.Images)
             .Where(s => s.UserId == userId);
 
         // Apply filters

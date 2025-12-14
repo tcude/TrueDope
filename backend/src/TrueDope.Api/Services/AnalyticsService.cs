@@ -17,18 +17,21 @@ public class AnalyticsService : IAnalyticsService
     {
         var summary = new AnalyticsSummaryDto();
 
-        // Total sessions
+        // Total sessions (AsNoTracking implicit for aggregates but explicit for clarity)
         summary.TotalSessions = await _context.RangeSessions
+            .AsNoTracking()
             .Where(s => s.UserId == userId)
             .CountAsync();
 
         // Total rounds fired (from chrono sessions)
         summary.TotalRoundsFired = await _context.ChronoSessions
+            .AsNoTracking()
             .Where(cs => cs.RangeSession.UserId == userId)
             .SumAsync(cs => cs.NumberOfRounds);
 
         // Longest shot (from DOPE entries)
         var longestShot = await _context.DopeEntries
+            .AsNoTracking()
             .Where(d => d.RangeSession.UserId == userId)
             .OrderByDescending(d => d.Distance)
             .Select(d => new
@@ -55,6 +58,7 @@ public class AnalyticsService : IAnalyticsService
 
         // Best group (smallest MOA)
         var bestGroup = await _context.GroupEntries
+            .AsNoTracking()
             .Where(g => g.RangeSession.UserId == userId && g.GroupSizeMoa.HasValue)
             .OrderBy(g => g.GroupSizeMoa)
             .Select(g => new
@@ -90,6 +94,7 @@ public class AnalyticsService : IAnalyticsService
 
         // Lowest SD ammo (best velocity consistency)
         var ammoSdStats = await _context.ChronoSessions
+            .AsNoTracking()
             .Where(cs => cs.RangeSession.UserId == userId && cs.StandardDeviation.HasValue)
             .GroupBy(cs => new {
                 cs.AmmunitionId,
@@ -126,6 +131,7 @@ public class AnalyticsService : IAnalyticsService
         // Total cost (all time)
         // Cost = sum of (rounds * cost per round) for each chrono session
         var costData = await _context.ChronoSessions
+            .AsNoTracking()
             .Where(cs => cs.RangeSession.UserId == userId)
             .Select(cs => new
             {
@@ -157,16 +163,19 @@ public class AnalyticsService : IAnalyticsService
         var thirtyDaysAgo = DateTime.UtcNow.AddDays(-30);
 
         var lastSession = await _context.RangeSessions
+            .AsNoTracking()
             .Where(s => s.UserId == userId)
             .OrderByDescending(s => s.SessionDate)
             .Select(s => s.SessionDate)
             .FirstOrDefaultAsync();
 
         var recentSessions = await _context.RangeSessions
+            .AsNoTracking()
             .Where(s => s.UserId == userId && s.SessionDate >= thirtyDaysAgo)
             .CountAsync();
 
         var recentRounds = await _context.ChronoSessions
+            .AsNoTracking()
             .Where(cs => cs.RangeSession.UserId == userId && cs.RangeSession.SessionDate >= thirtyDaysAgo)
             .SumAsync(cs => cs.NumberOfRounds);
 
@@ -184,6 +193,7 @@ public class AnalyticsService : IAnalyticsService
     {
         // Verify rifle belongs to user
         var rifle = await _context.RifleSetups
+            .AsNoTracking()
             .Where(r => r.Id == filter.RifleId && r.UserId == userId)
             .FirstOrDefaultAsync();
 
@@ -204,8 +214,8 @@ public class AnalyticsService : IAnalyticsService
 
         // Build base query for sessions
         var sessionsQuery = _context.RangeSessions
-            .Where(s => s.UserId == userId && s.RifleSetupId == filter.RifleId)
-            .AsQueryable();
+            .AsNoTracking()
+            .Where(s => s.UserId == userId && s.RifleSetupId == filter.RifleId);
 
         // Apply filters
         if (filter.FromDate.HasValue)
@@ -248,6 +258,7 @@ public class AnalyticsService : IAnalyticsService
 
         // Get metadata
         var totalSessionsAll = await _context.RangeSessions
+            .AsNoTracking()
             .Where(s => s.UserId == userId && s.RifleSetupId == filter.RifleId)
             .CountAsync();
 
@@ -255,6 +266,7 @@ public class AnalyticsService : IAnalyticsService
 
         // Get conditions range from all sessions for this rifle
         var conditionsData = await _context.RangeSessions
+            .AsNoTracking()
             .Where(s => s.UserId == userId && s.RifleSetupId == filter.RifleId)
             .Where(s => s.Temperature.HasValue || s.Humidity.HasValue || s.Pressure.HasValue)
             .Select(s => new
@@ -379,6 +391,7 @@ public class AnalyticsService : IAnalyticsService
     {
         // Verify ammo belongs to user
         var ammo = await _context.Ammunition
+            .AsNoTracking()
             .Where(a => a.Id == filter.AmmoId && a.UserId == userId)
             .FirstOrDefaultAsync();
 
@@ -399,17 +412,17 @@ public class AnalyticsService : IAnalyticsService
         if (filter.LotId.HasValue)
         {
             var lot = await _context.AmmoLots
+                .AsNoTracking()
                 .Where(l => l.Id == filter.LotId.Value && l.UserId == userId)
                 .Select(l => l.LotNumber)
                 .FirstOrDefaultAsync();
             result.LotNumber = lot;
         }
 
-        // Build query
+        // Build query - no Include needed since we use Select projection
         var query = _context.ChronoSessions
-            .Include(cs => cs.RangeSession)
-            .Where(cs => cs.AmmunitionId == filter.AmmoId && cs.RangeSession.UserId == userId)
-            .AsQueryable();
+            .AsNoTracking()
+            .Where(cs => cs.AmmunitionId == filter.AmmoId && cs.RangeSession.UserId == userId);
 
         if (filter.LotId.HasValue)
             query = query.Where(cs => cs.AmmoLotId == filter.LotId.Value);
@@ -488,6 +501,7 @@ public class AnalyticsService : IAnalyticsService
         foreach (var ammoId in ammoIds)
         {
             var ammo = await _context.Ammunition
+                .AsNoTracking()
                 .Where(a => a.Id == ammoId && a.UserId == userId)
                 .FirstOrDefaultAsync();
 
@@ -502,6 +516,7 @@ public class AnalyticsService : IAnalyticsService
 
             // Get velocity stats
             var chronoData = await _context.ChronoSessions
+                .AsNoTracking()
                 .Where(cs => cs.AmmunitionId == ammoId && cs.RangeSession.UserId == userId)
                 .Where(cs => cs.AverageVelocity.HasValue)
                 .Select(cs => new
@@ -528,6 +543,7 @@ public class AnalyticsService : IAnalyticsService
 
             // Get group stats
             var groupData = await _context.GroupEntries
+                .AsNoTracking()
                 .Where(g => g.AmmunitionId == ammoId && g.RangeSession.UserId == userId)
                 .Where(g => g.GroupSizeMoa.HasValue)
                 .Select(g => new
@@ -582,6 +598,7 @@ public class AnalyticsService : IAnalyticsService
     public async Task<LotComparisonDto> GetLotComparisonAsync(string userId, int ammoId)
     {
         var ammo = await _context.Ammunition
+            .AsNoTracking()
             .Where(a => a.Id == ammoId && a.UserId == userId)
             .FirstOrDefaultAsync();
 
@@ -597,6 +614,7 @@ public class AnalyticsService : IAnalyticsService
         };
 
         var lots = await _context.AmmoLots
+            .AsNoTracking()
             .Where(l => l.AmmunitionId == ammoId && l.UserId == userId)
             .ToListAsync();
 
@@ -611,6 +629,7 @@ public class AnalyticsService : IAnalyticsService
 
             // Get velocity stats for this lot
             var chronoData = await _context.ChronoSessions
+                .AsNoTracking()
                 .Where(cs => cs.AmmoLotId == lot.Id && cs.RangeSession.UserId == userId)
                 .Where(cs => cs.AverageVelocity.HasValue)
                 .Select(cs => new
@@ -637,6 +656,7 @@ public class AnalyticsService : IAnalyticsService
 
             // Get group stats for this lot
             var groupData = await _context.GroupEntries
+                .AsNoTracking()
                 .Where(g => g.AmmoLotId == lot.Id && g.RangeSession.UserId == userId)
                 .Where(g => g.GroupSizeMoa.HasValue)
                 .Select(g => new
@@ -694,13 +714,10 @@ public class AnalyticsService : IAnalyticsService
             }
         };
 
-        // Build base query
+        // Build base query - no Includes needed since we use Select projection
         var query = _context.ChronoSessions
-            .Include(cs => cs.RangeSession)
-            .Include(cs => cs.Ammunition)
-            .Include(cs => cs.AmmoLot)
-            .Where(cs => cs.RangeSession.UserId == userId)
-            .AsQueryable();
+            .AsNoTracking()
+            .Where(cs => cs.RangeSession.UserId == userId);
 
         if (filter.FromDate.HasValue)
             query = query.Where(cs => cs.RangeSession.SessionDate >= filter.FromDate.Value);

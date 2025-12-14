@@ -325,7 +325,8 @@ public class AuthController : ControllerBase
         {
             // Generate a secure reset token
             var resetToken = GenerateSecureToken();
-            user.PasswordResetToken = resetToken;
+            // Store hashed token for security - never store plain text tokens
+            user.PasswordResetToken = HashToken(resetToken);
             user.PasswordResetTokenExpiry = DateTime.UtcNow.AddHours(1);
 
             await _dbContext.SaveChangesAsync();
@@ -336,6 +337,7 @@ public class AuthController : ControllerBase
 
             try
             {
+                // Send the unhashed token to the user via email
                 await _emailService.SendPasswordResetEmailAsync(user.Email!, resetToken, resetUrl);
                 _logger.LogInformation("Password reset email sent to: {Email}", request.Email);
             }
@@ -373,9 +375,12 @@ public class AuthController : ControllerBase
             return BadRequest(ApiErrorResponse.ValidationError("Validation failed", errors));
         }
 
-        // Find user by reset token
+        // Hash the incoming token to compare with stored hash
+        var hashedToken = HashToken(request.Token);
+
+        // Find user by reset token (comparing hashed values)
         var user = _dbContext.Users.FirstOrDefault(u =>
-            u.PasswordResetToken == request.Token &&
+            u.PasswordResetToken == hashedToken &&
             u.PasswordResetTokenExpiry > DateTime.UtcNow);
 
         if (user == null)
@@ -425,5 +430,12 @@ public class AuthController : ControllerBase
             .Replace("+", "-")
             .Replace("/", "_")
             .Replace("=", "");
+    }
+
+    private static string HashToken(string token)
+    {
+        var tokenBytes = Encoding.UTF8.GetBytes(token);
+        var hashBytes = SHA256.HashData(tokenBytes);
+        return Convert.ToBase64String(hashBytes);
     }
 }

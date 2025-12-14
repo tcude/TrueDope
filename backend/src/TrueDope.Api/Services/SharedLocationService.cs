@@ -22,16 +22,17 @@ public class SharedLocationService : ISharedLocationService
     public async Task<List<SharedLocationListDto>> GetActiveLocationsAsync(string? search = null, string? state = null)
     {
         var query = _context.SharedLocations
-            .Where(l => l.IsActive)
-            .AsQueryable();
+            .AsNoTracking()
+            .Where(l => l.IsActive);
 
+        // Use EF.Functions.ILike for case-insensitive PostgreSQL search
         if (!string.IsNullOrWhiteSpace(search))
         {
-            var searchLower = search.ToLower();
+            var searchPattern = $"%{search}%";
             query = query.Where(l =>
-                l.Name.ToLower().Contains(searchLower) ||
-                (l.City != null && l.City.ToLower().Contains(searchLower)) ||
-                (l.Description != null && l.Description.ToLower().Contains(searchLower)));
+                EF.Functions.ILike(l.Name, searchPattern) ||
+                (l.City != null && EF.Functions.ILike(l.City, searchPattern)) ||
+                (l.Description != null && EF.Functions.ILike(l.Description, searchPattern)));
         }
 
         if (!string.IsNullOrWhiteSpace(state))
@@ -60,7 +61,7 @@ public class SharedLocationService : ISharedLocationService
 
     public async Task<List<SharedLocationAdminDto>> GetAllLocationsAsync(bool includeInactive = true)
     {
-        var query = _context.SharedLocations.AsQueryable();
+        var query = _context.SharedLocations.AsNoTracking();
 
         if (!includeInactive)
         {
@@ -93,6 +94,7 @@ public class SharedLocationService : ISharedLocationService
     public async Task<SharedLocationAdminDto?> GetByIdAsync(int id)
     {
         return await _context.SharedLocations
+            .AsNoTracking()
             .Where(l => l.Id == id)
             .Select(l => new SharedLocationAdminDto
             {

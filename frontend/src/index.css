@@ -4,6 +4,9 @@
 /* Configure dark mode to use class selector */
 @variant dark (&:where(.dark, .dark *));
 
+/* Configure print media query variant */
+@variant print (@media print);
+
 /* Light Mode Color Tokens */
 :root {
   --color-bg-primary: theme('colors.white');
@@ -43,4 +46,105 @@ body {
   background-color: var(--color-bg-secondary);
   color: var(--color-text-primary);
   transition: background-color 0.2s ease-in-out, color 0.2s ease-in-out;
+}
+
+/* Print Styles */
+@media print {
+  /* Reset background colors for printing */
+  body,
+  .dark {
+    background-color: white !important;
+    color: black !important;
+  }
+
+  /* Hide non-essential UI elements when printing */
+  header,
+  nav,
+  .no-print,
+  button:not(.print-button),
+  [data-print-hide] {
+    display: none !important;
+  }
+
+  /* Ensure printable content is visible */
+  .print-only {
+    display: block !important;
+  }
+
+  /* DOPE Chart print styles */
+  .dope-table-printable {
+    page-break-inside: avoid;
+    font-size: 10pt;
+  }
+
+  .dope-table-printable th,
+  .dope-table-printable td {
+    padding: 4px 8px !important;
+    border: 1px solid #ccc !important;
+    background-color: white !important;
+    color: black !important;
+  }
+
+  .dope-table-printable th {
+    background-color: #f0f0f0 !important;
+    font-weight: bold;
+  }
+
+  /* Compact DOPE card for rifle stock */
+  .dope-card-compact {
+    max-width: 3in;
+    font-size: 8pt;
+    page-break-inside: avoid;
+    border: 2px solid black;
+    padding: 4px;
+  }
+
+  .dope-card-compact table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+
+  .dope-card-compact th,
+  .dope-card-compact td {
+    padding: 2px 4px;
+    border: 1px solid #666;
+    text-align: center;
+  }
+
+  .dope-card-compact th {
+    background-color: #e0e0e0 !important;
+    font-weight: bold;
+    font-size: 7pt;
+  }
+
+  .dope-card-compact .rifle-info {
+    font-size: 9pt;
+    font-weight: bold;
+    margin-bottom: 4px;
+    text-align: center;
+  }
+
+  /* Remove shadows and rounded corners for cleaner print */
+  * {
+    box-shadow: none !important;
+    border-radius: 0 !important;
+  }
+
+  /* Ensure links are visible */
+  a[href]::after {
+    content: none;
+  }
+
+  /* Page break utilities */
+  .print-break-before {
+    page-break-before: always;
+  }
+
+  .print-break-after {
+    page-break-after: always;
+  }
+
+  .print-avoid-break {
+    page-break-inside: avoid;
+  }
 }

@@ -19,20 +19,19 @@ public class AmmoService : IAmmoService
 
     public async Task<PaginatedResponse<AmmoListDto>> GetAmmoAsync(string userId, AmmoFilterDto filter)
     {
+        // Note: No .Include() needed - we use Select() projection below
+        // which allows EF to generate efficient SQL with subqueries for counts
         var query = _context.Ammunition
-            .Include(a => a.AmmoLots)
-            .Include(a => a.ChronoSessions)
-            .Include(a => a.GroupEntries)
             .Where(a => a.UserId == userId);
 
-        // Apply search
+        // Apply search - use EF.Functions.ILike for case-insensitive PostgreSQL search
         if (!string.IsNullOrWhiteSpace(filter.Search))
         {
-            var search = filter.Search.ToLower();
+            var searchPattern = $"%{filter.Search}%";
             query = query.Where(a =>
-                a.Name.ToLower().Contains(search) ||
-                a.Manufacturer.ToLower().Contains(search) ||
-                a.Caliber.ToLower().Contains(search));
+                EF.Functions.ILike(a.Name, searchPattern) ||
+                EF.Functions.ILike(a.Manufacturer, searchPattern) ||
+                EF.Functions.ILike(a.Caliber, searchPattern));
         }
 
         // Apply caliber filter

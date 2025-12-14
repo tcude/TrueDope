@@ -19,4 +19,20 @@ export default defineConfig({
       },
     },
   },
+  build: {
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          // Vendor chunks - separate large dependencies
+          'vendor-react': ['react', 'react-dom', 'react-router-dom'],
+          'vendor-charts': ['recharts'],
+          'vendor-maps': ['leaflet', 'react-leaflet'],
+          'vendor-forms': ['react-hook-form', '@hookform/resolvers', 'zod'],
+          'vendor-state': ['zustand', 'axios'],
+        },
+      },
+    },
+    // Increase limit to avoid warnings for expected large chunks
+    chunkSizeWarningLimit: 600,
+  },
 })

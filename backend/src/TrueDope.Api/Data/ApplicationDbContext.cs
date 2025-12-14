@@ -25,6 +25,7 @@ public class ApplicationDbContext : IdentityDbContext<User>
     public DbSet<GroupEntry> GroupEntries => Set<GroupEntry>();
     public DbSet<Image> Images => Set<Image>();
     public DbSet<UserPreferences> UserPreferences => Set<UserPreferences>();
+    public DbSet<AdminAuditLog> AdminAuditLogs => Set<AdminAuditLog>();
 
     protected override void OnModelCreating(ModelBuilder builder)
     {
@@ -268,6 +269,27 @@ public class ApplicationDbContext : IdentityDbContext<User>
                 .OnDelete(DeleteBehavior.Cascade);
 
             entity.HasIndex(i => i.UserId);
+        });
+
+        // =====================
+        // AdminAuditLog
+        // =====================
+        builder.Entity<AdminAuditLog>(entity =>
+        {
+            entity.HasOne(a => a.AdminUser)
+                .WithMany()
+                .HasForeignKey(a => a.AdminUserId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            entity.Property(a => a.ActionType).HasMaxLength(100).IsRequired();
+            entity.Property(a => a.TargetEntityType).HasMaxLength(100);
+            entity.Property(a => a.IpAddress).HasMaxLength(50);
+            entity.Property(a => a.UserAgent).HasMaxLength(500);
+
+            entity.HasIndex(a => a.AdminUserId);
+            entity.HasIndex(a => a.Timestamp);
+            entity.HasIndex(a => a.ActionType);
+            entity.HasIndex(a => a.TargetUserId);
         });
     }
 }

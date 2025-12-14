@@ -21,6 +21,7 @@ public class AdminController : ControllerBase
     private readonly ApplicationDbContext _dbContext;
     private readonly IJwtService _jwtService;
     private readonly IAdminStatsService _statsService;
+    private readonly IAdminAuditService _auditService;
     private readonly ILogger<AdminController> _logger;
 
     public AdminController(
@@ -28,12 +29,14 @@ public class AdminController : ControllerBase
         ApplicationDbContext dbContext,
         IJwtService jwtService,
         IAdminStatsService statsService,
+        IAdminAuditService auditService,
         ILogger<AdminController> logger)
     {
         _userManager = userManager;
         _dbContext = dbContext;
         _jwtService = jwtService;
         _statsService = statsService;
+        _auditService = auditService;
         _logger = logger;
     }
 
@@ -46,6 +49,35 @@ public class AdminController : ControllerBase
     {
         var stats = await _statsService.GetSystemStatsAsync();
         return Ok(ApiResponse<SystemStatsDto>.Ok(stats));
+    }
+
+    /// <summary>
+    /// Get admin audit logs (admin only)
+    /// </summary>
+    [HttpGet("audit-logs")]
+    [ProducesResponseType(typeof(ApiResponse<List<AdminAuditLogDto>>), StatusCodes.Status200OK)]
+    public async Task<IActionResult> GetAuditLogs(
+        [FromQuery] string? adminUserId = null,
+        [FromQuery] string? targetUserId = null,
+        [FromQuery] string? actionType = null,
+        [FromQuery] DateTime? fromDate = null,
+        [FromQuery] DateTime? toDate = null,
+        [FromQuery] int page = 1,
+        [FromQuery] int pageSize = 50)
+    {
+        var filter = new AdminAuditFilter
+        {
+            AdminUserId = adminUserId,
+            TargetUserId = targetUserId,
+            ActionType = actionType,
+            FromDate = fromDate,
+            ToDate = toDate,
+            Page = page,
+            PageSize = pageSize
+        };
+
+        var logs = await _auditService.GetLogsAsync(filter);
+        return Ok(ApiResponse<List<AdminAuditLogDto>>.Ok(logs));
     }
 
     /// <summary>
@@ -64,16 +96,16 @@ public class AdminController : ControllerBase
         if (pageSize < 1) pageSize = 20;
         if (pageSize > 100) pageSize = 100;
 
-        var query = _dbContext.Users.AsQueryable();
+        var query = _dbContext.Users.AsNoTracking();
 
-        // Search filter
+        // Search filter - use EF.Functions.ILike for case-insensitive PostgreSQL search
         if (!string.IsNullOrWhiteSpace(search))
         {
-            var searchLower = search.ToLower();
+            var searchPattern = $"%{search}%";
             query = query.Where(u =>
-                (u.Email != null && u.Email.ToLower().Contains(searchLower)) ||
-                (u.FirstName != null && u.FirstName.ToLower().Contains(searchLower)) ||
-                (u.LastName != null && u.LastName.ToLower().Contains(searchLower)));
+                (u.Email != null && EF.Functions.ILike(u.Email, searchPattern)) ||
+                (u.FirstName != null && EF.Functions.ILike(u.FirstName, searchPattern)) ||
+                (u.LastName != null && EF.Functions.ILike(u.LastName, searchPattern)));
         }
 
         // Sorting
@@ -188,6 +220,17 @@ public class AdminController : ControllerBase
             return BadRequest(ApiErrorResponse.Create("UPDATE_FAILED", "Failed to update user"));
         }
 
+        // Log the admin action
+        await _auditService.LogActionAsync(new AdminAuditLogEntry
+        {
+            AdminUserId = currentUserId!,
+            ActionType = "UserUpdated",
+            TargetUserId = userId,
+            Details = new { request.FirstName, request.LastName, request.IsAdmin },
+            IpAddress = GetClientIpAddress(),
+            UserAgent = Request.Headers.UserAgent.ToString()
+        });
+
         _logger.LogInformation("Admin updated user: {UserId}", userId);
 
         return Ok(ApiResponse.Ok("User updated successfully"));
@@ -201,6 +244,8 @@ public class AdminController : ControllerBase
     [ProducesResponseType(typeof(ApiErrorResponse), StatusCodes.Status404NotFound)]
     public async Task<IActionResult> ResetUserPassword(string userId)
     {
+        var currentUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
         var user = await _userManager.FindByIdAsync(userId);
         if (user == null)
         {
@@ -222,6 +267,16 @@ public class AdminController : ControllerBase
 
         // Revoke all refresh tokens
         await _jwtService.RevokeAllRefreshTokensAsync(userId);
+
+        // Log the admin action
+        await _auditService.LogActionAsync(new AdminAuditLogEntry
+        {
+            AdminUserId = currentUserId!,
+            ActionType = "PasswordReset",
+            TargetUserId = userId,
+            IpAddress = GetClientIpAddress(),
+            UserAgent = Request.Headers.UserAgent.ToString()
+        });
 
         _logger.LogInformation("Admin reset password for user: {UserId}", userId);
 
@@ -266,6 +321,16 @@ public class AdminController : ControllerBase
         // Revoke all refresh tokens
         await _jwtService.RevokeAllRefreshTokensAsync(userId);
 
+        // Log the admin action
+        await _auditService.LogActionAsync(new AdminAuditLogEntry
+        {
+            AdminUserId = currentUserId!,
+            ActionType = "UserDisabled",
+            TargetUserId = userId,
+            IpAddress = GetClientIpAddress(),
+            UserAgent = Request.Headers.UserAgent.ToString()
+        });
+
         _logger.LogInformation("Admin disabled user: {UserId}", userId);
 
         return Ok(ApiResponse.Ok("User account disabled"));
@@ -279,6 +344,8 @@ public class AdminController : ControllerBase
     [ProducesResponseType(typeof(ApiErrorResponse), StatusCodes.Status404NotFound)]
     public async Task<IActionResult> EnableUser(string userId)
     {
+        var currentUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
         var user = await _userManager.FindByIdAsync(userId);
         if (user == null)
         {
@@ -294,6 +361,16 @@ public class AdminController : ControllerBase
             _logger.LogError("Failed to enable user: {UserId}", userId);
             return BadRequest(ApiErrorResponse.Create("ENABLE_FAILED", "Failed to enable user"));
         }
+
+        // Log the admin action
+        await _auditService.LogActionAsync(new AdminAuditLogEntry
+        {
+            AdminUserId = currentUserId!,
+            ActionType = "UserEnabled",
+            TargetUserId = userId,
+            IpAddress = GetClientIpAddress(),
+            UserAgent = Request.Headers.UserAgent.ToString()
+        });
 
         _logger.LogInformation("Admin enabled user: {UserId}", userId);
 
@@ -332,5 +409,18 @@ public class AdminController : ControllerBase
         }
 
         return new string(password);
+    }
+
+    private string? GetClientIpAddress()
+    {
+        // Check for X-Forwarded-For header first (for reverse proxies)
+        var forwardedFor = Request.Headers["X-Forwarded-For"].FirstOrDefault();
+        if (!string.IsNullOrEmpty(forwardedFor))
+        {
+            // Take the first IP in the list (original client)
+            return forwardedFor.Split(',')[0].Trim();
+        }
+
+        return HttpContext.Connection.RemoteIpAddress?.ToString();
     }
 }

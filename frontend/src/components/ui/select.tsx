@@ -16,13 +16,14 @@ interface SelectProps extends Omit<React.SelectHTMLAttributes<HTMLSelectElement>
 }
 
 export const Select = React.forwardRef<HTMLSelectElement, SelectProps>(
-  ({ className, options, value, onChange, placeholder, error, disabled, ...props }, ref) => {
+  ({ className, options, value, onChange, placeholder, error, disabled, 'aria-invalid': ariaInvalid, ...props }, ref) => {
     return (
       <select
         ref={ref}
         value={value ?? ''}
         onChange={(e) => onChange?.(e.target.value)}
         disabled={disabled}
+        aria-invalid={ariaInvalid ?? error}
         className={cn(
           'flex h-10 w-full rounded-md border bg-white dark:bg-gray-800 px-3 py-2 text-sm text-gray-900 dark:text-gray-100',
           'focus:outline-none focus:ring-2 focus:ring-offset-2 dark:focus:ring-offset-gray-900',
