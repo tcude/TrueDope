@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { sessionsService, riflesService, locationsService } from '../../services';
 import type {
@@ -31,12 +31,23 @@ export default function SessionEdit() {
   // Form data
   const [formData, setFormData] = useState<UpdateSessionDto>({});
 
+  // Debounce ref to prevent rapid refresh calls
+  const refreshTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const isRefreshingRef = useRef(false);
+
   useEffect(() => {
     if (id) {
       loadData(parseInt(id));
     }
+    // Cleanup on unmount
+    return () => {
+      if (refreshTimeoutRef.current) {
+        clearTimeout(refreshTimeoutRef.current);
+      }
+    };
   }, [id]);
 
+  // Full data load (session + rifles + locations) - used on initial load and details save
   const loadData = async (sessionId: number) => {
     try {
       setLoading(true);
@@ -73,6 +84,23 @@ export default function SessionEdit() {
     }
   };
 
+  // Lightweight session-only refresh - used by child tabs (DOPE, Chrono, Groups)
+  // This avoids re-fetching rifles/locations which don't change
+  const refreshSession = useCallback(async (sessionId: number) => {
+    // Skip if already refreshing
+    if (isRefreshingRef.current) return;
+
+    try {
+      isRefreshingRef.current = true;
+      const sessionData = await sessionsService.getById(sessionId);
+      setSession(sessionData);
+    } catch (error) {
+      addToast({ type: 'error', message: 'Failed to refresh session' });
+    } finally {
+      isRefreshingRef.current = false;
+    }
+  }, [addToast]);
+
   const handleSave = async () => {
     if (!session) return;
     try {
@@ -87,11 +115,22 @@ export default function SessionEdit() {
     }
   };
 
-  const handleRefresh = () => {
-    if (session) {
-      loadData(session.id);
+  // Debounced refresh for child tabs - prevents rapid API calls when user
+  // performs multiple quick actions (e.g., adding velocities rapidly)
+  const handleRefresh = useCallback(() => {
+    if (!session) return;
+
+    // Clear any pending refresh
+    if (refreshTimeoutRef.current) {
+      clearTimeout(refreshTimeoutRef.current);
     }
-  };
+
+    // Debounce: wait 300ms before actually refreshing
+    // This coalesces multiple rapid onUpdate() calls into a single API call
+    refreshTimeoutRef.current = setTimeout(() => {
+      refreshSession(session.id);
+    }, 300);
+  }, [session, refreshSession]);
 
   if (loading) {
     return (
