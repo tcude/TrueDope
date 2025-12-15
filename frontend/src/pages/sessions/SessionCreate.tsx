@@ -93,9 +93,13 @@ export default function SessionCreate() {
       locationName: location.name,
     }));
 
-    // Auto-fetch weather for any location with coordinates
-    await fetchWeather(location.latitude, location.longitude, location.altitude);
-  }, []);
+    // Only auto-fetch weather if session date is today
+    // No point hitting the weather API for historical sessions
+    const today = new Date().toISOString().split('T')[0];
+    if (formData.sessionDate === today) {
+      await fetchWeather(location.latitude, location.longitude, location.altitude);
+    }
+  }, [formData.sessionDate]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
