@@ -56,6 +56,7 @@ public class Ammunition
     public ICollection<AmmoLot> AmmoLots { get; set; } = new List<AmmoLot>();
     public ICollection<ChronoSession> ChronoSessions { get; set; } = new List<ChronoSession>();
     public ICollection<GroupEntry> GroupEntries { get; set; } = new List<GroupEntry>();
+    public ICollection<DopeEntry> DopeEntries { get; set; } = new List<DopeEntry>();
 
     // Computed
     [NotMapped]

@@ -12,6 +12,13 @@ public class DopeEntry
     public int RangeSessionId { get; set; }
     public RangeSession RangeSession { get; set; } = null!;
 
+    // Ammunition (optional)
+    public int? AmmunitionId { get; set; }
+    public Ammunition? Ammunition { get; set; }
+
+    public int? AmmoLotId { get; set; }
+    public AmmoLot? AmmoLot { get; set; }
+
     // The data
     [Required]
     [Range(1, 2500)]

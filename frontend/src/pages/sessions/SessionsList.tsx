@@ -243,10 +243,7 @@ export default function SessionsList() {
                 <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Date</th>
                 <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Ammunition</th>
                 <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Rifle</th>
-                <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Rounds</th>
-                <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Avg Velocity</th>
-                <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">SD</th>
-                <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">ES</th>
+                <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Location</th>
                 <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Data</th>
               </tr>
             </thead>
@@ -279,17 +276,8 @@ export default function SessionsList() {
                   <td className="px-4 py-4 whitespace-nowrap text-gray-900 dark:text-gray-100">
                     {session.rifle?.name || '-'}
                   </td>
-                  <td className="px-4 py-4 whitespace-nowrap text-gray-900 dark:text-gray-100 text-center">
-                    {session.velocityReadingCount > 0 ? session.velocityReadingCount : '-'}
-                  </td>
-                  <td className="px-4 py-4 whitespace-nowrap text-gray-900 dark:text-gray-100">
-                    {session.averageVelocity ? `${Math.round(session.averageVelocity)} fps` : '-'}
-                  </td>
-                  <td className="px-4 py-4 whitespace-nowrap text-gray-900 dark:text-gray-100">
-                    {session.standardDeviation != null ? `${session.standardDeviation.toFixed(1)} fps` : '-'}
-                  </td>
-                  <td className="px-4 py-4 whitespace-nowrap text-gray-900 dark:text-gray-100">
-                    {session.extremeSpread != null ? `${Math.round(session.extremeSpread)} fps` : '-'}
+                  <td className="px-4 py-4 whitespace-nowrap text-gray-500 dark:text-gray-400">
+                    {session.locationName || '-'}
                   </td>
                   <td className="px-4 py-4 whitespace-nowrap">
                     <div className="flex gap-1.5">

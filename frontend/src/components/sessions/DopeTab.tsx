@@ -1,11 +1,13 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import type {
   DopeEntryDto,
   CreateDopeEntryDto,
   UpdateDopeEntryDto,
+  AmmoListDto,
+  AmmoLotDto,
 } from '../../types';
-import { sessionsService } from '../../services';
-import { Button, Modal, ConfirmDialog } from '../ui';
+import { sessionsService, ammunitionService } from '../../services';
+import { Button, Modal, ConfirmDialog, Select } from '../ui';
 import { useToast } from '../../hooks';
 import { milsToInches } from '../../types/sessions';
 
@@ -20,12 +22,16 @@ interface DopeFormState {
   distance: string;
   elevationMils: string;
   notes: string;
+  ammunitionId: string;
+  ammoLotId: string;
 }
 
 const initialFormState: DopeFormState = {
   distance: '100',
   elevationMils: '',
   notes: '',
+  ammunitionId: '',
+  ammoLotId: '',
 };
 
 export function DopeTab({ sessionId, entries, onUpdate, readOnly = false }: DopeTabProps) {
@@ -35,6 +41,43 @@ export function DopeTab({ sessionId, entries, onUpdate, readOnly = false }: Dope
   const [deleteTarget, setDeleteTarget] = useState<DopeEntryDto | null>(null);
   const [formData, setFormData] = useState<DopeFormState>(initialFormState);
   const [submitting, setSubmitting] = useState(false);
+  const [ammunition, setAmmunition] = useState<AmmoListDto[]>([]);
+  const [lots, setLots] = useState<AmmoLotDto[]>([]);
+  const [loadingLots, setLoadingLots] = useState(false);
+
+  // Load ammunition list on mount
+  useEffect(() => {
+    const loadAmmunition = async () => {
+      try {
+        const response = await ammunitionService.getAll({ pageSize: 100 });
+        setAmmunition(response.items);
+      } catch (error) {
+        console.error('Failed to load ammunition:', error);
+      }
+    };
+    loadAmmunition();
+  }, []);
+
+  // Load lots when ammunition changes
+  useEffect(() => {
+    const loadLots = async () => {
+      if (!formData.ammunitionId) {
+        setLots([]);
+        return;
+      }
+      try {
+        setLoadingLots(true);
+        const ammoLots = await ammunitionService.getLots(parseInt(formData.ammunitionId));
+        setLots(ammoLots);
+      } catch (error) {
+        console.error('Failed to load lots:', error);
+        setLots([]);
+      } finally {
+        setLoadingLots(false);
+      }
+    };
+    loadLots();
+  }, [formData.ammunitionId]);
 
   // Sort entries by distance
   const sortedEntries = [...entries].sort((a, b) => a.distance - b.distance);
@@ -44,10 +87,14 @@ export function DopeTab({ sessionId, entries, onUpdate, readOnly = false }: Dope
     const maxDistance = entries.length > 0
       ? Math.max(...entries.map(e => e.distance))
       : 0;
+    // Try to carry over ammunition from last entry if available
+    const lastEntry = entries.length > 0 ? entries[entries.length - 1] : null;
     setFormData({
       distance: String(maxDistance > 0 ? maxDistance + 100 : 100),
       elevationMils: '',
       notes: '',
+      ammunitionId: lastEntry?.ammunition?.id?.toString() || '',
+      ammoLotId: lastEntry?.ammoLot?.id?.toString() || '',
     });
     setEditingEntry(null);
     setShowModal(true);
@@ -58,6 +105,8 @@ export function DopeTab({ sessionId, entries, onUpdate, readOnly = false }: Dope
       distance: String(entry.distance),
       elevationMils: String(entry.elevationMils),
       notes: entry.notes || '',
+      ammunitionId: entry.ammunition?.id?.toString() || '',
+      ammoLotId: entry.ammoLot?.id?.toString() || '',
     });
     setEditingEntry(entry);
     setShowModal(true);
@@ -95,6 +144,8 @@ export function DopeTab({ sessionId, entries, onUpdate, readOnly = false }: Dope
         const updateData: UpdateDopeEntryDto = {
           elevationMils,
           notes: formData.notes || undefined,
+          ammunitionId: formData.ammunitionId ? parseInt(formData.ammunitionId) : undefined,
+          ammoLotId: formData.ammoLotId ? parseInt(formData.ammoLotId) : undefined,
         };
         await sessionsService.updateDopeEntry(sessionId, editingEntry.id, updateData);
         addToast({ type: 'success', message: 'DOPE entry updated' });
@@ -103,6 +154,8 @@ export function DopeTab({ sessionId, entries, onUpdate, readOnly = false }: Dope
           distance,
           elevationMils,
           notes: formData.notes || undefined,
+          ammunitionId: formData.ammunitionId ? parseInt(formData.ammunitionId) : undefined,
+          ammoLotId: formData.ammoLotId ? parseInt(formData.ammoLotId) : undefined,
         };
         await sessionsService.addDopeEntry(sessionId, createData);
         addToast({ type: 'success', message: 'DOPE entry added' });
@@ -161,6 +214,9 @@ export function DopeTab({ sessionId, entries, onUpdate, readOnly = false }: Dope
                   Distance
                 </th>
                 <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
+                  Ammunition
+                </th>
+                <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
                   Elevation (MIL)
                 </th>
                 <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
@@ -183,6 +239,20 @@ export function DopeTab({ sessionId, entries, onUpdate, readOnly = false }: Dope
                   <tr key={entry.id} className="hover:bg-gray-50 dark:hover:bg-gray-700">
                     <td className="px-4 py-3 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-gray-100">
                       {entry.distance} yds
+                    </td>
+                    <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-700 dark:text-gray-300">
+                      {entry.ammunition ? (
+                        <div>
+                          <div className="font-medium">{entry.ammunition.displayName}</div>
+                          {entry.ammoLot && (
+                            <div className="text-xs text-gray-500 dark:text-gray-400">
+                              Lot: {entry.ammoLot.lotNumber}
+                            </div>
+                          )}
+                        </div>
+                      ) : (
+                        <span className="text-gray-400">-</span>
+                      )}
                     </td>
                     <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-700 dark:text-gray-300">
                       {entry.elevationMils >= 0 ? '+' : ''}{entry.elevationMils.toFixed(1)}
@@ -266,6 +336,47 @@ export function DopeTab({ sessionId, entries, onUpdate, readOnly = false }: Dope
               </p>
             )}
           </div>
+
+          {/* Ammunition Selection */}
+          <div>
+            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+              Ammunition (optional)
+            </label>
+            <Select
+              value={formData.ammunitionId}
+              onChange={(value) => {
+                setFormData(prev => ({
+                  ...prev,
+                  ammunitionId: value,
+                  ammoLotId: '', // Reset lot when ammo changes
+                }));
+              }}
+              options={[
+                { value: '', label: 'No ammunition selected' },
+                ...ammunition.map((a) => ({ value: a.id.toString(), label: a.displayName })),
+              ]}
+              placeholder="Select ammunition..."
+            />
+          </div>
+
+          {/* Lot Selection (only show if ammunition selected) */}
+          {formData.ammunitionId && (
+            <div>
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                Lot (optional)
+              </label>
+              <Select
+                value={formData.ammoLotId}
+                onChange={(value) => setFormData(prev => ({ ...prev, ammoLotId: value }))}
+                options={[
+                  { value: '', label: 'No lot selected' },
+                  ...lots.map((l) => ({ value: l.id.toString(), label: l.lotNumber })),
+                ]}
+                placeholder={loadingLots ? 'Loading lots...' : 'Select lot...'}
+                disabled={loadingLots}
+              />
+            </div>
+          )}
 
           <div>
             <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">

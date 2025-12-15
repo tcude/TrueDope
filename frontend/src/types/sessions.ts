@@ -88,6 +88,8 @@ export interface DopeEntryDto {
   elevationMoa: number;
   windageMoa: number;
   notes: string | null;
+  ammunition: AmmoSummaryDto | null;
+  ammoLot: AmmoLotSummaryDto | null;
 }
 
 export interface CreateDopeEntryDto {
@@ -95,12 +97,16 @@ export interface CreateDopeEntryDto {
   elevationMils: number;
   windageMils?: number; // Will default to 0 on backend
   notes?: string;
+  ammunitionId?: number;
+  ammoLotId?: number;
 }
 
 export interface UpdateDopeEntryDto {
   elevationMils?: number;
   windageMils?: number;
   notes?: string;
+  ammunitionId?: number;
+  ammoLotId?: number;
 }
 
 // ==================== Chrono DTOs ====================

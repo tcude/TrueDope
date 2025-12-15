@@ -129,6 +129,9 @@ public class SessionService : ISessionService
             .Include(s => s.RifleSetup)
             .Include(s => s.SavedLocation)
             .Include(s => s.DopeEntries)
+                .ThenInclude(d => d.Ammunition)
+            .Include(s => s.DopeEntries)
+                .ThenInclude(d => d.AmmoLot)
             .Include(s => s.ChronoSession)
                 .ThenInclude(c => c!.Ammunition)
             .Include(s => s.ChronoSession)
@@ -366,13 +369,35 @@ public class SessionService : ISessionService
         if (session == null)
             throw new ArgumentException("Session not found");
 
+        // Validate ammunition belongs to user if provided
+        if (dto.AmmunitionId.HasValue)
+        {
+            var ammoExists = await _context.Ammunition
+                .AnyAsync(a => a.Id == dto.AmmunitionId.Value && a.UserId == userId);
+            if (!ammoExists)
+                throw new ArgumentException("Ammunition not found");
+        }
+
+        // Validate lot belongs to the ammunition if provided
+        if (dto.AmmoLotId.HasValue)
+        {
+            var lotValid = await _context.AmmoLots
+                .AnyAsync(l => l.Id == dto.AmmoLotId.Value &&
+                              l.UserId == userId &&
+                              (!dto.AmmunitionId.HasValue || l.AmmunitionId == dto.AmmunitionId.Value));
+            if (!lotValid)
+                throw new ArgumentException("Ammunition lot not found or doesn't match ammunition");
+        }
+
         var dopeEntry = new DopeEntry
         {
             RangeSessionId = sessionId,
             Distance = dto.Distance,
             ElevationMils = dto.ElevationMils,
             WindageMils = dto.WindageMils,
-            Notes = dto.Notes
+            Notes = dto.Notes,
+            AmmunitionId = dto.AmmunitionId,
+            AmmoLotId = dto.AmmoLotId
         };
 
         _context.DopeEntries.Add(dopeEntry);
@@ -390,9 +415,31 @@ public class SessionService : ISessionService
         if (entry == null)
             return false;
 
+        // Validate ammunition belongs to user if provided
+        if (dto.AmmunitionId.HasValue)
+        {
+            var ammoExists = await _context.Ammunition
+                .AnyAsync(a => a.Id == dto.AmmunitionId.Value && a.UserId == userId);
+            if (!ammoExists)
+                throw new ArgumentException("Ammunition not found");
+        }
+
+        // Validate lot belongs to the ammunition if provided
+        if (dto.AmmoLotId.HasValue)
+        {
+            var lotValid = await _context.AmmoLots
+                .AnyAsync(l => l.Id == dto.AmmoLotId.Value &&
+                              l.UserId == userId &&
+                              (!dto.AmmunitionId.HasValue || l.AmmunitionId == dto.AmmunitionId.Value));
+            if (!lotValid)
+                throw new ArgumentException("Ammunition lot not found or doesn't match ammunition");
+        }
+
         if (dto.ElevationMils.HasValue) entry.ElevationMils = dto.ElevationMils.Value;
         if (dto.WindageMils.HasValue) entry.WindageMils = dto.WindageMils.Value;
         if (dto.Notes != null) entry.Notes = dto.Notes;
+        if (dto.AmmunitionId.HasValue) entry.AmmunitionId = dto.AmmunitionId;
+        if (dto.AmmoLotId.HasValue) entry.AmmoLotId = dto.AmmoLotId;
 
         await _context.SaveChangesAsync();
         return true;
@@ -704,7 +751,21 @@ public class SessionService : ISessionService
                 WindageInches = d.WindageInches,
                 ElevationMoa = d.ElevationMoa,
                 WindageMoa = d.WindageMoa,
-                Notes = d.Notes
+                Notes = d.Notes,
+                Ammunition = d.Ammunition != null ? new AmmoSummaryDto
+                {
+                    Id = d.Ammunition.Id,
+                    DisplayName = d.Ammunition.DisplayName,
+                    Manufacturer = d.Ammunition.Manufacturer,
+                    Name = d.Ammunition.Name,
+                    Caliber = d.Ammunition.Caliber,
+                    Grain = d.Ammunition.Grain
+                } : null,
+                AmmoLot = d.AmmoLot != null ? new AmmoLotSummaryDto
+                {
+                    Id = d.AmmoLot.Id,
+                    LotNumber = d.AmmoLot.LotNumber
+                } : null
             }).OrderBy(d => d.Distance).ToList(),
             ChronoSession = session.ChronoSession != null ? new ChronoSessionDto
             {

@@ -90,6 +90,8 @@ public class DopeEntryDto
     public decimal ElevationMoa { get; set; }
     public decimal WindageMoa { get; set; }
     public string? Notes { get; set; }
+    public AmmoSummaryDto? Ammunition { get; set; }
+    public AmmoLotSummaryDto? AmmoLot { get; set; }
 }
 
 public class CreateDopeEntryDto
@@ -108,6 +110,9 @@ public class CreateDopeEntryDto
 
     [MaxLength(500)]
     public string? Notes { get; set; }
+
+    public int? AmmunitionId { get; set; }
+    public int? AmmoLotId { get; set; }
 }
 
 public class UpdateDopeEntryDto
@@ -120,6 +125,9 @@ public class UpdateDopeEntryDto
 
     [MaxLength(500)]
     public string? Notes { get; set; }
+
+    public int? AmmunitionId { get; set; }
+    public int? AmmoLotId { get; set; }
 }
 
 // ==================== Chrono DTOs ====================
