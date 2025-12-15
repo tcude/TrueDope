@@ -20,6 +20,12 @@ public class SessionListDto
     public int GroupEntryCount { get; set; }
     public int ImageCount { get; set; }
     public DateTime CreatedAt { get; set; }
+
+    // Chrono summary data for list display
+    public string? AmmunitionName { get; set; }
+    public decimal? AverageVelocity { get; set; }
+    public decimal? StandardDeviation { get; set; }
+    public decimal? ExtremeSpread { get; set; }
 }
 
 public class RifleSummaryDto

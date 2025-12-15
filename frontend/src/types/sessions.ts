@@ -23,6 +23,11 @@ export interface SessionListDto {
   imageCount: number;
   roundsFired: number | null;
   createdAt: string;
+  // Chrono summary data for list display
+  ammunitionName: string | null;
+  averageVelocity: number | null;
+  standardDeviation: number | null;
+  extremeSpread: number | null;
 }
 
 export interface RifleSummaryDto {

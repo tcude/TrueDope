@@ -236,14 +236,18 @@ export default function SessionsList() {
 
       {/* Sessions Table */}
       {sessions.length > 0 && (
-        <div className="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 overflow-hidden">
+        <div className="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 overflow-hidden overflow-x-auto">
           <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
             <thead className="bg-gray-50 dark:bg-gray-900">
               <tr>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Date</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Rifle</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Location</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Data</th>
+                <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Date</th>
+                <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Ammunition</th>
+                <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Rifle</th>
+                <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Rounds</th>
+                <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Avg Velocity</th>
+                <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">SD</th>
+                <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">ES</th>
+                <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Data</th>
               </tr>
             </thead>
             <tbody className="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
@@ -253,19 +257,42 @@ export default function SessionsList() {
                   onClick={() => navigate(`/sessions/${session.id}`)}
                   className="hover:bg-gray-50 dark:hover:bg-gray-700 cursor-pointer transition-colors"
                 >
-                  <td className="px-6 py-4 whitespace-nowrap">
+                  <td className="px-4 py-4 whitespace-nowrap">
                     <Link to={`/sessions/${session.id}`} className="text-blue-600 dark:text-blue-400 hover:underline font-medium">
                       {new Date(session.sessionDate).toLocaleDateString()}
                     </Link>
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-gray-900 dark:text-gray-100">
+                  <td className="px-4 py-4 whitespace-nowrap">
+                    {session.ammunitionName ? (
+                      <div>
+                        <div className="text-sm font-medium text-gray-900 dark:text-gray-100">
+                          {session.ammunitionName}
+                        </div>
+                        <div className="text-xs text-gray-500 dark:text-gray-400">
+                          {session.rifle?.caliber}
+                        </div>
+                      </div>
+                    ) : (
+                      <span className="text-gray-400 dark:text-gray-500">-</span>
+                    )}
+                  </td>
+                  <td className="px-4 py-4 whitespace-nowrap text-gray-900 dark:text-gray-100">
                     {session.rifle?.name || '-'}
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-gray-500 dark:text-gray-400">
-                    {session.locationName || '-'}
+                  <td className="px-4 py-4 whitespace-nowrap text-gray-900 dark:text-gray-100 text-center">
+                    {session.velocityReadingCount > 0 ? session.velocityReadingCount : '-'}
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap">
-                    <div className="flex gap-2">
+                  <td className="px-4 py-4 whitespace-nowrap text-gray-900 dark:text-gray-100">
+                    {session.averageVelocity ? `${Math.round(session.averageVelocity)} fps` : '-'}
+                  </td>
+                  <td className="px-4 py-4 whitespace-nowrap text-gray-900 dark:text-gray-100">
+                    {session.standardDeviation != null ? `${session.standardDeviation.toFixed(1)} fps` : '-'}
+                  </td>
+                  <td className="px-4 py-4 whitespace-nowrap text-gray-900 dark:text-gray-100">
+                    {session.extremeSpread != null ? `${Math.round(session.extremeSpread)} fps` : '-'}
+                  </td>
+                  <td className="px-4 py-4 whitespace-nowrap">
+                    <div className="flex gap-1.5">
                       {session.hasDopeData && (
                         <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-blue-100 dark:bg-blue-900 text-blue-700 dark:text-blue-300">
                           DOPE: {session.dopeEntryCount}
@@ -283,7 +310,7 @@ export default function SessionsList() {
                       )}
                       {session.imageCount > 0 && (
                         <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-amber-100 dark:bg-amber-900 text-amber-700 dark:text-amber-300">
-                          Photos: {session.imageCount}
+                          📷 {session.imageCount}
                         </span>
                       )}
                     </div>

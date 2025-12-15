@@ -100,7 +100,14 @@ public class SessionService : ISessionService
                 VelocityReadingCount = s.ChronoSession != null ? s.ChronoSession.VelocityReadings.Count : 0,
                 GroupEntryCount = s.GroupEntries.Count,
                 ImageCount = s.Images.Count,
-                CreatedAt = s.CreatedAt
+                CreatedAt = s.CreatedAt,
+                // Chrono summary data
+                AmmunitionName = s.ChronoSession != null
+                    ? s.ChronoSession.Ammunition.Manufacturer + " " + s.ChronoSession.Ammunition.Name
+                    : null,
+                AverageVelocity = s.ChronoSession != null ? s.ChronoSession.AverageVelocity : null,
+                StandardDeviation = s.ChronoSession != null ? s.ChronoSession.StandardDeviation : null,
+                ExtremeSpread = s.ChronoSession != null ? s.ChronoSession.ExtremeSpread : null
             })
             .ToListAsync();
 
