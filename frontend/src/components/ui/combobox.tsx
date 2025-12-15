@@ -140,12 +140,12 @@ export function Combobox({
           placeholder={placeholder}
           disabled={disabled}
           className={cn(
-            'flex h-10 w-full rounded-md border bg-white px-3 py-2 text-sm pr-10',
-            'focus:outline-none focus:ring-2 focus:ring-offset-2',
+            'flex h-10 w-full rounded-md border bg-white dark:bg-gray-800 px-3 py-2 text-sm pr-10 text-gray-900 dark:text-gray-100',
+            'focus:outline-none focus:ring-2 focus:ring-offset-2 dark:focus:ring-offset-gray-900',
             'disabled:cursor-not-allowed disabled:opacity-50',
             error
               ? 'border-red-500 focus:ring-red-500'
-              : 'border-gray-300 focus:ring-blue-500'
+              : 'border-gray-300 dark:border-gray-600 focus:ring-blue-500'
           )}
           role="combobox"
           aria-expanded={isOpen}
@@ -161,7 +161,7 @@ export function Combobox({
             }
           }}
           disabled={disabled}
-          className="absolute inset-y-0 right-0 flex items-center px-2 text-gray-400"
+          className="absolute inset-y-0 right-0 flex items-center px-2 text-gray-400 dark:text-gray-500"
           tabIndex={-1}
           aria-label="Toggle options"
         >
@@ -186,7 +186,7 @@ export function Combobox({
           ref={listRef}
           id="combobox-options"
           role="listbox"
-          className="absolute z-10 w-full mt-1 bg-white border border-gray-300 rounded-md shadow-lg max-h-60 overflow-auto"
+          className="absolute z-10 w-full mt-1 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-md shadow-lg max-h-60 overflow-auto"
         >
           {filteredOptions.map((option, index) => (
             <li
@@ -196,10 +196,10 @@ export function Combobox({
               onClick={() => handleSelect(option)}
               onMouseEnter={() => setHighlightedIndex(index)}
               className={cn(
-                'px-3 py-2 text-sm cursor-pointer',
-                option === value && 'bg-blue-50 text-blue-700',
-                highlightedIndex === index && option !== value && 'bg-gray-100',
-                option !== value && highlightedIndex !== index && 'hover:bg-gray-50'
+                'px-3 py-2 text-sm cursor-pointer text-gray-900 dark:text-gray-100',
+                option === value && 'bg-blue-50 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300',
+                highlightedIndex === index && option !== value && 'bg-gray-100 dark:bg-gray-700',
+                option !== value && highlightedIndex !== index && 'hover:bg-gray-50 dark:hover:bg-gray-700'
               )}
             >
               {option}
@@ -211,12 +211,12 @@ export function Combobox({
               onClick={() => handleSelect(inputValue)}
               onMouseEnter={() => setHighlightedIndex(filteredOptions.length)}
               className={cn(
-                'px-3 py-2 text-sm cursor-pointer border-t border-gray-100',
-                highlightedIndex === filteredOptions.length ? 'bg-gray-100' : 'hover:bg-gray-50'
+                'px-3 py-2 text-sm cursor-pointer border-t border-gray-100 dark:border-gray-700',
+                highlightedIndex === filteredOptions.length ? 'bg-gray-100 dark:bg-gray-700' : 'hover:bg-gray-50 dark:hover:bg-gray-700'
               )}
             >
-              <span className="text-gray-500">Add:</span>{' '}
-              <span className="font-medium">{inputValue}</span>
+              <span className="text-gray-500 dark:text-gray-400">Add:</span>{' '}
+              <span className="font-medium text-gray-900 dark:text-gray-100">{inputValue}</span>
             </li>
           )}
         </ul>

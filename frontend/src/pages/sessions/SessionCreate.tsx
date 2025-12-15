@@ -137,12 +137,12 @@ export default function SessionCreate() {
   if (rifles.length === 0) {
     return (
       <div className="container mx-auto px-4 py-8 max-w-2xl">
-        <Link to="/sessions" className="text-sm text-gray-500 hover:text-gray-700 mb-2 inline-block">
+        <Link to="/sessions" className="text-sm text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 mb-2 inline-block">
           &larr; Back to Sessions
         </Link>
-        <h1 className="text-2xl font-bold text-gray-900 mb-8">New Session</h1>
-        <div className="bg-white rounded-lg border border-gray-200 p-6 text-center">
-          <p className="text-gray-500 mb-4">You need to add a rifle before creating a session.</p>
+        <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-8">New Session</h1>
+        <div className="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-6 text-center">
+          <p className="text-gray-500 dark:text-gray-400 mb-4">You need to add a rifle before creating a session.</p>
           <Button onClick={() => navigate('/rifles/new')}>Add Rifle</Button>
         </div>
       </div>
@@ -151,34 +151,34 @@ export default function SessionCreate() {
 
   return (
     <div className="container mx-auto px-4 py-8 max-w-2xl">
-      <Link to="/sessions" className="text-sm text-gray-500 hover:text-gray-700 mb-2 inline-block">
+      <Link to="/sessions" className="text-sm text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 mb-2 inline-block">
         &larr; Back to Sessions
       </Link>
-      <h1 className="text-2xl font-bold text-gray-900 mb-2">New Session</h1>
-      <p className="text-gray-500 text-sm mb-8">
+      <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-2">New Session</h1>
+      <p className="text-gray-500 dark:text-gray-400 text-sm mb-8">
         Create a session first, then add DOPE, chrono, and group data on the edit page.
       </p>
 
       <form onSubmit={handleSubmit} className="space-y-6">
         {/* Basic Info Section */}
-        <div className="bg-white rounded-lg border border-gray-200 p-6">
-          <h2 className="text-lg font-semibold text-gray-900 mb-4">Basic Info</h2>
+        <div className="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-6">
+          <h2 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-4">Basic Info</h2>
           <div className="space-y-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                 Date *
               </label>
               <input
                 type="date"
                 value={formData.sessionDate}
                 onChange={(e) => setFormData((prev) => ({ ...prev, sessionDate: e.target.value }))}
-                className="w-full h-10 px-3 rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full h-10 px-3 rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500"
                 required
               />
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                 Rifle *
               </label>
               <Select
@@ -192,8 +192,8 @@ export default function SessionCreate() {
         </div>
 
         {/* Location Section */}
-        <div className="bg-white rounded-lg border border-gray-200 p-6">
-          <h2 className="text-lg font-semibold text-gray-900 mb-4">Location</h2>
+        <div className="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-6">
+          <h2 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-4">Location</h2>
           <LocationCombobox
             value={selectedLocation}
             onChange={handleLocationSelect}
@@ -232,7 +232,7 @@ export default function SessionCreate() {
         >
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                 Temperature (°F)
               </label>
               <input
@@ -242,13 +242,13 @@ export default function SessionCreate() {
                   ...prev,
                   temperature: e.target.value ? parseInt(e.target.value) : undefined
                 }))}
-                className="w-full h-10 px-3 rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full h-10 px-3 rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500"
                 placeholder="72"
               />
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                 Humidity (%)
               </label>
               <input
@@ -258,7 +258,7 @@ export default function SessionCreate() {
                   ...prev,
                   humidity: e.target.value ? parseInt(e.target.value) : undefined
                 }))}
-                className="w-full h-10 px-3 rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full h-10 px-3 rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500"
                 min="0"
                 max="100"
                 placeholder="50"
@@ -266,7 +266,7 @@ export default function SessionCreate() {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                 Pressure (inHg)
               </label>
               <input
@@ -277,13 +277,13 @@ export default function SessionCreate() {
                   ...prev,
                   pressure: e.target.value ? parseFloat(e.target.value) : undefined
                 }))}
-                className="w-full h-10 px-3 rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full h-10 px-3 rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500"
                 placeholder="29.92"
               />
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                 Wind Speed (mph)
               </label>
               <input
@@ -293,14 +293,14 @@ export default function SessionCreate() {
                   ...prev,
                   windSpeed: e.target.value ? parseInt(e.target.value) : undefined
                 }))}
-                className="w-full h-10 px-3 rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full h-10 px-3 rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500"
                 min="0"
                 placeholder="5"
               />
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                 Wind Direction (°)
               </label>
               <input
@@ -310,7 +310,7 @@ export default function SessionCreate() {
                   ...prev,
                   windDirection: e.target.value ? parseInt(e.target.value) : undefined
                 }))}
-                className="w-full h-10 px-3 rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full h-10 px-3 rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500"
                 min="0"
                 max="360"
                 placeholder="180"
@@ -318,7 +318,7 @@ export default function SessionCreate() {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                 Density Altitude (ft)
               </label>
               <input
@@ -328,7 +328,7 @@ export default function SessionCreate() {
                   ...prev,
                   densityAltitude: e.target.value ? parseInt(e.target.value) : undefined
                 }))}
-                className="w-full h-10 px-3 rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full h-10 px-3 rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500"
                 placeholder="1500"
               />
             </div>
@@ -345,13 +345,13 @@ export default function SessionCreate() {
         </Collapsible>
 
         {/* Notes Section */}
-        <div className="bg-white rounded-lg border border-gray-200 p-6">
-          <h2 className="text-lg font-semibold text-gray-900 mb-4">Notes</h2>
+        <div className="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-6">
+          <h2 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-4">Notes</h2>
           <textarea
             value={formData.notes || ''}
             onChange={(e) => setFormData((prev) => ({ ...prev, notes: e.target.value }))}
             rows={3}
-            className="w-full px-3 py-2 rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="w-full px-3 py-2 rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500"
             placeholder="Session notes..."
           />
         </div>

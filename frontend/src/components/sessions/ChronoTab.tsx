@@ -202,22 +202,22 @@ export function ChronoTab({ sessionId, chronoSession, onUpdate, readOnly = false
   if (!chronoSession) {
     if (readOnly) {
       return (
-        <div className="text-center py-12 bg-gray-50 rounded-lg">
-          <p className="text-gray-500">No chrono data recorded.</p>
+        <div className="text-center py-12 bg-gray-50 dark:bg-gray-700 rounded-lg">
+          <p className="text-gray-500 dark:text-gray-400">No chrono data recorded.</p>
         </div>
       );
     }
 
     return (
       <div className="space-y-6">
-        <h3 className="text-lg font-medium text-gray-900">Create Chrono Session</h3>
-        <p className="text-sm text-gray-500">
+        <h3 className="text-lg font-medium text-gray-900 dark:text-gray-100">Create Chrono Session</h3>
+        <p className="text-sm text-gray-500 dark:text-gray-400">
           Select an ammunition to start recording velocity data for this session.
         </p>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
+            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
               Ammunition *
             </label>
             <Select
@@ -233,7 +233,7 @@ export function ChronoTab({ sessionId, chronoSession, onUpdate, readOnly = false
 
           {selectedAmmoId > 0 && lots.length > 0 && (
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                 Lot (optional)
               </label>
               <Select
@@ -248,7 +248,7 @@ export function ChronoTab({ sessionId, chronoSession, onUpdate, readOnly = false
           )}
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
+            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
               Barrel Temperature (°F)
             </label>
             <input
@@ -256,13 +256,13 @@ export function ChronoTab({ sessionId, chronoSession, onUpdate, readOnly = false
               value={barrelTemp}
               onChange={(e) => setBarrelTemp(e.target.value)}
               placeholder="e.g., 72"
-              className="w-full h-10 px-3 rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full h-10 px-3 rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
           </div>
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">
+          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
             Notes (optional)
           </label>
           <textarea
@@ -270,7 +270,7 @@ export function ChronoTab({ sessionId, chronoSession, onUpdate, readOnly = false
             onChange={(e) => setNotes(e.target.value)}
             rows={2}
             placeholder="Any notes about this chrono session..."
-            className="w-full px-3 py-2 rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="w-full px-3 py-2 rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500"
           />
         </div>
 
@@ -286,7 +286,7 @@ export function ChronoTab({ sessionId, chronoSession, onUpdate, readOnly = false
     <div className="space-y-6">
       {!readOnly && (
         <div className="flex justify-between items-center">
-          <h3 className="text-lg font-medium text-gray-900">Chrono Session</h3>
+          <h3 className="text-lg font-medium text-gray-900 dark:text-gray-100">Chrono Session</h3>
           <div className="flex gap-2">
             <Button variant="outline" size="sm" onClick={handleUpdateChrono} disabled={submitting}>
               {submitting ? 'Saving...' : 'Save Settings'}
@@ -294,7 +294,7 @@ export function ChronoTab({ sessionId, chronoSession, onUpdate, readOnly = false
             <Button
               variant="ghost"
               size="sm"
-              className="text-red-600 hover:text-red-700"
+              className="text-red-600 hover:text-red-700 dark:text-red-400 dark:hover:text-red-300"
               onClick={() => setDeleteChronoConfirm(true)}
             >
               Delete Chrono
@@ -304,30 +304,30 @@ export function ChronoTab({ sessionId, chronoSession, onUpdate, readOnly = false
       )}
 
       {/* Ammo & Settings */}
-      <div className="bg-gray-50 rounded-lg p-4">
+      <div className="bg-gray-50 dark:bg-gray-700 rounded-lg p-4">
         {readOnly ? (
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
             <div>
-              <p className="text-xs text-gray-500 uppercase">Ammunition</p>
-              <p className="font-medium text-sm">{chronoSession.ammunition.displayName}</p>
+              <p className="text-xs text-gray-500 dark:text-gray-400 uppercase">Ammunition</p>
+              <p className="font-medium text-sm text-gray-900 dark:text-gray-100">{chronoSession.ammunition.displayName}</p>
             </div>
             {chronoSession.ammoLot && (
               <div>
-                <p className="text-xs text-gray-500 uppercase">Lot</p>
-                <p className="font-medium text-sm">{chronoSession.ammoLot.lotNumber}</p>
+                <p className="text-xs text-gray-500 dark:text-gray-400 uppercase">Lot</p>
+                <p className="font-medium text-sm text-gray-900 dark:text-gray-100">{chronoSession.ammoLot.lotNumber}</p>
               </div>
             )}
             {chronoSession.barrelTemperature && (
               <div>
-                <p className="text-xs text-gray-500 uppercase">Barrel Temp</p>
-                <p className="font-medium text-sm">{chronoSession.barrelTemperature}°F</p>
+                <p className="text-xs text-gray-500 dark:text-gray-400 uppercase">Barrel Temp</p>
+                <p className="font-medium text-sm text-gray-900 dark:text-gray-100">{chronoSession.barrelTemperature}°F</p>
               </div>
             )}
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <div>
-              <label className="block text-xs text-gray-500 uppercase mb-1">Ammunition</label>
+              <label className="block text-xs text-gray-500 dark:text-gray-400 uppercase mb-1">Ammunition</label>
               <Select
                 value={selectedAmmoId.toString()}
                 onChange={(value) => setSelectedAmmoId(parseInt(value))}
@@ -339,7 +339,7 @@ export function ChronoTab({ sessionId, chronoSession, onUpdate, readOnly = false
             </div>
             {lots.length > 0 && (
               <div>
-                <label className="block text-xs text-gray-500 uppercase mb-1">Lot</label>
+                <label className="block text-xs text-gray-500 dark:text-gray-400 uppercase mb-1">Lot</label>
                 <Select
                   value={selectedLotId?.toString() || ''}
                   onChange={(value) => setSelectedLotId(value ? parseInt(value) : undefined)}
@@ -351,12 +351,12 @@ export function ChronoTab({ sessionId, chronoSession, onUpdate, readOnly = false
               </div>
             )}
             <div>
-              <label className="block text-xs text-gray-500 uppercase mb-1">Barrel Temp (°F)</label>
+              <label className="block text-xs text-gray-500 dark:text-gray-400 uppercase mb-1">Barrel Temp (°F)</label>
               <input
                 type="number"
                 value={barrelTemp}
                 onChange={(e) => setBarrelTemp(e.target.value)}
-                className="w-full h-10 px-3 rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full h-10 px-3 rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500"
               />
             </div>
           </div>
@@ -366,39 +366,39 @@ export function ChronoTab({ sessionId, chronoSession, onUpdate, readOnly = false
       {/* Stats Grid */}
       {stats && (
         <div className="grid grid-cols-2 md:grid-cols-6 gap-3">
-          <div className="bg-blue-50 rounded-lg p-3 text-center">
-            <p className="text-xs text-blue-600 font-medium uppercase">Rounds</p>
-            <p className="text-xl font-bold text-blue-900">{stats.rounds}</p>
+          <div className="bg-blue-50 dark:bg-blue-900/30 rounded-lg p-3 text-center">
+            <p className="text-xs text-blue-600 dark:text-blue-400 font-medium uppercase">Rounds</p>
+            <p className="text-xl font-bold text-blue-900 dark:text-blue-100">{stats.rounds}</p>
           </div>
-          <div className="bg-green-50 rounded-lg p-3 text-center">
-            <p className="text-xs text-green-600 font-medium uppercase">Average</p>
-            <p className="text-xl font-bold text-green-900">{stats.average.toFixed(0)}</p>
+          <div className="bg-green-50 dark:bg-green-900/30 rounded-lg p-3 text-center">
+            <p className="text-xs text-green-600 dark:text-green-400 font-medium uppercase">Average</p>
+            <p className="text-xl font-bold text-green-900 dark:text-green-100">{stats.average.toFixed(0)}</p>
           </div>
-          <div className="bg-purple-50 rounded-lg p-3 text-center">
-            <p className="text-xs text-purple-600 font-medium uppercase">SD</p>
-            <p className="text-xl font-bold text-purple-900">{stats.standardDeviation.toFixed(1)}</p>
+          <div className="bg-purple-50 dark:bg-purple-900/30 rounded-lg p-3 text-center">
+            <p className="text-xs text-purple-600 dark:text-purple-400 font-medium uppercase">SD</p>
+            <p className="text-xl font-bold text-purple-900 dark:text-purple-100">{stats.standardDeviation.toFixed(1)}</p>
           </div>
-          <div className="bg-orange-50 rounded-lg p-3 text-center">
-            <p className="text-xs text-orange-600 font-medium uppercase">ES</p>
-            <p className="text-xl font-bold text-orange-900">{stats.extremeSpread.toFixed(0)}</p>
+          <div className="bg-orange-50 dark:bg-orange-900/30 rounded-lg p-3 text-center">
+            <p className="text-xs text-orange-600 dark:text-orange-400 font-medium uppercase">ES</p>
+            <p className="text-xl font-bold text-orange-900 dark:text-orange-100">{stats.extremeSpread.toFixed(0)}</p>
           </div>
-          <div className="bg-gray-50 rounded-lg p-3 text-center">
-            <p className="text-xs text-gray-600 font-medium uppercase">High</p>
-            <p className="text-xl font-bold text-gray-900">{stats.high.toFixed(0)}</p>
+          <div className="bg-gray-50 dark:bg-gray-700 rounded-lg p-3 text-center">
+            <p className="text-xs text-gray-600 dark:text-gray-400 font-medium uppercase">High</p>
+            <p className="text-xl font-bold text-gray-900 dark:text-gray-100">{stats.high.toFixed(0)}</p>
           </div>
-          <div className="bg-gray-50 rounded-lg p-3 text-center">
-            <p className="text-xs text-gray-600 font-medium uppercase">Low</p>
-            <p className="text-xl font-bold text-gray-900">{stats.low.toFixed(0)}</p>
+          <div className="bg-gray-50 dark:bg-gray-700 rounded-lg p-3 text-center">
+            <p className="text-xs text-gray-600 dark:text-gray-400 font-medium uppercase">Low</p>
+            <p className="text-xl font-bold text-gray-900 dark:text-gray-100">{stats.low.toFixed(0)}</p>
           </div>
         </div>
       )}
 
       {/* Velocity Readings */}
       <div>
-        <h4 className="text-sm font-medium text-gray-700 mb-3">Velocity Readings</h4>
+        <h4 className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">Velocity Readings</h4>
 
         {velocities.length === 0 && readOnly ? (
-          <p className="text-gray-500 text-center py-4">No velocity readings recorded.</p>
+          <p className="text-gray-500 dark:text-gray-400 text-center py-4">No velocity readings recorded.</p>
         ) : (
           <div className="space-y-2">
             {/* Reading chips */}
@@ -406,16 +406,16 @@ export function ChronoTab({ sessionId, chronoSession, onUpdate, readOnly = false
               {velocities.map((reading) => (
                 <div
                   key={reading.id}
-                  className="inline-flex items-center px-3 py-1.5 bg-gray-100 rounded-full text-sm"
+                  className="inline-flex items-center px-3 py-1.5 bg-gray-100 dark:bg-gray-700 rounded-full text-sm"
                 >
-                  <span className="text-gray-500 mr-1.5">#{reading.shotNumber}</span>
-                  <span className="font-medium">{reading.velocity}</span>
-                  <span className="text-gray-400 ml-1">fps</span>
+                  <span className="text-gray-500 dark:text-gray-400 mr-1.5">#{reading.shotNumber}</span>
+                  <span className="font-medium text-gray-900 dark:text-gray-100">{reading.velocity}</span>
+                  <span className="text-gray-400 dark:text-gray-500 ml-1">fps</span>
                   {!readOnly && (
                     <button
                       type="button"
                       onClick={() => setDeleteReadingId(reading.id)}
-                      className="ml-2 text-gray-400 hover:text-red-500 transition-colors"
+                      className="ml-2 text-gray-400 hover:text-red-500 dark:text-gray-500 dark:hover:text-red-400 transition-colors"
                       aria-label="Delete reading"
                     >
                       <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -440,16 +440,16 @@ export function ChronoTab({ sessionId, chronoSession, onUpdate, readOnly = false
                     onChange={(e) => setNewVelocity(e.target.value)}
                     onKeyDown={handleVelocityKeyDown}
                     placeholder="Enter velocity..."
-                    className="w-full h-10 px-3 pr-12 rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="w-full h-10 px-3 pr-12 rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500"
                   />
-                  <span className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 text-sm">
+                  <span className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 dark:text-gray-500 text-sm">
                     fps
                   </span>
                 </div>
                 <Button onClick={handleAddVelocity} disabled={!newVelocity}>
                   Add
                 </Button>
-                <span className="text-xs text-gray-500">Press Enter to quickly add</span>
+                <span className="text-xs text-gray-500 dark:text-gray-400">Press Enter to quickly add</span>
               </div>
             )}
           </div>
@@ -459,22 +459,22 @@ export function ChronoTab({ sessionId, chronoSession, onUpdate, readOnly = false
       {/* Notes */}
       {!readOnly && (
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">
+          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
             Notes
           </label>
           <textarea
             value={notes}
             onChange={(e) => setNotes(e.target.value)}
             rows={2}
-            className="w-full px-3 py-2 rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="w-full px-3 py-2 rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500"
           />
         </div>
       )}
 
       {readOnly && chronoSession.notes && (
         <div>
-          <h4 className="text-sm font-medium text-gray-700 mb-1">Notes</h4>
-          <p className="text-gray-600 whitespace-pre-wrap">{chronoSession.notes}</p>
+          <h4 className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Notes</h4>
+          <p className="text-gray-600 dark:text-gray-300 whitespace-pre-wrap">{chronoSession.notes}</p>
         </div>
       )}
 

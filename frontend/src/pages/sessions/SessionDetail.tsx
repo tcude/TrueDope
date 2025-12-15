@@ -73,7 +73,7 @@ export default function SessionDetail() {
       id: 'dope',
       label: `DOPE (${session.dopeEntries.length})`,
       content: (
-        <div className="bg-white rounded-lg border border-gray-200 p-6">
+        <div className="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-6">
           <DopeTab
             sessionId={session.id}
             entries={session.dopeEntries}
@@ -87,7 +87,7 @@ export default function SessionDetail() {
       id: 'chrono',
       label: `Chrono (${chronoRounds})`,
       content: (
-        <div className="bg-white rounded-lg border border-gray-200 p-6">
+        <div className="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-6">
           <ChronoTab
             sessionId={session.id}
             chronoSession={session.chronoSession}
@@ -101,7 +101,7 @@ export default function SessionDetail() {
       id: 'groups',
       label: `Groups (${session.groupEntries.length})`,
       content: (
-        <div className="bg-white rounded-lg border border-gray-200 p-6">
+        <div className="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-6">
           <GroupsTab
             sessionId={session.id}
             entries={session.groupEntries}
@@ -115,7 +115,7 @@ export default function SessionDetail() {
       id: 'images',
       label: 'Images',
       content: (
-        <div className="bg-white rounded-lg border border-gray-200 p-6">
+        <div className="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-6">
           <ImagesTab
             parentType="session"
             parentId={session.id}
@@ -131,10 +131,10 @@ export default function SessionDetail() {
       {/* Header */}
       <div className="flex items-start justify-between mb-8">
         <div>
-          <Link to="/sessions" className="text-sm text-gray-500 hover:text-gray-700 mb-2 inline-block">
+          <Link to="/sessions" className="text-sm text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 mb-2 inline-block">
             &larr; Back to Sessions
           </Link>
-          <h1 className="text-2xl font-bold text-gray-900">
+          <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100">
             {new Date(session.sessionDate).toLocaleDateString('en-US', {
               weekday: 'long',
               year: 'numeric',
@@ -142,7 +142,7 @@ export default function SessionDetail() {
               day: 'numeric'
             })}
           </h1>
-          <p className="text-gray-500">
+          <p className="text-gray-500 dark:text-gray-400">
             {session.rifle.name} {session.locationName && `• ${session.locationName}`}
           </p>
         </div>
@@ -184,31 +184,31 @@ export default function SessionDetail() {
 
       {/* Conditions */}
       {(session.temperature || session.humidity || session.pressure || session.windSpeed || session.densityAltitude) && (
-        <div className="bg-white rounded-lg border border-gray-200 p-6 mb-6">
-          <h2 className="text-lg font-semibold text-gray-900 mb-4">Conditions</h2>
+        <div className="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-6 mb-6">
+          <h2 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-4">Conditions</h2>
           <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-6">
             {session.temperature && (
               <div>
-                <p className="text-sm text-gray-500">Temperature</p>
-                <p className="font-medium">{session.temperature}°F</p>
+                <p className="text-sm text-gray-500 dark:text-gray-400">Temperature</p>
+                <p className="font-medium text-gray-900 dark:text-gray-100">{session.temperature}°F</p>
               </div>
             )}
             {session.humidity && (
               <div>
-                <p className="text-sm text-gray-500">Humidity</p>
-                <p className="font-medium">{session.humidity}%</p>
+                <p className="text-sm text-gray-500 dark:text-gray-400">Humidity</p>
+                <p className="font-medium text-gray-900 dark:text-gray-100">{session.humidity}%</p>
               </div>
             )}
             {session.pressure && (
               <div>
-                <p className="text-sm text-gray-500">Pressure</p>
-                <p className="font-medium">{session.pressure}" Hg</p>
+                <p className="text-sm text-gray-500 dark:text-gray-400">Pressure</p>
+                <p className="font-medium text-gray-900 dark:text-gray-100">{session.pressure}" Hg</p>
               </div>
             )}
             {session.windSpeed && (
               <div>
-                <p className="text-sm text-gray-500">Wind</p>
-                <p className="font-medium">
+                <p className="text-sm text-gray-500 dark:text-gray-400">Wind</p>
+                <p className="font-medium text-gray-900 dark:text-gray-100">
                   {session.windSpeed} mph
                   {session.windDirectionCardinal && ` ${session.windDirectionCardinal}`}
                 </p>
@@ -216,14 +216,14 @@ export default function SessionDetail() {
             )}
             {session.windDirection !== null && session.windDirection !== undefined && (
               <div>
-                <p className="text-sm text-gray-500">Wind Direction</p>
-                <p className="font-medium">{session.windDirection}°</p>
+                <p className="text-sm text-gray-500 dark:text-gray-400">Wind Direction</p>
+                <p className="font-medium text-gray-900 dark:text-gray-100">{session.windDirection}°</p>
               </div>
             )}
             {session.densityAltitude && (
               <div>
-                <p className="text-sm text-gray-500">Density Altitude</p>
-                <p className="font-medium">{session.densityAltitude.toLocaleString()} ft</p>
+                <p className="text-sm text-gray-500 dark:text-gray-400">Density Altitude</p>
+                <p className="font-medium text-gray-900 dark:text-gray-100">{session.densityAltitude.toLocaleString()} ft</p>
               </div>
             )}
           </div>
@@ -235,9 +235,9 @@ export default function SessionDetail() {
 
       {/* Notes */}
       {session.notes && (
-        <div className="bg-white rounded-lg border border-gray-200 p-6 mt-6">
-          <h2 className="text-lg font-semibold text-gray-900 mb-4">Notes</h2>
-          <p className="text-gray-600 whitespace-pre-wrap">{session.notes}</p>
+        <div className="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-6 mt-6">
+          <h2 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-4">Notes</h2>
+          <p className="text-gray-600 dark:text-gray-300 whitespace-pre-wrap">{session.notes}</p>
         </div>
       )}
 

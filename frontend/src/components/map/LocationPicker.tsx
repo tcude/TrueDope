@@ -226,7 +226,7 @@ export function LocationPicker({
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 placeholder="Search for a location..."
-                className="w-full h-10 pl-10 pr-3 rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full h-10 pl-10 pr-3 rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500"
               />
               <svg
                 className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400"
@@ -246,18 +246,18 @@ export function LocationPicker({
 
             {/* Search results dropdown */}
             {showResults && searchResults.length > 0 && (
-              <div className="absolute z-[1000] mt-1 w-full bg-white rounded-md border border-gray-200 shadow-lg max-h-60 overflow-y-auto">
+              <div className="absolute z-[1000] mt-1 w-full bg-white dark:bg-gray-800 rounded-md border border-gray-200 dark:border-gray-600 shadow-lg max-h-60 overflow-y-auto">
                 {searchResults.map((result, index) => (
                   <button
                     key={index}
                     type="button"
                     onClick={() => handleSearchResultSelect(result)}
-                    className="w-full px-3 py-2 text-left text-sm hover:bg-gray-100 focus:bg-gray-100 focus:outline-none border-b border-gray-100 last:border-0"
+                    className="w-full px-3 py-2 text-left text-sm hover:bg-gray-100 dark:hover:bg-gray-700 focus:bg-gray-100 dark:focus:bg-gray-700 focus:outline-none border-b border-gray-100 dark:border-gray-700 last:border-0"
                   >
-                    <div className="font-medium text-gray-900 truncate">
+                    <div className="font-medium text-gray-900 dark:text-gray-100 truncate">
                       {result.displayName.split(',')[0]}
                     </div>
-                    <div className="text-gray-500 text-xs truncate">
+                    <div className="text-gray-500 dark:text-gray-400 text-xs truncate">
                       {result.displayName.split(',').slice(1).join(',').trim()}
                     </div>
                   </button>
@@ -318,7 +318,7 @@ export function LocationPicker({
 
       {/* Coordinates display */}
       {value && (
-        <div className="flex items-center gap-4 text-sm text-gray-600">
+        <div className="flex items-center gap-4 text-sm text-gray-600 dark:text-gray-400">
           <span>
             <span className="font-medium">Lat:</span> {value.latitude.toFixed(6)}
           </span>
@@ -326,12 +326,12 @@ export function LocationPicker({
             <span className="font-medium">Lng:</span> {value.longitude.toFixed(6)}
           </span>
           {isFetchingElevation && (
-            <span className="text-blue-600">Fetching elevation...</span>
+            <span className="text-blue-600 dark:text-blue-400">Fetching elevation...</span>
           )}
         </div>
       )}
 
-      <p className="text-xs text-gray-500">
+      <p className="text-xs text-gray-500 dark:text-gray-400">
         Search for a location, click on the map to place a marker, or drag the marker to adjust the position.
       </p>
     </div>

@@ -48,8 +48,13 @@ export default function SessionEdit() {
       setSession(sessionData);
       setRifles(riflesRes.items);
       setLocations(locationsRes);
+      // Convert UTC date to local date string for the date picker
+      // This ensures the date picker shows the correct local date
+      const localDate = new Date(sessionData.sessionDate);
+      const localDateStr = `${localDate.getFullYear()}-${String(localDate.getMonth() + 1).padStart(2, '0')}-${String(localDate.getDate()).padStart(2, '0')}`;
+
       setFormData({
-        sessionDate: sessionData.sessionDate.split('T')[0],
+        sessionDate: localDateStr,
         rifleSetupId: sessionData.rifle.id,
         savedLocationId: sessionData.savedLocation?.id,
         notes: sessionData.notes || undefined,
@@ -105,19 +110,19 @@ export default function SessionEdit() {
       id: 'details',
       label: 'Details',
       content: (
-        <div className="bg-white rounded-lg border border-gray-200 p-6">
+        <div className="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-6">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Date</label>
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Date</label>
               <input
                 type="date"
                 value={formData.sessionDate || ''}
                 onChange={(e) => setFormData((prev) => ({ ...prev, sessionDate: e.target.value }))}
-                className="w-full h-10 px-3 rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full h-10 px-3 rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500"
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Rifle</label>
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Rifle</label>
               <Select
                 value={formData.rifleSetupId?.toString() || ''}
                 onChange={(value) => setFormData((prev) => ({ ...prev, rifleSetupId: parseInt(value) }))}
@@ -125,7 +130,7 @@ export default function SessionEdit() {
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Location</label>
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Location</label>
               <Select
                 value={formData.savedLocationId?.toString() || ''}
                 onChange={(value) => setFormData((prev) => ({ ...prev, savedLocationId: value ? parseInt(value) : undefined }))}
@@ -137,74 +142,74 @@ export default function SessionEdit() {
             </div>
           </div>
 
-          <h3 className="text-lg font-medium text-gray-900 mt-6 mb-4">Conditions</h3>
+          <h3 className="text-lg font-medium text-gray-900 dark:text-gray-100 mt-6 mb-4">Conditions</h3>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Temp (°F)</label>
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Temp (°F)</label>
               <input
                 type="number"
                 value={formData.temperature || ''}
                 onChange={(e) => setFormData((prev) => ({ ...prev, temperature: e.target.value ? parseFloat(e.target.value) : undefined }))}
-                className="w-full h-10 px-3 rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full h-10 px-3 rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500"
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Humidity (%)</label>
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Humidity (%)</label>
               <input
                 type="number"
                 value={formData.humidity ?? ''}
                 onChange={(e) => setFormData((prev) => ({ ...prev, humidity: e.target.value ? parseInt(e.target.value) : undefined }))}
-                className="w-full h-10 px-3 rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full h-10 px-3 rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500"
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Pressure (inHg)</label>
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Pressure (inHg)</label>
               <input
                 type="number"
                 step="0.01"
                 value={formData.pressure || ''}
                 onChange={(e) => setFormData((prev) => ({ ...prev, pressure: e.target.value ? parseFloat(e.target.value) : undefined }))}
-                className="w-full h-10 px-3 rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full h-10 px-3 rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500"
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Wind (mph)</label>
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Wind (mph)</label>
               <input
                 type="number"
                 value={formData.windSpeed || ''}
                 onChange={(e) => setFormData((prev) => ({ ...prev, windSpeed: e.target.value ? parseFloat(e.target.value) : undefined }))}
-                className="w-full h-10 px-3 rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full h-10 px-3 rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500"
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Wind Dir (°)</label>
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Wind Dir (°)</label>
               <input
                 type="number"
                 min={0}
                 max={359}
                 value={formData.windDirection ?? ''}
                 onChange={(e) => setFormData((prev) => ({ ...prev, windDirection: e.target.value ? parseInt(e.target.value) : undefined }))}
-                className="w-full h-10 px-3 rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full h-10 px-3 rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500"
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Density Alt (ft)</label>
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Density Alt (ft)</label>
               <input
                 type="number"
                 value={formData.densityAltitude || ''}
                 onChange={(e) => setFormData((prev) => ({ ...prev, densityAltitude: e.target.value ? parseFloat(e.target.value) : undefined }))}
-                className="w-full h-10 px-3 rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full h-10 px-3 rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500"
               />
             </div>
           </div>
 
           <div className="mt-6">
-            <label className="block text-sm font-medium text-gray-700 mb-1">Notes</label>
+            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Notes</label>
             <textarea
               value={formData.notes || ''}
               onChange={(e) => setFormData((prev) => ({ ...prev, notes: e.target.value }))}
               rows={3}
-              className="w-full px-3 py-2 rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full px-3 py-2 rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
           </div>
 
@@ -220,7 +225,7 @@ export default function SessionEdit() {
       id: 'dope',
       label: `DOPE (${session.dopeEntries.length})`,
       content: (
-        <div className="bg-white rounded-lg border border-gray-200 p-6">
+        <div className="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-6">
           <DopeTab
             sessionId={session.id}
             entries={session.dopeEntries}
@@ -233,7 +238,7 @@ export default function SessionEdit() {
       id: 'chrono',
       label: `Chrono (${session.chronoSession ? session.chronoSession.velocityReadings.length : 0})`,
       content: (
-        <div className="bg-white rounded-lg border border-gray-200 p-6">
+        <div className="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-6">
           <ChronoTab
             sessionId={session.id}
             chronoSession={session.chronoSession}
@@ -246,7 +251,7 @@ export default function SessionEdit() {
       id: 'groups',
       label: `Groups (${session.groupEntries.length})`,
       content: (
-        <div className="bg-white rounded-lg border border-gray-200 p-6">
+        <div className="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-6">
           <GroupsTab
             sessionId={session.id}
             entries={session.groupEntries}
@@ -259,7 +264,7 @@ export default function SessionEdit() {
       id: 'images',
       label: 'Images',
       content: (
-        <div className="bg-white rounded-lg border border-gray-200 p-6">
+        <div className="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-6">
           <ImagesTab
             parentType="session"
             parentId={session.id}
@@ -273,11 +278,11 @@ export default function SessionEdit() {
     <div className="container mx-auto px-4 py-8">
       <div className="flex items-start justify-between mb-8">
         <div>
-          <Link to={`/sessions/${session.id}`} className="text-sm text-gray-500 hover:text-gray-700 mb-2 inline-block">
+          <Link to={`/sessions/${session.id}`} className="text-sm text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 mb-2 inline-block">
             &larr; Back to Session
           </Link>
-          <h1 className="text-2xl font-bold text-gray-900">Edit Session</h1>
-          <p className="text-gray-500">
+          <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100">Edit Session</h1>
+          <p className="text-gray-500 dark:text-gray-400">
             {new Date(session.sessionDate).toLocaleDateString('en-US', {
               weekday: 'long',
               year: 'numeric',

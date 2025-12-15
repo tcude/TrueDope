@@ -44,7 +44,7 @@ export function ResetPassword() {
 
   if (!token) {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-gray-50 px-4 py-12">
+      <div className="flex min-h-screen items-center justify-center bg-gray-50 dark:bg-gray-900 px-4 py-12">
         <Card className="w-full max-w-md">
           <CardHeader>
             <CardTitle className="text-center text-2xl text-red-600">Invalid Reset Link</CardTitle>
@@ -53,7 +53,7 @@ export function ResetPassword() {
             </CardDescription>
           </CardHeader>
           <CardFooter className="justify-center">
-            <Link to="/forgot-password" className="text-blue-600 hover:text-blue-500">
+            <Link to="/forgot-password" className="text-blue-600 dark:text-blue-400 hover:text-blue-500 dark:hover:text-blue-300">
               Request a new reset link
             </Link>
           </CardFooter>
@@ -88,7 +88,7 @@ export function ResetPassword() {
 
   if (success) {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-gray-50 px-4 py-12">
+      <div className="flex min-h-screen items-center justify-center bg-gray-50 dark:bg-gray-900 px-4 py-12">
         <Card className="w-full max-w-md">
           <CardHeader>
             <CardTitle className="text-center text-2xl text-green-600">
@@ -104,7 +104,7 @@ export function ResetPassword() {
   }
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-gray-50 px-4 py-12 sm:px-6 lg:px-8">
+    <div className="flex min-h-screen items-center justify-center bg-gray-50 dark:bg-gray-900 px-4 py-12 sm:px-6 lg:px-8">
       <Card className="w-full max-w-md">
         <CardHeader className="space-y-1">
           <CardTitle className="text-center text-2xl">Reset your password</CardTitle>
@@ -157,7 +157,7 @@ export function ResetPassword() {
             <Button type="submit" className="w-full" isLoading={isLoading}>
               Reset password
             </Button>
-            <Link to="/login" className="text-center text-sm text-blue-600 hover:text-blue-500">
+            <Link to="/login" className="text-center text-sm text-blue-600 dark:text-blue-400 hover:text-blue-500 dark:hover:text-blue-300">
               Back to sign in
             </Link>
           </CardFooter>

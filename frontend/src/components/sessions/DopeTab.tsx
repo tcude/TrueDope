@@ -138,14 +138,14 @@ export function DopeTab({ sessionId, entries, onUpdate, readOnly = false }: Dope
     <div>
       {!readOnly && (
         <div className="flex justify-between items-center mb-4">
-          <h3 className="text-lg font-medium text-gray-900">DOPE Entries</h3>
+          <h3 className="text-lg font-medium text-gray-900 dark:text-gray-100">DOPE Entries</h3>
           <Button onClick={openCreateModal}>+ Add Distance</Button>
         </div>
       )}
 
       {sortedEntries.length === 0 ? (
-        <div className="text-center py-12 bg-gray-50 rounded-lg">
-          <p className="text-gray-500 mb-4">No DOPE entries recorded yet.</p>
+        <div className="text-center py-12 bg-gray-50 dark:bg-gray-700 rounded-lg">
+          <p className="text-gray-500 dark:text-gray-400 mb-4">No DOPE entries recorded yet.</p>
           {!readOnly && (
             <Button variant="outline" onClick={openCreateModal}>
               Add Your First Distance
@@ -154,43 +154,43 @@ export function DopeTab({ sessionId, entries, onUpdate, readOnly = false }: Dope
         </div>
       ) : (
         <div className="overflow-x-auto">
-          <table className="min-w-full divide-y divide-gray-200">
-            <thead className="bg-gray-50">
+          <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+            <thead className="bg-gray-50 dark:bg-gray-700">
               <tr>
-                <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
                   Distance
                 </th>
-                <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
                   Elevation (MIL)
                 </th>
-                <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
                   Elevation (in)
                 </th>
-                <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
                   Notes
                 </th>
                 {!readOnly && (
-                  <th className="px-4 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th className="px-4 py-3 text-right text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
                     Actions
                   </th>
                 )}
               </tr>
             </thead>
-            <tbody className="bg-white divide-y divide-gray-200">
+            <tbody className="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
               {sortedEntries.map((entry) => {
                 const elevationInches = milsToInches(entry.elevationMils, entry.distance);
                 return (
-                  <tr key={entry.id} className="hover:bg-gray-50">
-                    <td className="px-4 py-3 whitespace-nowrap text-sm font-medium text-gray-900">
+                  <tr key={entry.id} className="hover:bg-gray-50 dark:hover:bg-gray-700">
+                    <td className="px-4 py-3 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-gray-100">
                       {entry.distance} yds
                     </td>
-                    <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-700">
+                    <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-700 dark:text-gray-300">
                       {entry.elevationMils >= 0 ? '+' : ''}{entry.elevationMils.toFixed(1)}
                     </td>
-                    <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-500">
+                    <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
                       {elevationInches >= 0 ? '+' : ''}{elevationInches.toFixed(1)}"
                     </td>
-                    <td className="px-4 py-3 text-sm text-gray-500 max-w-xs truncate">
+                    <td className="px-4 py-3 text-sm text-gray-500 dark:text-gray-400 max-w-xs truncate">
                       {entry.notes || '-'}
                     </td>
                     {!readOnly && (
@@ -207,7 +207,7 @@ export function DopeTab({ sessionId, entries, onUpdate, readOnly = false }: Dope
                           size="sm"
                           variant="ghost"
                           onClick={() => setDeleteTarget(entry)}
-                          className="text-red-600 hover:text-red-700"
+                          className="text-red-600 hover:text-red-700 dark:text-red-400 dark:hover:text-red-300"
                         >
                           Delete
                         </Button>
@@ -229,7 +229,7 @@ export function DopeTab({ sessionId, entries, onUpdate, readOnly = false }: Dope
       >
         <div className="space-y-4">
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
+            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
               Distance (yards) *
             </label>
             <input
@@ -239,15 +239,15 @@ export function DopeTab({ sessionId, entries, onUpdate, readOnly = false }: Dope
               value={formData.distance}
               onChange={(e) => setFormData(prev => ({ ...prev, distance: e.target.value }))}
               disabled={!!editingEntry}
-              className="w-full h-10 px-3 rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:bg-gray-100 disabled:cursor-not-allowed"
+              className="w-full h-10 px-3 rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:bg-gray-100 dark:disabled:bg-gray-700 disabled:cursor-not-allowed"
             />
             {editingEntry && (
-              <p className="text-xs text-gray-500 mt-1">Distance cannot be changed after creation</p>
+              <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">Distance cannot be changed after creation</p>
             )}
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
+            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
               Elevation (MILs) *
             </label>
             <input
@@ -258,17 +258,17 @@ export function DopeTab({ sessionId, entries, onUpdate, readOnly = false }: Dope
               value={formData.elevationMils}
               onChange={(e) => setFormData(prev => ({ ...prev, elevationMils: e.target.value }))}
               placeholder="0"
-              className="w-full h-10 px-3 rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full h-10 px-3 rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
             {formData.distance && parseInt(formData.distance) > 0 && (
-              <p className="text-xs text-gray-500 mt-1">
+              <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
                 = {milsToInches(parseFloat(formData.elevationMils) || 0, parseInt(formData.distance)).toFixed(1)}" at {formData.distance} yards
               </p>
             )}
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
+            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
               Notes (optional)
             </label>
             <textarea
@@ -276,11 +276,11 @@ export function DopeTab({ sessionId, entries, onUpdate, readOnly = false }: Dope
               onChange={(e) => setFormData(prev => ({ ...prev, notes: e.target.value }))}
               rows={2}
               placeholder="e.g., Zero confirm, windy conditions..."
-              className="w-full px-3 py-2 rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full px-3 py-2 rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
           </div>
 
-          <div className="flex justify-end gap-2 pt-4 border-t border-gray-200">
+          <div className="flex justify-end gap-2 pt-4 border-t border-gray-200 dark:border-gray-700">
             <Button variant="outline" onClick={closeModal} disabled={submitting}>
               Cancel
             </Button>

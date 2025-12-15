@@ -76,17 +76,17 @@ export default function LotForm() {
 
   return (
     <div className="container mx-auto px-4 py-8 max-w-2xl">
-      <Link to={`/ammunition/${id}`} className="text-sm text-gray-500 hover:text-gray-700 mb-2 inline-block">
+      <Link to={`/ammunition/${id}`} className="text-sm text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 mb-2 inline-block">
         &larr; Back to {ammo.displayName}
       </Link>
-      <h1 className="text-2xl font-bold text-gray-900 mb-8">Add Lot</h1>
+      <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-8">Add Lot</h1>
 
       <form onSubmit={handleSubmit} className="space-y-6">
-        <div className="bg-white rounded-lg border border-gray-200 p-6">
-          <h2 className="text-lg font-semibold text-gray-900 mb-4">Lot Information</h2>
+        <div className="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-6">
+          <h2 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-4">Lot Information</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div className="md:col-span-2">
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                 Lot Number *
               </label>
               <input
@@ -94,23 +94,23 @@ export default function LotForm() {
                 value={formData.lotNumber}
                 onChange={(e) => updateField('lotNumber', e.target.value)}
                 placeholder="e.g., LOT-2024-001"
-                className="w-full h-10 px-3 rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full h-10 px-3 rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500"
                 required
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                 Purchase Date
               </label>
               <input
                 type="date"
                 value={formData.purchaseDate || ''}
                 onChange={(e) => updateField('purchaseDate', e.target.value || undefined)}
-                className="w-full h-10 px-3 rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full h-10 px-3 rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500"
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                 Initial Quantity
               </label>
               <input
@@ -118,11 +118,11 @@ export default function LotForm() {
                 value={formData.initialQuantity || ''}
                 onChange={(e) => updateField('initialQuantity', e.target.value ? parseInt(e.target.value) : undefined)}
                 placeholder="e.g., 200"
-                className="w-full h-10 px-3 rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full h-10 px-3 rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500"
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                 Purchase Price (total)
               </label>
               <input
@@ -131,21 +131,21 @@ export default function LotForm() {
                 value={formData.purchasePrice || ''}
                 onChange={(e) => updateField('purchasePrice', e.target.value ? parseFloat(e.target.value) : undefined)}
                 placeholder="e.g., 300.00"
-                className="w-full h-10 px-3 rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full h-10 px-3 rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500"
               />
             </div>
           </div>
         </div>
 
         {/* Notes */}
-        <div className="bg-white rounded-lg border border-gray-200 p-6">
-          <h2 className="text-lg font-semibold text-gray-900 mb-4">Notes</h2>
+        <div className="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-6">
+          <h2 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-4">Notes</h2>
           <textarea
             value={formData.notes || ''}
             onChange={(e) => updateField('notes', e.target.value)}
             rows={3}
             placeholder="Any additional notes about this lot..."
-            className="w-full px-3 py-2 rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="w-full px-3 py-2 rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500"
           />
         </div>
 

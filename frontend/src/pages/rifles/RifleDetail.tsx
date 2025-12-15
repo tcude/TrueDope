@@ -66,12 +66,12 @@ export default function RifleDetail() {
       {/* Header */}
       <div className="flex items-start justify-between mb-8">
         <div>
-          <Link to="/rifles" className="text-sm text-gray-500 hover:text-gray-700 mb-2 inline-block">
+          <Link to="/rifles" className="text-sm text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 mb-2 inline-block">
             &larr; Back to Rifles
           </Link>
-          <h1 className="text-2xl font-bold text-gray-900">{rifle.name}</h1>
+          <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100">{rifle.name}</h1>
           {rifle.manufacturer && (
-            <p className="text-gray-500">
+            <p className="text-gray-500 dark:text-gray-400">
               {rifle.manufacturer} {rifle.model && `- ${rifle.model}`}
             </p>
           )}
@@ -87,39 +87,39 @@ export default function RifleDetail() {
       </div>
 
       {/* Specs */}
-      <div className="bg-white rounded-lg border border-gray-200 p-6 mb-6">
-        <h2 className="text-lg font-semibold text-gray-900 mb-4">Specifications</h2>
+      <div className="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-6 mb-6">
+        <h2 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-4">Specifications</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           <div>
-            <p className="text-sm text-gray-500">Caliber</p>
-            <p className="font-medium">{rifle.caliber}</p>
+            <p className="text-sm text-gray-500 dark:text-gray-400">Caliber</p>
+            <p className="font-medium text-gray-900 dark:text-gray-100">{rifle.caliber}</p>
           </div>
           {rifle.barrelLength && (
             <div>
-              <p className="text-sm text-gray-500">Barrel Length</p>
-              <p className="font-medium">{rifle.barrelLength}"</p>
+              <p className="text-sm text-gray-500 dark:text-gray-400">Barrel Length</p>
+              <p className="font-medium text-gray-900 dark:text-gray-100">{rifle.barrelLength}"</p>
             </div>
           )}
           {rifle.twistRate && (
             <div>
-              <p className="text-sm text-gray-500">Twist Rate</p>
-              <p className="font-medium">{rifle.twistRate}</p>
+              <p className="text-sm text-gray-500 dark:text-gray-400">Twist Rate</p>
+              <p className="font-medium text-gray-900 dark:text-gray-100">{rifle.twistRate}</p>
             </div>
           )}
           <div>
-            <p className="text-sm text-gray-500">Zero Distance</p>
-            <p className="font-medium">{rifle.zeroDistance} yards</p>
+            <p className="text-sm text-gray-500 dark:text-gray-400">Zero Distance</p>
+            <p className="font-medium text-gray-900 dark:text-gray-100">{rifle.zeroDistance} yards</p>
           </div>
           {rifle.muzzleVelocity && (
             <div>
-              <p className="text-sm text-gray-500">Muzzle Velocity</p>
-              <p className="font-medium">{rifle.muzzleVelocity} fps</p>
+              <p className="text-sm text-gray-500 dark:text-gray-400">Muzzle Velocity</p>
+              <p className="font-medium text-gray-900 dark:text-gray-100">{rifle.muzzleVelocity} fps</p>
             </div>
           )}
           {rifle.ballisticCoefficient && (
             <div>
-              <p className="text-sm text-gray-500">Ballistic Coefficient</p>
-              <p className="font-medium">{rifle.ballisticCoefficient} ({rifle.dragModel || 'G1'})</p>
+              <p className="text-sm text-gray-500 dark:text-gray-400">Ballistic Coefficient</p>
+              <p className="font-medium text-gray-900 dark:text-gray-100">{rifle.ballisticCoefficient} ({rifle.dragModel || 'G1'})</p>
             </div>
           )}
         </div>
@@ -127,25 +127,25 @@ export default function RifleDetail() {
 
       {/* Optic */}
       {(rifle.scopeMake || rifle.scopeModel) && (
-        <div className="bg-white rounded-lg border border-gray-200 p-6 mb-6">
-          <h2 className="text-lg font-semibold text-gray-900 mb-4">Optic</h2>
+        <div className="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-6 mb-6">
+          <h2 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-4">Optic</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {rifle.scopeMake && (
               <div>
-                <p className="text-sm text-gray-500">Make</p>
-                <p className="font-medium">{rifle.scopeMake}</p>
+                <p className="text-sm text-gray-500 dark:text-gray-400">Make</p>
+                <p className="font-medium text-gray-900 dark:text-gray-100">{rifle.scopeMake}</p>
               </div>
             )}
             {rifle.scopeModel && (
               <div>
-                <p className="text-sm text-gray-500">Model</p>
-                <p className="font-medium">{rifle.scopeModel}</p>
+                <p className="text-sm text-gray-500 dark:text-gray-400">Model</p>
+                <p className="font-medium text-gray-900 dark:text-gray-100">{rifle.scopeModel}</p>
               </div>
             )}
             {rifle.scopeHeight && (
               <div>
-                <p className="text-sm text-gray-500">Height</p>
-                <p className="font-medium">{rifle.scopeHeight}"</p>
+                <p className="text-sm text-gray-500 dark:text-gray-400">Height</p>
+                <p className="font-medium text-gray-900 dark:text-gray-100">{rifle.scopeHeight}"</p>
               </div>
             )}
           </div>
@@ -154,15 +154,15 @@ export default function RifleDetail() {
 
       {/* Notes */}
       {rifle.notes && (
-        <div className="bg-white rounded-lg border border-gray-200 p-6 mb-6">
-          <h2 className="text-lg font-semibold text-gray-900 mb-4">Notes</h2>
-          <p className="text-gray-600 whitespace-pre-wrap">{rifle.notes}</p>
+        <div className="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-6 mb-6">
+          <h2 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-4">Notes</h2>
+          <p className="text-gray-600 dark:text-gray-300 whitespace-pre-wrap">{rifle.notes}</p>
         </div>
       )}
 
       {/* Images Section */}
-      <div className="bg-white rounded-lg border border-gray-200 p-6 mb-6">
-        <h2 className="text-lg font-semibold text-gray-900 mb-4">Photos</h2>
+      <div className="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-6 mb-6">
+        <h2 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-4">Photos</h2>
         <ImagesTab
           parentType="rifle"
           parentId={rifle.id}

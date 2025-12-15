@@ -222,6 +222,12 @@ try
     }
 
     // Configure the HTTP request pipeline
+
+    // CORS must come first so that CORS headers are added to all responses,
+    // including 401 Unauthorized responses from JWT authentication.
+    // Without this, the browser blocks 401 responses as CORS errors.
+    app.UseCors();
+
     app.UseMiddleware<ExceptionHandlingMiddleware>();
 
     // Add security headers to all responses
@@ -245,7 +251,6 @@ try
     }
 
     app.UseSerilogRequestLogging();
-    app.UseCors();
 
     app.UseAuthentication();
     app.UseAuthorization();

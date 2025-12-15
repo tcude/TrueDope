@@ -49,7 +49,7 @@ export function ForgotPassword() {
 
   if (success) {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-gray-50 px-4 py-12">
+      <div className="flex min-h-screen items-center justify-center bg-gray-50 dark:bg-gray-900 px-4 py-12">
         <Card className="w-full max-w-md">
           <CardHeader>
             <CardTitle className="text-center text-2xl">Check your email</CardTitle>
@@ -58,7 +58,7 @@ export function ForgotPassword() {
             </CardDescription>
           </CardHeader>
           <CardFooter className="justify-center">
-            <Link to="/login" className="text-blue-600 hover:text-blue-500">
+            <Link to="/login" className="text-blue-600 dark:text-blue-400 hover:text-blue-500 dark:hover:text-blue-300">
               Back to sign in
             </Link>
           </CardFooter>
@@ -68,7 +68,7 @@ export function ForgotPassword() {
   }
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-gray-50 px-4 py-12 sm:px-6 lg:px-8">
+    <div className="flex min-h-screen items-center justify-center bg-gray-50 dark:bg-gray-900 px-4 py-12 sm:px-6 lg:px-8">
       <Card className="w-full max-w-md">
         <CardHeader className="space-y-1">
           <CardTitle className="text-center text-2xl">Forgot password?</CardTitle>
@@ -106,7 +106,7 @@ export function ForgotPassword() {
             <Button type="submit" className="w-full" isLoading={isLoading}>
               Send reset link
             </Button>
-            <Link to="/login" className="text-center text-sm text-blue-600 hover:text-blue-500">
+            <Link to="/login" className="text-center text-sm text-blue-600 dark:text-blue-400 hover:text-blue-500 dark:hover:text-blue-300">
               Back to sign in
             </Link>
           </CardFooter>

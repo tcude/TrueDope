@@ -107,20 +107,20 @@ export default function AmmoForm({ mode }: AmmoFormProps) {
 
   return (
     <div className="container mx-auto px-4 py-8 max-w-2xl">
-      <Link to={mode === 'edit' && id ? `/ammunition/${id}` : '/ammunition'} className="text-sm text-gray-500 hover:text-gray-700 mb-2 inline-block">
+      <Link to={mode === 'edit' && id ? `/ammunition/${id}` : '/ammunition'} className="text-sm text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 mb-2 inline-block">
         &larr; Back
       </Link>
-      <h1 className="text-2xl font-bold text-gray-900 mb-8">
+      <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-8">
         {mode === 'create' ? 'Add Ammunition' : 'Edit Ammunition'}
       </h1>
 
       <form onSubmit={handleSubmit} className="space-y-6">
         {/* Basic Info */}
-        <div className="bg-white rounded-lg border border-gray-200 p-6">
-          <h2 className="text-lg font-semibold text-gray-900 mb-4">Basic Information</h2>
+        <div className="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-6">
+          <h2 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-4">Basic Information</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                 Manufacturer *
               </label>
               <Combobox
@@ -132,7 +132,7 @@ export default function AmmoForm({ mode }: AmmoFormProps) {
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                 Name *
               </label>
               <input
@@ -140,12 +140,12 @@ export default function AmmoForm({ mode }: AmmoFormProps) {
                 value={formData.name}
                 onChange={(e) => updateField('name', e.target.value)}
                 placeholder="e.g., Gold Medal Match"
-                className="w-full h-10 px-3 rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full h-10 px-3 rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500"
                 required
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                 Caliber *
               </label>
               <Combobox
@@ -157,7 +157,7 @@ export default function AmmoForm({ mode }: AmmoFormProps) {
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                 Grain *
               </label>
               <input
@@ -165,12 +165,12 @@ export default function AmmoForm({ mode }: AmmoFormProps) {
                 value={formData.grain || ''}
                 onChange={(e) => updateField('grain', e.target.value ? parseInt(e.target.value) : 0)}
                 placeholder="e.g., 140"
-                className="w-full h-10 px-3 rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full h-10 px-3 rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500"
                 required
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                 Bullet Type
               </label>
               <Combobox
@@ -182,7 +182,7 @@ export default function AmmoForm({ mode }: AmmoFormProps) {
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                 Cost per Round
               </label>
               <input
@@ -191,18 +191,18 @@ export default function AmmoForm({ mode }: AmmoFormProps) {
                 value={formData.costPerRound || ''}
                 onChange={(e) => updateField('costPerRound', e.target.value ? parseFloat(e.target.value) : undefined)}
                 placeholder="e.g., 1.50"
-                className="w-full h-10 px-3 rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full h-10 px-3 rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500"
               />
             </div>
           </div>
         </div>
 
         {/* Ballistic Data */}
-        <div className="bg-white rounded-lg border border-gray-200 p-6">
-          <h2 className="text-lg font-semibold text-gray-900 mb-4">Ballistic Data</h2>
+        <div className="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-6">
+          <h2 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-4">Ballistic Data</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                 Ballistic Coefficient
               </label>
               <input
@@ -211,11 +211,11 @@ export default function AmmoForm({ mode }: AmmoFormProps) {
                 value={formData.ballisticCoefficient || ''}
                 onChange={(e) => updateField('ballisticCoefficient', e.target.value ? parseFloat(e.target.value) : undefined)}
                 placeholder="e.g., 0.535"
-                className="w-full h-10 px-3 rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full h-10 px-3 rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500"
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                 Drag Model
               </label>
               <Select
@@ -231,14 +231,14 @@ export default function AmmoForm({ mode }: AmmoFormProps) {
         </div>
 
         {/* Notes */}
-        <div className="bg-white rounded-lg border border-gray-200 p-6">
-          <h2 className="text-lg font-semibold text-gray-900 mb-4">Notes</h2>
+        <div className="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-6">
+          <h2 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-4">Notes</h2>
           <textarea
             value={formData.notes || ''}
             onChange={(e) => updateField('notes', e.target.value)}
             rows={4}
             placeholder="Any additional notes..."
-            className="w-full px-3 py-2 rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="w-full px-3 py-2 rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500"
           />
         </div>
 

@@ -101,20 +101,20 @@ export default function RifleForm({ mode }: RifleFormProps) {
 
   return (
     <div className="container mx-auto px-4 py-8 max-w-2xl">
-      <Link to={mode === 'edit' && id ? `/rifles/${id}` : '/rifles'} className="text-sm text-gray-500 hover:text-gray-700 mb-2 inline-block">
+      <Link to={mode === 'edit' && id ? `/rifles/${id}` : '/rifles'} className="text-sm text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 mb-2 inline-block">
         &larr; Back
       </Link>
-      <h1 className="text-2xl font-bold text-gray-900 mb-8">
+      <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-8">
         {mode === 'create' ? 'Add Rifle' : 'Edit Rifle'}
       </h1>
 
       <form onSubmit={handleSubmit} className="space-y-6">
         {/* Basic Info */}
-        <div className="bg-white rounded-lg border border-gray-200 p-6">
-          <h2 className="text-lg font-semibold text-gray-900 mb-4">Basic Information</h2>
+        <div className="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-6">
+          <h2 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-4">Basic Information</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div className="md:col-span-2">
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                 Name *
               </label>
               <input
@@ -122,12 +122,12 @@ export default function RifleForm({ mode }: RifleFormProps) {
                 value={formData.name}
                 onChange={(e) => updateField('name', e.target.value)}
                 placeholder="e.g., My 6.5 Creedmoor"
-                className="w-full h-10 px-3 rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full h-10 px-3 rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500"
                 required
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                 Manufacturer
               </label>
               <input
@@ -135,11 +135,11 @@ export default function RifleForm({ mode }: RifleFormProps) {
                 value={formData.manufacturer || ''}
                 onChange={(e) => updateField('manufacturer', e.target.value)}
                 placeholder="e.g., Ruger"
-                className="w-full h-10 px-3 rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full h-10 px-3 rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500"
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                 Model
               </label>
               <input
@@ -147,11 +147,11 @@ export default function RifleForm({ mode }: RifleFormProps) {
                 value={formData.model || ''}
                 onChange={(e) => updateField('model', e.target.value)}
                 placeholder="e.g., Precision Rifle"
-                className="w-full h-10 px-3 rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full h-10 px-3 rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500"
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                 Caliber *
               </label>
               <Combobox
@@ -163,7 +163,7 @@ export default function RifleForm({ mode }: RifleFormProps) {
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                 Barrel Length (inches)
               </label>
               <input
@@ -172,11 +172,11 @@ export default function RifleForm({ mode }: RifleFormProps) {
                 value={formData.barrelLength || ''}
                 onChange={(e) => updateField('barrelLength', e.target.value ? parseFloat(e.target.value) : undefined)}
                 placeholder="e.g., 24"
-                className="w-full h-10 px-3 rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full h-10 px-3 rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500"
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                 Twist Rate
               </label>
               <input
@@ -184,18 +184,18 @@ export default function RifleForm({ mode }: RifleFormProps) {
                 value={formData.twistRate || ''}
                 onChange={(e) => updateField('twistRate', e.target.value)}
                 placeholder="e.g., 1:8"
-                className="w-full h-10 px-3 rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full h-10 px-3 rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500"
               />
             </div>
           </div>
         </div>
 
         {/* Optic Info */}
-        <div className="bg-white rounded-lg border border-gray-200 p-6">
-          <h2 className="text-lg font-semibold text-gray-900 mb-4">Optic</h2>
+        <div className="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-6">
+          <h2 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-4">Optic</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                 Scope Make
               </label>
               <input
@@ -203,11 +203,11 @@ export default function RifleForm({ mode }: RifleFormProps) {
                 value={formData.scopeMake || ''}
                 onChange={(e) => updateField('scopeMake', e.target.value)}
                 placeholder="e.g., Vortex"
-                className="w-full h-10 px-3 rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full h-10 px-3 rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500"
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                 Scope Model
               </label>
               <input
@@ -215,11 +215,11 @@ export default function RifleForm({ mode }: RifleFormProps) {
                 value={formData.scopeModel || ''}
                 onChange={(e) => updateField('scopeModel', e.target.value)}
                 placeholder="e.g., Viper PST Gen II 5-25x50"
-                className="w-full h-10 px-3 rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full h-10 px-3 rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500"
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                 Scope Height (inches)
               </label>
               <input
@@ -228,18 +228,18 @@ export default function RifleForm({ mode }: RifleFormProps) {
                 value={formData.scopeHeight || ''}
                 onChange={(e) => updateField('scopeHeight', e.target.value ? parseFloat(e.target.value) : undefined)}
                 placeholder="e.g., 1.5"
-                className="w-full h-10 px-3 rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full h-10 px-3 rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500"
               />
             </div>
           </div>
         </div>
 
         {/* Ballistic Data */}
-        <div className="bg-white rounded-lg border border-gray-200 p-6">
-          <h2 className="text-lg font-semibold text-gray-900 mb-4">Ballistic Data</h2>
+        <div className="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-6">
+          <h2 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-4">Ballistic Data</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                 Muzzle Velocity (fps)
               </label>
               <input
@@ -247,11 +247,11 @@ export default function RifleForm({ mode }: RifleFormProps) {
                 value={formData.muzzleVelocity || ''}
                 onChange={(e) => updateField('muzzleVelocity', e.target.value ? parseInt(e.target.value) : undefined)}
                 placeholder="e.g., 2750"
-                className="w-full h-10 px-3 rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full h-10 px-3 rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500"
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                 Zero Distance (yards)
               </label>
               <input
@@ -259,11 +259,11 @@ export default function RifleForm({ mode }: RifleFormProps) {
                 value={formData.zeroDistance || ''}
                 onChange={(e) => updateField('zeroDistance', e.target.value ? parseInt(e.target.value) : undefined)}
                 placeholder="e.g., 100"
-                className="w-full h-10 px-3 rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full h-10 px-3 rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500"
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                 Ballistic Coefficient
               </label>
               <input
@@ -272,17 +272,17 @@ export default function RifleForm({ mode }: RifleFormProps) {
                 value={formData.ballisticCoefficient || ''}
                 onChange={(e) => updateField('ballisticCoefficient', e.target.value ? parseFloat(e.target.value) : undefined)}
                 placeholder="e.g., 0.535"
-                className="w-full h-10 px-3 rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full h-10 px-3 rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500"
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                 Drag Model
               </label>
               <select
                 value={formData.dragModel || ''}
                 onChange={(e) => updateField('dragModel', e.target.value || undefined)}
-                className="w-full h-10 px-3 rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full h-10 px-3 rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500"
               >
                 <option value="">Select drag model...</option>
                 <option value="G1">G1</option>
@@ -293,21 +293,21 @@ export default function RifleForm({ mode }: RifleFormProps) {
         </div>
 
         {/* Notes */}
-        <div className="bg-white rounded-lg border border-gray-200 p-6">
-          <h2 className="text-lg font-semibold text-gray-900 mb-4">Notes</h2>
+        <div className="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-6">
+          <h2 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-4">Notes</h2>
           <textarea
             value={formData.notes || ''}
             onChange={(e) => updateField('notes', e.target.value)}
             rows={4}
             placeholder="Any additional notes..."
-            className="w-full px-3 py-2 rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="w-full px-3 py-2 rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500"
           />
         </div>
 
         {/* Photos (only in edit mode when we have an ID) */}
         {mode === 'edit' && id && (
-          <div className="bg-white rounded-lg border border-gray-200 p-6">
-            <h2 className="text-lg font-semibold text-gray-900 mb-4">Photos</h2>
+          <div className="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-6">
+            <h2 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-4">Photos</h2>
             <ImagesTab
               parentType="rifle"
               parentId={parseInt(id)}

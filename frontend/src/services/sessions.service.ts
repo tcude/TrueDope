@@ -16,6 +16,18 @@ import type {
   ApiResponse,
 } from '../types';
 
+/**
+ * Convert a date string (YYYY-MM-DD) to an ISO timestamp in the user's local timezone.
+ * This ensures the backend receives a proper timestamp that can be converted to UTC correctly.
+ * Example: "2024-11-21" in MST becomes "2024-11-21T00:00:00-07:00" -> stored as "2024-11-21T07:00:00Z"
+ */
+function dateStringToLocalISOString(dateStr: string): string {
+  // Parse the date string and create a Date at midnight local time
+  const [year, month, day] = dateStr.split('-').map(Number);
+  const localDate = new Date(year, month - 1, day, 0, 0, 0);
+  return localDate.toISOString();
+}
+
 export const sessionsService = {
   // ==================== Session CRUD ====================
 
@@ -44,7 +56,12 @@ export const sessionsService = {
    * Create a new session
    */
   create: async (data: CreateSessionDto): Promise<number> => {
-    const response = await api.post<ApiResponse<number>>('/sessions', data);
+    // Convert date string to proper ISO timestamp with timezone
+    const payload = {
+      ...data,
+      sessionDate: dateStringToLocalISOString(data.sessionDate),
+    };
+    const response = await api.post<ApiResponse<number>>('/sessions', payload);
     if (!response.data.success || response.data.data === undefined) {
       throw new Error(response.data.error?.description || 'Failed to create session');
     }
@@ -55,7 +72,12 @@ export const sessionsService = {
    * Update an existing session
    */
   update: async (id: number, data: UpdateSessionDto): Promise<void> => {
-    const response = await api.put<ApiResponse>(`/sessions/${id}`, data);
+    // Convert date string to proper ISO timestamp with timezone if provided
+    const payload = {
+      ...data,
+      sessionDate: data.sessionDate ? dateStringToLocalISOString(data.sessionDate) : undefined,
+    };
+    const response = await api.put<ApiResponse>(`/sessions/${id}`, payload);
     if (!response.data.success) {
       throw new Error(response.data.error?.description || 'Failed to update session');
     }

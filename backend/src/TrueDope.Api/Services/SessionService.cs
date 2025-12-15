@@ -162,9 +162,9 @@ public class SessionService : ISessionService
                 throw new ArgumentException("Location not found or does not belong to user");
         }
 
-        // Ensure SessionDate is UTC for PostgreSQL
-        var sessionDate = dto.SessionDate.Kind == DateTimeKind.Unspecified
-            ? DateTime.SpecifyKind(dto.SessionDate, DateTimeKind.Utc)
+        // Convert to UTC for storage (frontend sends local time as ISO timestamp)
+        var sessionDate = dto.SessionDate.Kind == DateTimeKind.Utc
+            ? dto.SessionDate
             : dto.SessionDate.ToUniversalTime();
 
         var session = new RangeSession
@@ -285,9 +285,9 @@ public class SessionService : ISessionService
         // Update fields if provided
         if (dto.SessionDate.HasValue)
         {
-            // Ensure SessionDate is UTC for PostgreSQL
-            session.SessionDate = dto.SessionDate.Value.Kind == DateTimeKind.Unspecified
-                ? DateTime.SpecifyKind(dto.SessionDate.Value, DateTimeKind.Utc)
+            // Convert to UTC for storage (frontend sends local time as ISO timestamp)
+            session.SessionDate = dto.SessionDate.Value.Kind == DateTimeKind.Utc
+                ? dto.SessionDate.Value
                 : dto.SessionDate.Value.ToUniversalTime();
         }
 
