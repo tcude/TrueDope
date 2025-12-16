@@ -101,10 +101,10 @@ public class SessionService : ISessionService
                 GroupEntryCount = s.GroupEntries.Count,
                 ImageCount = s.Images.Count,
                 CreatedAt = s.CreatedAt,
-                // Chrono summary data
+                // Ammunition name: prefer chrono session, fall back to first DOPE entry with ammo
                 AmmunitionName = s.ChronoSession != null
                     ? s.ChronoSession.Ammunition.Manufacturer + " " + s.ChronoSession.Ammunition.Name
-                    : null,
+                    : s.DopeEntries.Where(d => d.Ammunition != null).Select(d => d.Ammunition!.Manufacturer + " " + d.Ammunition!.Name).FirstOrDefault(),
                 AverageVelocity = s.ChronoSession != null ? s.ChronoSession.AverageVelocity : null,
                 StandardDeviation = s.ChronoSession != null ? s.ChronoSession.StandardDeviation : null,
                 ExtremeSpread = s.ChronoSession != null ? s.ChronoSession.ExtremeSpread : null

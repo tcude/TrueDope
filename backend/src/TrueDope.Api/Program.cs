@@ -240,7 +240,7 @@ try
         options.RegistrationsPerHour = 3;
         options.PasswordResetsPerHour = 3;
         options.AuthRequestsPerMinute = 20;
-        options.ApiRequestsPerMinutePerUser = 100;
+        options.ApiRequestsPerMinutePerUser = 300;
         options.ApiRequestsPerMinutePerIp = 30;
     });
 
