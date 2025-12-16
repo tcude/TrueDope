@@ -210,7 +210,7 @@ export function ChronoTab({ sessionId, chronoSession, onUpdate, readOnly = false
 
     return (
       <div className="space-y-6">
-        <h3 className="text-lg font-medium text-gray-900 dark:text-gray-100">Create Chrono Session</h3>
+        <h3 className="text-lg font-medium text-gray-900 dark:text-gray-100">Start Chrono Session</h3>
         <p className="text-sm text-gray-500 dark:text-gray-400">
           Select an ammunition to start recording velocity data for this session.
         </p>
@@ -275,7 +275,7 @@ export function ChronoTab({ sessionId, chronoSession, onUpdate, readOnly = false
         </div>
 
         <Button onClick={handleCreateChrono} disabled={submitting || selectedAmmoId <= 0}>
-          {submitting ? 'Creating...' : 'Create Chrono Session'}
+          {submitting ? 'Starting...' : 'Start Chrono Session'}
         </Button>
       </div>
     );
