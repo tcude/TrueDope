@@ -168,17 +168,30 @@ export default function SessionCreate() {
         <div className="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-6">
           <h2 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-4">Basic Info</h2>
           <div className="space-y-4">
-            <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                Date *
-              </label>
-              <input
-                type="date"
-                value={formData.sessionDate}
-                onChange={(e) => setFormData((prev) => ({ ...prev, sessionDate: e.target.value }))}
-                className="w-full h-10 px-3 rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                required
-              />
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                  Date *
+                </label>
+                <input
+                  type="date"
+                  value={formData.sessionDate}
+                  onChange={(e) => setFormData((prev) => ({ ...prev, sessionDate: e.target.value }))}
+                  className="w-full h-10 px-3 rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  required
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                  Time <span className="text-gray-400 font-normal">(optional)</span>
+                </label>
+                <input
+                  type="time"
+                  value={formData.sessionTime || ''}
+                  onChange={(e) => setFormData((prev) => ({ ...prev, sessionTime: e.target.value || undefined }))}
+                  className="w-full h-10 px-3 rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                />
+              </div>
             </div>
 
             <div>

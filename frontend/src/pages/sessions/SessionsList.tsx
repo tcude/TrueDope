@@ -5,6 +5,14 @@ import type { SessionListDto, SessionFilterDto, RifleListDto } from '../../types
 import { Button, Select, EmptyState, EmptyStateIcons, LoadingPage, Collapsible, Badge } from '../../components/ui';
 import { useToast } from '../../hooks';
 
+// Format time string (HH:mm or HH:mm:ss) to 12-hour format
+const formatTime = (time: string): string => {
+  const [hours, minutes] = time.split(':').map(Number);
+  const ampm = hours >= 12 ? 'PM' : 'AM';
+  const displayHours = hours % 12 || 12;
+  return `${displayHours}:${minutes.toString().padStart(2, '0')} ${ampm}`;
+};
+
 export default function SessionsList() {
   const navigate = useNavigate();
   const { addToast } = useToast();
@@ -257,6 +265,11 @@ export default function SessionsList() {
                   <td className="px-4 py-4 whitespace-nowrap">
                     <Link to={`/sessions/${session.id}`} className="text-blue-600 dark:text-blue-400 hover:underline font-medium">
                       {new Date(session.sessionDate).toLocaleDateString()}
+                      {session.sessionTime && (
+                        <span className="text-gray-500 dark:text-gray-400 font-normal ml-2 text-sm">
+                          {formatTime(session.sessionTime)}
+                        </span>
+                      )}
                     </Link>
                   </td>
                   <td className="px-4 py-4 whitespace-nowrap">

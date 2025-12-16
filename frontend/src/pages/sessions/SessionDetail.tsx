@@ -6,6 +6,14 @@ import { Button, ConfirmDialog, LoadingPage, Tabs, StatCard, StatIcons } from '.
 import { DopeTab, ChronoTab, GroupsTab, ImagesTab } from '../../components/sessions';
 import { useToast } from '../../hooks';
 
+// Format time string (HH:mm or HH:mm:ss) to 12-hour format
+const formatTime = (time: string): string => {
+  const [hours, minutes] = time.split(':').map(Number);
+  const ampm = hours >= 12 ? 'PM' : 'AM';
+  const displayHours = hours % 12 || 12;
+  return `${displayHours}:${minutes.toString().padStart(2, '0')} ${ampm}`;
+};
+
 export default function SessionDetail() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
@@ -141,6 +149,11 @@ export default function SessionDetail() {
               month: 'long',
               day: 'numeric'
             })}
+            {session.sessionTime && (
+              <span className="text-gray-500 dark:text-gray-400 font-normal ml-2">
+                at {formatTime(session.sessionTime)}
+              </span>
+            )}
           </h1>
           <p className="text-gray-500 dark:text-gray-400">
             {session.rifle.name} {session.locationName && `• ${session.locationName}`}

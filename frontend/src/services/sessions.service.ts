@@ -28,6 +28,19 @@ function dateStringToLocalISOString(dateStr: string): string {
   return localDate.toISOString();
 }
 
+/**
+ * Convert a time string (HH:mm) to TimeSpan format (HH:mm:ss) for C# deserialization.
+ * HTML time inputs return "03:00" but C# TimeSpan expects "03:00:00".
+ */
+function timeStringToTimeSpan(timeStr: string): string {
+  // If already has seconds, return as-is
+  if (timeStr.split(':').length === 3) {
+    return timeStr;
+  }
+  // Append seconds
+  return `${timeStr}:00`;
+}
+
 export const sessionsService = {
   // ==================== Session CRUD ====================
 
@@ -57,9 +70,11 @@ export const sessionsService = {
    */
   create: async (data: CreateSessionDto): Promise<number> => {
     // Convert date string to proper ISO timestamp with timezone
+    // Convert time string to TimeSpan format if provided
     const payload = {
       ...data,
       sessionDate: dateStringToLocalISOString(data.sessionDate),
+      sessionTime: data.sessionTime ? timeStringToTimeSpan(data.sessionTime) : undefined,
     };
     const response = await api.post<ApiResponse<number>>('/sessions', payload);
     if (!response.data.success || response.data.data === undefined) {
@@ -73,9 +88,11 @@ export const sessionsService = {
    */
   update: async (id: number, data: UpdateSessionDto): Promise<void> => {
     // Convert date string to proper ISO timestamp with timezone if provided
+    // Convert time string to TimeSpan format if provided
     const payload = {
       ...data,
       sessionDate: data.sessionDate ? dateStringToLocalISOString(data.sessionDate) : undefined,
+      sessionTime: data.sessionTime ? timeStringToTimeSpan(data.sessionTime) : undefined,
     };
     const response = await api.put<ApiResponse>(`/sessions/${id}`, payload);
     if (!response.data.success) {

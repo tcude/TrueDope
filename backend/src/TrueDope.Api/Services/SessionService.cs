@@ -58,12 +58,14 @@ public class SessionService : ISessionService
         // Count total before pagination
         var totalItems = await query.CountAsync();
 
-        // Apply sorting
+        // Apply sorting (with secondary sort by time for same-day sessions)
         query = filter.SortBy.ToLowerInvariant() switch
         {
             "sessiondate" => filter.SortDesc
                 ? query.OrderByDescending(s => s.SessionDate)
-                : query.OrderBy(s => s.SessionDate),
+                        .ThenByDescending(s => s.SessionTime ?? TimeSpan.Zero)
+                : query.OrderBy(s => s.SessionDate)
+                        .ThenBy(s => s.SessionTime ?? TimeSpan.Zero),
             "createdat" => filter.SortDesc
                 ? query.OrderByDescending(s => s.CreatedAt)
                 : query.OrderBy(s => s.CreatedAt),
@@ -71,6 +73,7 @@ public class SessionService : ISessionService
                 ? query.OrderByDescending(s => s.RifleSetup.Name)
                 : query.OrderBy(s => s.RifleSetup.Name),
             _ => query.OrderByDescending(s => s.SessionDate)
+                    .ThenByDescending(s => s.SessionTime ?? TimeSpan.Zero)
         };
 
         // Apply pagination
