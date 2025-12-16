@@ -5,6 +5,7 @@ import { ProtectedRoute } from './components/ProtectedRoute';
 import { PublicRoute } from './components/PublicRoute';
 import { ToastProvider } from './components/ui/toast';
 import { ErrorBoundary } from './components/ui/error-boundary';
+import { AuthEventHandler } from './components/AuthEventHandler';
 import Home from './pages/Home';
 import { Login, Register, ForgotPassword, ResetPassword } from './pages/auth';
 import { Settings } from './pages/settings';
@@ -380,6 +381,7 @@ function App() {
     <ErrorBoundary>
       <Router>
         <ToastProvider>
+          <AuthEventHandler />
           <AppContent />
         </ToastProvider>
       </Router>

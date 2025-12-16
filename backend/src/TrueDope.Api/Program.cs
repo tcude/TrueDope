@@ -241,7 +241,7 @@ try
         options.PasswordResetsPerHour = 3;
         options.AuthRequestsPerMinute = 20;
         options.ApiRequestsPerMinutePerUser = 300;
-        options.ApiRequestsPerMinutePerIp = 30;
+        options.ApiRequestsPerMinutePerIp = 300;
     });
 
     if (app.Environment.IsDevelopment())
