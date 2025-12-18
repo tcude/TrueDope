@@ -28,6 +28,12 @@ export interface SessionListDto {
   averageVelocity: number | null;
   standardDeviation: number | null;
   extremeSpread: number | null;
+  // DOPE summary data for list display
+  minDopeDistance: number | null;
+  maxDopeDistance: number | null;
+  // Group summary data for list display
+  bestGroupMoa: number | null;
+  bestGroupDistance: number | null;
 }
 
 export interface RifleSummaryDto {

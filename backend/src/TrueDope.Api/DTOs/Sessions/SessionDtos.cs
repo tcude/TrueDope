@@ -26,6 +26,14 @@ public class SessionListDto
     public decimal? AverageVelocity { get; set; }
     public decimal? StandardDeviation { get; set; }
     public decimal? ExtremeSpread { get; set; }
+
+    // DOPE summary data for list display
+    public int? MinDopeDistance { get; set; }
+    public int? MaxDopeDistance { get; set; }
+
+    // Group summary data for list display
+    public decimal? BestGroupMoa { get; set; }
+    public int? BestGroupDistance { get; set; }
 }
 
 public class RifleSummaryDto

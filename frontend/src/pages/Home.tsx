@@ -6,6 +6,7 @@ import type { SessionListDto } from '../types';
 import { Button } from '../components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../components/ui/card';
 import { StatCard, StatIcons, LoadingSpinner, DopeBadge, VelocityBadge, GroupBadge } from '../components/ui';
+import { formatSessionDetails } from '../utils/formatters';
 
 interface DashboardStats {
   totalRifles: number;
@@ -173,10 +174,10 @@ export default function Home() {
                   <tr>
                     <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Date</th>
                     <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Rifle</th>
-                    <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Location</th>
-                    <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">DOPE</th>
-                    <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Chrono</th>
-                    <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Groups</th>
+                    <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Ammo</th>
+                    <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Type</th>
+                    <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Details</th>
+                    <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Actions</th>
                   </tr>
                 </thead>
                 <tbody className="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
@@ -187,20 +188,50 @@ export default function Home() {
                       onClick={() => navigate(`/sessions/${session.id}`)}
                     >
                       <td className="px-4 py-3 text-sm">
-                        <Link to={`/sessions/${session.id}`} className="text-blue-600 dark:text-blue-400 hover:underline font-medium">
-                          {new Date(session.sessionDate).toLocaleDateString()}
+                        <span className="text-gray-900 dark:text-gray-100 font-medium">
+                          {new Date(session.sessionDate).toLocaleDateString('en-US', {
+                            month: 'short',
+                            day: '2-digit',
+                            year: 'numeric'
+                          })}
+                        </span>
+                      </td>
+                      <td className="px-4 py-3 text-sm">
+                        <Link
+                          to={`/rifles/${session.rifle.id}`}
+                          className="text-blue-600 dark:text-blue-400 hover:underline font-medium"
+                          onClick={(e) => e.stopPropagation()}
+                        >
+                          {session.rifle.name}
                         </Link>
+                        <span className="text-gray-500 dark:text-gray-400 text-xs ml-1">
+                          ({session.rifle.caliber})
+                        </span>
                       </td>
-                      <td className="px-4 py-3 text-sm text-gray-900 dark:text-gray-100">{session.rifleName}</td>
-                      <td className="px-4 py-3 text-sm text-gray-500 dark:text-gray-400">{session.locationName || '-'}</td>
-                      <td className="px-4 py-3 text-sm">
-                        {session.dopeCount > 0 ? <DopeBadge count={session.dopeCount} /> : '-'}
-                      </td>
-                      <td className="px-4 py-3 text-sm">
-                        {session.chronoCount > 0 ? <VelocityBadge count={session.chronoCount} /> : '-'}
+                      <td className="px-4 py-3 text-sm text-gray-600 dark:text-gray-300 max-w-[150px] truncate">
+                        {session.ammunitionName || '-'}
                       </td>
                       <td className="px-4 py-3 text-sm">
-                        {session.groupCount > 0 ? <GroupBadge count={session.groupCount} /> : '-'}
+                        <div className="flex flex-wrap gap-1">
+                          {session.dopeEntryCount > 0 && <DopeBadge />}
+                          {session.hasChronoData && <VelocityBadge />}
+                          {session.groupEntryCount > 0 && <GroupBadge />}
+                        </div>
+                      </td>
+                      <td className="px-4 py-3 text-sm text-gray-600 dark:text-gray-300">
+                        {formatSessionDetails(session)}
+                      </td>
+                      <td className="px-4 py-3 text-sm">
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            navigate(`/sessions/${session.id}`);
+                          }}
+                        >
+                          View
+                        </Button>
                       </td>
                     </tr>
                   ))}

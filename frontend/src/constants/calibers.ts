@@ -18,7 +18,7 @@ export const COMMON_CALIBERS = [
 
   // Rifle - Common
   '.223 Remington',
-  '5.56 NATO',
+  '5.56',
   '.308 Winchester',
   '7.62 NATO',
   '.30-06 Springfield',

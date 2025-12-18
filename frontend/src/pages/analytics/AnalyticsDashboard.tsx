@@ -1,9 +1,10 @@
 import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { analyticsService, sessionsService } from '../../services';
 import type { AnalyticsSummaryDto, SessionListDto } from '../../types';
 import { StatCard, StatIcons, LoadingPage, Button, DopeBadge, VelocityBadge, GroupBadge, PageHeader } from '../../components/ui';
 import { useToast } from '../../hooks';
+import { formatSessionDetails } from '../../utils/formatters';
 
 // Achievement Card Component
 function AchievementCard({
@@ -228,16 +229,16 @@ export default function AnalyticsDashboard() {
                     Rifle
                   </th>
                   <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
-                    Location
+                    Ammo
                   </th>
                   <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
-                    DOPE
+                    Type
                   </th>
                   <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
-                    Chrono
+                    Details
                   </th>
                   <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
-                    Groups
+                    Actions
                   </th>
                 </tr>
               </thead>
@@ -248,19 +249,51 @@ export default function AnalyticsDashboard() {
                     className="hover:bg-gray-50 dark:hover:bg-gray-700 cursor-pointer transition-colors"
                     onClick={() => navigate(`/sessions/${session.id}`)}
                   >
-                    <td className="px-4 py-3 text-sm text-gray-900 dark:text-gray-100">
-                      {new Date(session.sessionDate).toLocaleDateString()}
-                    </td>
-                    <td className="px-4 py-3 text-sm text-gray-900 dark:text-gray-100">{session.rifleName}</td>
-                    <td className="px-4 py-3 text-sm text-gray-500 dark:text-gray-400">{session.locationName || '-'}</td>
                     <td className="px-4 py-3 text-sm">
-                      {session.dopeCount > 0 ? <DopeBadge count={session.dopeCount} /> : '-'}
-                    </td>
-                    <td className="px-4 py-3 text-sm">
-                      {session.chronoCount > 0 ? <VelocityBadge count={session.chronoCount} /> : '-'}
+                      <span className="text-gray-900 dark:text-gray-100 font-medium">
+                        {new Date(session.sessionDate).toLocaleDateString('en-US', {
+                          month: 'short',
+                          day: '2-digit',
+                          year: 'numeric'
+                        })}
+                      </span>
                     </td>
                     <td className="px-4 py-3 text-sm">
-                      {session.groupCount > 0 ? <GroupBadge count={session.groupCount} /> : '-'}
+                      <Link
+                        to={`/rifles/${session.rifle.id}`}
+                        className="text-blue-600 dark:text-blue-400 hover:underline font-medium"
+                        onClick={(e) => e.stopPropagation()}
+                      >
+                        {session.rifle.name}
+                      </Link>
+                      <span className="text-gray-500 dark:text-gray-400 text-xs ml-1">
+                        ({session.rifle.caliber})
+                      </span>
+                    </td>
+                    <td className="px-4 py-3 text-sm text-gray-600 dark:text-gray-300 max-w-[150px] truncate">
+                      {session.ammunitionName || '-'}
+                    </td>
+                    <td className="px-4 py-3 text-sm">
+                      <div className="flex flex-wrap gap-1">
+                        {session.dopeEntryCount > 0 && <DopeBadge />}
+                        {session.hasChronoData && <VelocityBadge />}
+                        {session.groupEntryCount > 0 && <GroupBadge />}
+                      </div>
+                    </td>
+                    <td className="px-4 py-3 text-sm text-gray-600 dark:text-gray-300">
+                      {formatSessionDetails(session)}
+                    </td>
+                    <td className="px-4 py-3 text-sm">
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          navigate(`/sessions/${session.id}`);
+                        }}
+                      >
+                        View
+                      </Button>
                     </td>
                   </tr>
                 ))}

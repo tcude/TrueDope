@@ -110,7 +110,17 @@ public class SessionService : ISessionService
                     : s.DopeEntries.Where(d => d.Ammunition != null).Select(d => d.Ammunition!.Manufacturer + " " + d.Ammunition!.Name).FirstOrDefault(),
                 AverageVelocity = s.ChronoSession != null ? s.ChronoSession.AverageVelocity : null,
                 StandardDeviation = s.ChronoSession != null ? s.ChronoSession.StandardDeviation : null,
-                ExtremeSpread = s.ChronoSession != null ? s.ChronoSession.ExtremeSpread : null
+                ExtremeSpread = s.ChronoSession != null ? s.ChronoSession.ExtremeSpread : null,
+                // DOPE summary
+                MinDopeDistance = s.DopeEntries.Any() ? s.DopeEntries.Min(d => d.Distance) : (int?)null,
+                MaxDopeDistance = s.DopeEntries.Any() ? s.DopeEntries.Max(d => d.Distance) : (int?)null,
+                // Group summary - best (smallest) group MOA
+                BestGroupMoa = s.GroupEntries.Any(g => g.GroupSizeMoa != null)
+                    ? s.GroupEntries.Where(g => g.GroupSizeMoa != null).Min(g => g.GroupSizeMoa)
+                    : (decimal?)null,
+                BestGroupDistance = s.GroupEntries.Any(g => g.GroupSizeMoa != null)
+                    ? s.GroupEntries.Where(g => g.GroupSizeMoa != null).OrderBy(g => g.GroupSizeMoa).Select(g => g.Distance).FirstOrDefault()
+                    : (int?)null
             })
             .ToListAsync();
 
