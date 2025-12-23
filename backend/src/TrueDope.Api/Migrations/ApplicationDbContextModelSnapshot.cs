@@ -205,7 +205,7 @@ namespace TrueDope.Api.Migrations
 
                     b.HasIndex("Timestamp");
 
-                    b.ToTable("AdminAuditLogs");
+                    b.ToTable("AdminAuditLogs", (string)null);
                 });
 
             modelBuilder.Entity("TrueDope.Api.Data.Entities.AmmoLot", b =>
@@ -254,7 +254,7 @@ namespace TrueDope.Api.Migrations
                     b.HasIndex("AmmunitionId", "LotNumber")
                         .IsUnique();
 
-                    b.ToTable("AmmoLots");
+                    b.ToTable("AmmoLots", (string)null);
                 });
 
             modelBuilder.Entity("TrueDope.Api.Data.Entities.Ammunition", b =>
@@ -315,7 +315,7 @@ namespace TrueDope.Api.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Ammunition");
+                    b.ToTable("Ammunition", (string)null);
                 });
 
             modelBuilder.Entity("TrueDope.Api.Data.Entities.ChronoSession", b =>
@@ -375,7 +375,7 @@ namespace TrueDope.Api.Migrations
                     b.HasIndex("RangeSessionId")
                         .IsUnique();
 
-                    b.ToTable("ChronoSessions");
+                    b.ToTable("ChronoSessions", (string)null);
                 });
 
             modelBuilder.Entity("TrueDope.Api.Data.Entities.DopeEntry", b =>
@@ -422,7 +422,7 @@ namespace TrueDope.Api.Migrations
                     b.HasIndex("RangeSessionId", "Distance")
                         .IsUnique();
 
-                    b.ToTable("DopeEntries");
+                    b.ToTable("DopeEntries", (string)null);
                 });
 
             modelBuilder.Entity("TrueDope.Api.Data.Entities.GroupEntry", b =>
@@ -475,7 +475,7 @@ namespace TrueDope.Api.Migrations
 
                     b.HasIndex("RangeSessionId");
 
-                    b.ToTable("GroupEntries");
+                    b.ToTable("GroupEntries", (string)null);
                 });
 
             modelBuilder.Entity("TrueDope.Api.Data.Entities.Image", b =>
@@ -544,7 +544,7 @@ namespace TrueDope.Api.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Images");
+                    b.ToTable("Images", (string)null);
                 });
 
             modelBuilder.Entity("TrueDope.Api.Data.Entities.RangeSession", b =>
@@ -619,7 +619,7 @@ namespace TrueDope.Api.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("RangeSessions");
+                    b.ToTable("RangeSessions", (string)null);
                 });
 
             modelBuilder.Entity("TrueDope.Api.Data.Entities.RifleSetup", b =>
@@ -703,7 +703,7 @@ namespace TrueDope.Api.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("RifleSetups");
+                    b.ToTable("RifleSetups", (string)null);
                 });
 
             modelBuilder.Entity("TrueDope.Api.Data.Entities.SavedLocation", b =>
@@ -746,7 +746,7 @@ namespace TrueDope.Api.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("SavedLocations");
+                    b.ToTable("SavedLocations", (string)null);
                 });
 
             modelBuilder.Entity("TrueDope.Api.Data.Entities.SharedLocation", b =>
@@ -819,7 +819,7 @@ namespace TrueDope.Api.Migrations
 
                     b.HasIndex("Latitude", "Longitude");
 
-                    b.ToTable("SharedLocations");
+                    b.ToTable("SharedLocations", (string)null);
                 });
 
             modelBuilder.Entity("TrueDope.Api.Data.Entities.User", b =>
@@ -953,7 +953,7 @@ namespace TrueDope.Api.Migrations
 
                     b.HasKey("UserId");
 
-                    b.ToTable("UserPreferences");
+                    b.ToTable("UserPreferences", (string)null);
                 });
 
             modelBuilder.Entity("TrueDope.Api.Data.Entities.VelocityReading", b =>
@@ -983,7 +983,7 @@ namespace TrueDope.Api.Migrations
                     b.HasIndex("ChronoSessionId", "ShotNumber")
                         .IsUnique();
 
-                    b.ToTable("VelocityReadings");
+                    b.ToTable("VelocityReadings", (string)null);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
