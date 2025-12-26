@@ -61,8 +61,9 @@ public class AnalyticsController : ControllerBase
         var filter = new DopeChartFilterDto
         {
             RifleId = rifleId,
-            FromDate = fromDate,
-            ToDate = toDate,
+            // Convert dates to UTC if they come in with Kind=Unspecified
+            FromDate = fromDate.HasValue ? DateTime.SpecifyKind(fromDate.Value, DateTimeKind.Utc) : null,
+            ToDate = toDate.HasValue ? DateTime.SpecifyKind(toDate.Value, DateTimeKind.Utc) : null,
             Months = months,
             MinTemp = minTemp,
             MaxTemp = maxTemp,
@@ -109,8 +110,9 @@ public class AnalyticsController : ControllerBase
         {
             AmmoId = ammoId,
             LotId = lotId,
-            FromDate = fromDate,
-            ToDate = toDate
+            // Convert dates to UTC if they come in with Kind=Unspecified
+            FromDate = fromDate.HasValue ? DateTime.SpecifyKind(fromDate.Value, DateTimeKind.Utc) : null,
+            ToDate = toDate.HasValue ? DateTime.SpecifyKind(toDate.Value, DateTimeKind.Utc) : null
         };
 
         try
@@ -222,8 +224,9 @@ public class AnalyticsController : ControllerBase
 
         var filter = new CostSummaryFilterDto
         {
-            FromDate = fromDate,
-            ToDate = toDate,
+            // Convert dates to UTC if they come in with Kind=Unspecified
+            FromDate = fromDate.HasValue ? DateTime.SpecifyKind(fromDate.Value, DateTimeKind.Utc) : null,
+            ToDate = toDate.HasValue ? DateTime.SpecifyKind(toDate.Value, DateTimeKind.Utc) : null,
             RifleId = rifleId
         };
 
