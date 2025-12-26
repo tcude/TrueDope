@@ -47,6 +47,9 @@ const AmmoComparison = lazy(() => import('./pages/analytics/AmmoComparison'));
 const LotComparison = lazy(() => import('./pages/analytics/LotComparison'));
 const CostAnalysis = lazy(() => import('./pages/analytics/CostAnalysis'));
 
+// Legal
+const PrivacyPolicy = lazy(() => import('./pages/legal/PrivacyPolicy'));
+
 // Loading fallback
 function PageLoader() {
   return (
@@ -83,6 +86,16 @@ function AppContent() {
       />
       <Route path="/forgot-password" element={<ForgotPassword />} />
       <Route path="/reset-password" element={<ResetPassword />} />
+
+      {/* Public legal pages */}
+      <Route
+        path="/privacy"
+        element={
+          <Suspense fallback={<PageLoader />}>
+            <PrivacyPolicy />
+          </Suspense>
+        }
+      />
 
       {/* Routes with Layout (Header) */}
       <Route element={<Layout />}>
