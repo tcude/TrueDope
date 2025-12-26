@@ -8,5 +8,5 @@ public class JwtSettings
     public string Issuer { get; set; } = "TrueDope";
     public string Audience { get; set; } = "TrueDope";
     public int AccessTokenExpirationMinutes { get; set; } = 60;
-    public int RefreshTokenExpirationDays { get; set; } = 7;
+    public int RefreshTokenExpirationDays { get; set; } = 30;
 }
