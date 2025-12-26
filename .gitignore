@@ -13,6 +13,11 @@ frontend/dist/
 .env
 .env.local
 .env.*.local
+.env.remote
+
+# Database exports
+backend/scripts/exports/
+backend/exports/
 
 # Data volumes (bind mounts)
 .data/
