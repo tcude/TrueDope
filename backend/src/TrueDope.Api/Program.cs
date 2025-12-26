@@ -192,17 +192,28 @@ try
         });
     });
 
-    // Configure CORS
+    // Configure CORS - origins from environment variable
+    var corsOrigins = builder.Configuration.GetValue<string>("CorsOrigins")
+        ?? "http://localhost:3000,http://localhost:5173";
+    var allowedOrigins = corsOrigins.Split(',', StringSplitOptions.RemoveEmptyEntries)
+        .Select(o => o.Trim())
+        .ToArray();
+
+    Log.Information("CORS configured for origins: {Origins}", string.Join(", ", allowedOrigins));
+
     builder.Services.AddCors(options =>
     {
         options.AddDefaultPolicy(policy =>
         {
-            policy.WithOrigins(
-                    "http://localhost:3000",
-                    "http://localhost:5173"
+            policy.WithOrigins(allowedOrigins)
+                .WithHeaders(
+                    "Content-Type",
+                    "Authorization",
+                    "X-Requested-With",
+                    "Accept",
+                    "Origin"
                 )
-                .AllowAnyHeader()
-                .AllowAnyMethod()
+                .WithMethods("GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH")
                 .AllowCredentials();
         });
     });

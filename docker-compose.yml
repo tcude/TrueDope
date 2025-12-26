@@ -36,6 +36,7 @@ services:
       - Smtp__FromName=${SMTP_FROM_NAME}
       - FrontendUrl=${FRONTEND_URL}
       - OpenWeatherMap__ApiKey=${OPENWEATHERMAP_API_KEY}
+      - CorsOrigins=${CORS_ORIGINS}
     networks:
       - truedope-network
     restart: unless-stopped
@@ -44,6 +45,8 @@ services:
     build:
       context: ./frontend
       dockerfile: Dockerfile
+      args:
+        - VITE_API_URL=${VITE_API_URL}
     ports:
       - "3000:80"
     depends_on:

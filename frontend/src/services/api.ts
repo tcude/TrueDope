@@ -2,7 +2,9 @@ import axios, { type AxiosError, type AxiosInstance, type InternalAxiosRequestCo
 import type { ApiResponse } from '../types/common';
 import type { RefreshResponse } from '../types/auth';
 
-const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:8080';
+// API_BASE_URL: Set VITE_API_URL in .env for development (http://localhost:8080)
+// In production, leave empty to use relative URLs via nginx proxy
+const API_BASE_URL = import.meta.env.VITE_API_URL || '';
 
 const TOKEN_KEY = 'access_token';
 const REFRESH_TOKEN_KEY = 'refresh_token';

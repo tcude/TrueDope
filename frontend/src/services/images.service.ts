@@ -11,7 +11,8 @@ import type {
 } from '../types/images';
 
 // Get the API base URL (without /api suffix) for constructing full image URLs
-const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:8080';
+// Set VITE_API_URL in .env for development; leave empty in production for nginx proxy
+const API_BASE_URL = import.meta.env.VITE_API_URL || '';
 
 // Helper to resolve relative API URLs to full URLs with auth token
 // Since <img> tags can't send Authorization headers, we pass token as query param
