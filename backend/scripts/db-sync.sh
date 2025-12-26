@@ -143,10 +143,18 @@ get_local_db_config() {
 validate_remote_config() {
     local missing=""
 
-    [ -z "$REMOTE_DB_HOST" ] && missing="$missing REMOTE_DB_HOST"
-    [ -z "$REMOTE_DB_NAME" ] && missing="$missing REMOTE_DB_NAME"
-    [ -z "$REMOTE_DB_USER" ] && missing="$missing REMOTE_DB_USER"
-    [ -z "$REMOTE_DB_PASSWORD" ] && missing="$missing REMOTE_DB_PASSWORD"
+    if [ -z "$REMOTE_DB_HOST" ]; then
+        missing="$missing REMOTE_DB_HOST"
+    fi
+    if [ -z "$REMOTE_DB_NAME" ]; then
+        missing="$missing REMOTE_DB_NAME"
+    fi
+    if [ -z "$REMOTE_DB_USER" ]; then
+        missing="$missing REMOTE_DB_USER"
+    fi
+    if [ -z "$REMOTE_DB_PASSWORD" ]; then
+        missing="$missing REMOTE_DB_PASSWORD"
+    fi
 
     if [ -n "$missing" ]; then
         print_status "$RED" "Error: Missing remote database configuration:"
@@ -165,7 +173,9 @@ validate_remote_config() {
     fi
 
     # Default port
-    [ -z "$REMOTE_DB_PORT" ] && REMOTE_DB_PORT="5432"
+    if [ -z "$REMOTE_DB_PORT" ]; then
+        REMOTE_DB_PORT="5432"
+    fi
 }
 
 # Check for required tools
