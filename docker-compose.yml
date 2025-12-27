@@ -37,6 +37,8 @@ services:
       - FrontendUrl=${FRONTEND_URL}
       - OpenWeatherMap__ApiKey=${OPENWEATHERMAP_API_KEY}
       - CorsOrigins=${CORS_ORIGINS}
+    volumes:
+      - ./logs:/var/log/truedope
     networks:
       - truedope-network
     restart: unless-stopped

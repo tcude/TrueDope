@@ -21,6 +21,13 @@ Log.Logger = new LoggerConfiguration()
     .MinimumLevel.Override("Microsoft.AspNetCore.Hosting", LogEventLevel.Information)
     .Enrich.FromLogContext()
     .WriteTo.Console(outputTemplate: "[{Timestamp:HH:mm:ss} {Level:u3}] {Message:lj}{NewLine}{Exception}")
+    .WriteTo.File(
+        path: "/var/log/truedope/truedope-.log",
+        rollingInterval: RollingInterval.Day,
+        retainedFileCountLimit: 30,
+        fileSizeLimitBytes: 50 * 1024 * 1024,
+        rollOnFileSizeLimit: true,
+        outputTemplate: "{Timestamp:yyyy-MM-dd HH:mm:ss.fff zzz} [{Level:u3}] {SourceContext} {Message:lj}{NewLine}{Exception}")
     .CreateLogger();
 
 try
