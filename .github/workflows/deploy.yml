@@ -1,20 +1,51 @@
-name: Deploy
+# GitHub Actions Deploy Pipeline for TrueDope v2
+# Runner on gha01 VM, SSHs to production server for deployment
+
+name: Build and Deploy
 
 on:
   push:
     branches: [main]
 
+env:
+  PRODUCTION_SERVER: 'docker-external01.tcudelocal.net'
+  PRODUCTION_PATH: '/home/tcude/docker/TrueDope'
+  SSH_USER: 'tcude'
+
 jobs:
   build:
-    runs-on: ubuntu-latest
+    name: Build and Validate
+    runs-on: [self-hosted, gha01]
+
     steps:
       - uses: actions/checkout@v4
 
-      # Build backend
-      - name: Setup .NET
+      - name: Check for existing .NET installation
+        id: check-dotnet
+        run: |
+          if command -v dotnet &> /dev/null; then
+            DOTNET_VERSION=$(dotnet --version)
+            echo "found=true" >> $GITHUB_OUTPUT
+            echo ".NET is already installed: $DOTNET_VERSION"
+          else
+            echo "found=false" >> $GITHUB_OUTPUT
+            echo ".NET is not installed"
+          fi
+
+      - name: Setup .NET 8.x
+        if: steps.check-dotnet.outputs.found != 'true'
         uses: actions/setup-dotnet@v4
         with:
-          dotnet-version: '8.0.x'
+          dotnet-version: '8.x'
+        continue-on-error: true
+
+      - name: Verify .NET installation
+        run: |
+          if ! command -v dotnet &> /dev/null; then
+            echo ".NET is not available"
+            exit 1
+          fi
+          echo ".NET version: $(dotnet --version)"
 
       - name: Restore backend
         run: dotnet restore backend/TrueDope.sln
@@ -23,69 +54,102 @@ jobs:
         run: dotnet build backend/TrueDope.sln --no-restore --configuration Release
 
       - name: Test backend
-        run: dotnet test backend/TrueDope.sln --no-build --configuration Release
-
-      # Build frontend
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '20'
-          cache: 'npm'
-          cache-dependency-path: frontend/package-lock.json
-
-      - name: Install frontend dependencies
-        run: npm ci
-        working-directory: frontend
-
-      - name: Build frontend
-        run: npm run build
-        working-directory: frontend
+        run: dotnet test backend/TrueDope.sln --no-build --configuration Release --verbosity normal
 
   deploy:
+    name: Deploy to Production
+    runs-on: [self-hosted, gha01]
     needs: build
-    runs-on: [self-hosted, truedope01]
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    environment: production
+
     steps:
-      - uses: actions/checkout@v4
-
-      - name: Create .env file
+      - name: Setup SSH key
         run: |
-          cat > .env << EOF
-          ASPNETCORE_ENVIRONMENT=Production
-          DB_NAME=${{ secrets.DB_NAME }}
-          DB_USER=${{ secrets.DB_USER }}
-          DB_PASSWORD=${{ secrets.DB_PASSWORD }}
-          MINIO_ACCESS_KEY=${{ secrets.MINIO_ACCESS_KEY }}
-          MINIO_SECRET_KEY=${{ secrets.MINIO_SECRET_KEY }}
-          MINIO_BUCKET=${{ secrets.MINIO_BUCKET }}
-          JWT_SECRET_KEY=${{ secrets.JWT_SECRET_KEY }}
-          JWT_ISSUER=${{ secrets.JWT_ISSUER }}
-          JWT_AUDIENCE=${{ secrets.JWT_AUDIENCE }}
-          EOF
+          mkdir -p ~/.ssh
+          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+          ssh-keyscan -H ${{ env.PRODUCTION_SERVER }} >> ~/.ssh/known_hosts 2>/dev/null || true
 
-      - name: Deploy with Docker Compose
+      - name: Verify production server connectivity
         run: |
-          docker compose down || true
-          docker compose build --no-cache
-          docker compose up -d
+          echo "Testing SSH connection to ${{ env.PRODUCTION_SERVER }}..."
+          ssh -o StrictHostKeyChecking=no ${{ env.SSH_USER }}@${{ env.PRODUCTION_SERVER }} "echo 'SSH connection successful'"
 
-      - name: Wait for services to start
-        run: sleep 15
-
-      - name: Health check
+      - name: Capture current commit hash for rollback
+        id: capture-commit
         run: |
-          response=$(curl -s -o /dev/null -w "%{http_code}" http://localhost:8080/api/health || echo "000")
-          if [ "$response" != "200" ]; then
-            echo "Health check failed with status $response"
+          CURRENT_COMMIT=$(ssh -o StrictHostKeyChecking=no ${{ env.SSH_USER }}@${{ env.PRODUCTION_SERVER }} "cd ${{ env.PRODUCTION_PATH }} && git rev-parse HEAD 2>/dev/null || echo 'none'")
+          echo "current_commit=$CURRENT_COMMIT" >> $GITHUB_OUTPUT
+          echo "Current commit: $CURRENT_COMMIT"
+
+      - name: Deploy to production server
+        run: |
+          ssh -o StrictHostKeyChecking=no ${{ env.SSH_USER }}@${{ env.PRODUCTION_SERVER }} '
+            cd ${{ env.PRODUCTION_PATH }}
+
+            echo "Pulling latest changes..."
+            git pull origin main
+
+            echo "Stopping existing containers..."
+            docker compose down
+
+            echo "Building containers..."
+            docker compose build
+
+            echo "Starting containers..."
+            docker compose up -d
+
+            echo "Waiting for containers to start..."
+            sleep 30
+
+            echo "Performing health check..."
+            if docker ps --format "table {{.Names}}\t{{.Status}}" | grep -q "Up"; then
+              echo "All containers are running!"
+              docker ps --format "table {{.Names}}\t{{.Status}}"
+            else
+              echo "Some containers failed to start"
+              docker ps -a
+              docker compose logs
+              exit 1
+            fi
+
+            echo "Checking application health..."
+            for i in 1 2 3 4 5; do
+              echo "Attempt $i/5: Checking if application is responding..."
+              if curl -f -s --max-time 10 http://localhost:8080/api/health >/dev/null 2>&1; then
+                echo "Application is responding successfully!"
+                exit 0
+              fi
+              echo "Attempt $i failed, waiting 10 seconds..."
+              sleep 10
+            done
+
+            echo "Application is not responding after 5 attempts"
+            docker ps
             docker compose logs backend
             exit 1
-          fi
-          echo "Health check passed"
+          '
+
+      - name: Deployment success
+        if: success()
+        run: |
+          DEPLOYED_COMMIT=$(ssh -o StrictHostKeyChecking=no ${{ env.SSH_USER }}@${{ env.PRODUCTION_SERVER }} "cd ${{ env.PRODUCTION_PATH }} && git rev-parse HEAD")
+          echo "Deployment completed successfully!"
+          echo "Deployed commit: $DEPLOYED_COMMIT"
 
       - name: Rollback on failure
-        if: failure()
+        if: failure() && steps.capture-commit.outputs.current_commit != 'none'
         run: |
           echo "Deployment failed, attempting rollback..."
-          docker compose down
-          git checkout HEAD~1
-          docker compose build
-          docker compose up -d
+          PREVIOUS_COMMIT="${{ steps.capture-commit.outputs.current_commit }}"
+          echo "Rolling back to commit: $PREVIOUS_COMMIT"
+          ssh -o StrictHostKeyChecking=no ${{ env.SSH_USER }}@${{ env.PRODUCTION_SERVER }} "
+            cd ${{ env.PRODUCTION_PATH }}
+            git reset --hard $PREVIOUS_COMMIT
+            docker compose down
+            docker compose build
+            docker compose up -d
+            echo 'Rollback completed'
+          "
+        continue-on-error: true

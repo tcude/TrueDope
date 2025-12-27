@@ -45,6 +45,7 @@ public class RifleDetailDto
 
     public List<RifleImageDto> Images { get; set; } = new();
 
+    public int SessionCount { get; set; }
     public DateTime CreatedAt { get; set; }
     public DateTime UpdatedAt { get; set; }
 }

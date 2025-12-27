@@ -220,14 +220,15 @@ try
 
     var app = builder.Build();
 
-    // Apply migrations automatically in development
-    if (app.Environment.IsDevelopment())
+    // Apply migrations automatically on startup (all environments)
+    using (var scope = app.Services.CreateScope())
     {
-        using var scope = app.Services.CreateScope();
         var dbContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+        Log.Information("Applying database migrations...");
         dbContext.Database.Migrate();
+        Log.Information("Database migrations applied successfully");
 
-        // Seed initial admin user
+        // Seed initial admin user (runs in all environments, idempotent)
         var seeder = scope.ServiceProvider.GetRequiredService<DbSeeder>();
         await seeder.SeedAsync();
     }

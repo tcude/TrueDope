@@ -96,6 +96,7 @@ public class RifleService : IRifleService
     {
         var rifle = await _context.RifleSetups
             .Include(r => r.Images)
+            .Include(r => r.RangeSessions)
             .FirstOrDefaultAsync(r => r.Id == rifleId && r.UserId == userId);
 
         if (rifle == null)
@@ -127,6 +128,7 @@ public class RifleService : IRifleService
                 ThumbnailUrl = $"/api/images/{i.Id}/thumbnail",
                 Caption = i.Caption
             }).ToList(),
+            SessionCount = rifle.RangeSessions.Count,
             CreatedAt = rifle.CreatedAt,
             UpdatedAt = rifle.UpdatedAt
         };
