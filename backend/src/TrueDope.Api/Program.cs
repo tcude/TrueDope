@@ -27,7 +27,7 @@ Log.Logger = new LoggerConfiguration()
         retainedFileCountLimit: 30,
         fileSizeLimitBytes: 50 * 1024 * 1024,
         rollOnFileSizeLimit: true,
-        outputTemplate: "{Timestamp:yyyy-MM-dd HH:mm:ss.fff zzz} [{Level:u3}] {SourceContext} {Message:lj}{NewLine}{Exception}")
+        outputTemplate: "{Timestamp:yyyy-MM-dd HH:mm:ss.fff zzz} [{Level:u3}] [{CorrelationId}] [{UserId}] [{ClientIp}] {RequestMethod} {RequestPath} {Message:lj}{NewLine}{Exception}")
     .CreateLogger();
 
 try
@@ -273,6 +273,9 @@ try
 
     app.UseAuthentication();
     app.UseAuthorization();
+
+    // Add user info to log context (must be after authentication)
+    app.UseUserLogging();
 
     app.MapControllers();
 
