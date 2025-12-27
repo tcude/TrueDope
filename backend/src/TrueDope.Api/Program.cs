@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using Minio;
+using Prometheus;
 using Serilog;
 using Serilog.Events;
 using StackExchange.Redis;
@@ -272,11 +273,17 @@ try
     app.UseAuthentication();
     app.UseAuthorization();
 
+    // Prometheus HTTP metrics (tracks request duration, count by endpoint/status)
+    app.UseHttpMetrics();
+
     // Add user/request context to logs (must be after authentication)
     app.UseUserLogging();
 
     // Serilog request logging - after UserLogging so context is available
     app.UseSerilogRequestLogging();
+
+    // Prometheus metrics endpoint (GET /metrics)
+    app.MapMetrics();
 
     app.MapControllers();
 

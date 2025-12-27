@@ -96,6 +96,54 @@ services:
       - truedope-network
     restart: unless-stopped
 
+  # ============================================
+  # Monitoring Stack (Prometheus + Exporters)
+  # ============================================
+  # Runs in all environments. In dev, data is stored locally in .data/prometheus.
+  # In prod, Grafana on monitoring01 connects to this Prometheus instance.
+  # Retention is configured via PROMETHEUS_RETENTION_TIME and PROMETHEUS_RETENTION_SIZE
+  # in .env (defaults to 30d/10GB for dev, set higher for prod).
+
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: truedope-prometheus
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - ./.data/prometheus:/prometheus
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+      - '--storage.tsdb.retention.time=${PROMETHEUS_RETENTION_TIME:-30d}'
+      - '--storage.tsdb.retention.size=${PROMETHEUS_RETENTION_SIZE:-10GB}'
+      - '--web.enable-lifecycle'
+    networks:
+      - truedope-network
+    restart: unless-stopped
+
+  postgres-exporter:
+    image: prometheuscommunity/postgres-exporter:latest
+    container_name: truedope-postgres-exporter
+    environment:
+      DATA_SOURCE_NAME: "postgresql://${DB_USER:-truedope}:${DB_PASSWORD:-truedope}@db:5432/${DB_NAME:-truedope}?sslmode=disable"
+    networks:
+      - truedope-network
+    depends_on:
+      - db
+    restart: unless-stopped
+
+  redis-exporter:
+    image: oliver006/redis_exporter:latest
+    container_name: truedope-redis-exporter
+    environment:
+      REDIS_ADDR: "redis://redis:6379"
+    networks:
+      - truedope-network
+    depends_on:
+      - redis
+    restart: unless-stopped
+
 networks:
   truedope-network:
     driver: bridge
