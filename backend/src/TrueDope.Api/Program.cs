@@ -228,6 +228,9 @@ try
 
     var app = builder.Build();
 
+    // Initialize custom Prometheus metrics (publishes counters with zero values)
+    TrueDopeMetrics.Initialize();
+
     // Apply migrations automatically on startup (all environments)
     using (var scope = app.Services.CreateScope())
     {

@@ -71,6 +71,7 @@ public class LocationsController : ControllerBase
         }
 
         var locationId = await _locationService.CreateLocationAsync(GetUserId(), dto);
+        TrueDopeMetrics.RecordLocationCreated();
         return CreatedAtAction(nameof(GetLocation), new { id = locationId },
             ApiResponse<int>.Ok(locationId, "Location created successfully"));
     }

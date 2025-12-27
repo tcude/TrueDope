@@ -71,6 +71,7 @@ public class RiflesController : ControllerBase
         }
 
         var rifleId = await _rifleService.CreateRifleAsync(GetUserId(), dto);
+        TrueDopeMetrics.RecordRifleCreated();
         return CreatedAtAction(nameof(GetRifle), new { id = rifleId },
             ApiResponse<int>.Ok(rifleId, "Rifle created successfully"));
     }

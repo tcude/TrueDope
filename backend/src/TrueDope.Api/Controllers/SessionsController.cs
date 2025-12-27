@@ -73,6 +73,7 @@ public class SessionsController : ControllerBase
         try
         {
             var sessionId = await _sessionService.CreateSessionAsync(GetUserId(), dto);
+            TrueDopeMetrics.RecordSessionCreated();
             return CreatedAtAction(nameof(GetSession), new { id = sessionId },
                 ApiResponse<int>.Ok(sessionId, "Session created successfully"));
         }
@@ -158,6 +159,7 @@ public class SessionsController : ControllerBase
         try
         {
             var dopeId = await _sessionService.AddDopeEntryAsync(GetUserId(), sessionId, dto);
+            TrueDopeMetrics.RecordDopeEntry();
             return CreatedAtAction(nameof(GetSession), new { id = sessionId },
                 ApiResponse<int>.Ok(dopeId, "DOPE entry added successfully"));
         }
@@ -224,6 +226,7 @@ public class SessionsController : ControllerBase
         try
         {
             var chronoId = await _sessionService.AddChronoSessionAsync(GetUserId(), sessionId, dto);
+            TrueDopeMetrics.RecordChronoSession();
             return CreatedAtAction(nameof(GetSession), new { id = sessionId },
                 ApiResponse<int>.Ok(chronoId, "Chrono session added successfully"));
         }
@@ -300,6 +303,7 @@ public class SessionsController : ControllerBase
         try
         {
             var readingId = await _sessionService.AddVelocityReadingAsync(GetUserId(), chronoSessionId, dto);
+            TrueDopeMetrics.RecordVelocityReading();
             return Created("", ApiResponse<int>.Ok(readingId, "Velocity reading added successfully"));
         }
         catch (ArgumentException ex)
@@ -349,6 +353,7 @@ public class SessionsController : ControllerBase
         try
         {
             var groupId = await _sessionService.AddGroupEntryAsync(GetUserId(), sessionId, dto);
+            TrueDopeMetrics.RecordGroupEntry();
             return CreatedAtAction(nameof(GetSession), new { id = sessionId },
                 ApiResponse<int>.Ok(groupId, "Group entry added successfully"));
         }

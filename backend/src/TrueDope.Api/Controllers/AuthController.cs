@@ -105,6 +105,7 @@ public class AuthController : ControllerBase
         // Create default preferences for new user
         await _preferencesService.CreateDefaultPreferencesAsync(user.Id);
 
+        TrueDopeMetrics.RecordRegistration();
         _logger.LogInformation("New user registered: {Email}", request.Email);
 
         var response = new RegisterResponse
@@ -142,6 +143,7 @@ public class AuthController : ControllerBase
         var user = await _userManager.FindByEmailAsync(request.Email);
         if (user == null)
         {
+            TrueDopeMetrics.RecordLoginFailed();
             return Unauthorized(ApiErrorResponse.Create("INVALID_CREDENTIALS", "Invalid email or password"));
         }
 
@@ -155,6 +157,7 @@ public class AuthController : ControllerBase
 
         if (!result.Succeeded)
         {
+            TrueDopeMetrics.RecordLoginFailed();
             _logger.LogWarning("Failed login attempt for user: {Email}", request.Email);
             return Unauthorized(ApiErrorResponse.Create("INVALID_CREDENTIALS", "Invalid email or password"));
         }
@@ -170,6 +173,7 @@ public class AuthController : ControllerBase
         // Store refresh token
         await _jwtService.StoreRefreshTokenAsync(user.Id, refreshToken);
 
+        TrueDopeMetrics.RecordLoginSuccessful();
         _logger.LogInformation("User logged in: {Email}", request.Email);
 
         var response = new LoginResponse
@@ -416,6 +420,7 @@ public class AuthController : ControllerBase
         // Revoke all refresh tokens for security
         await _jwtService.RevokeAllRefreshTokensAsync(user.Id);
 
+        TrueDopeMetrics.RecordPasswordReset();
         _logger.LogInformation("Password reset successfully for user: {Email}", user.Email);
 
         return Ok(ApiResponse.Ok("Password reset successfully"));

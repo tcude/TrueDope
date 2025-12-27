@@ -356,6 +356,7 @@ public class ImagesController : ControllerBase
                 file.ContentType
             );
 
+            TrueDopeMetrics.RecordImageUploaded(parentType.ToString(), file.Length);
             return CreatedAtAction(nameof(GetImageDetails), new { id = result.Id },
                 ApiResponse<ImageUploadResultDto>.Ok(result, "Image uploaded successfully"));
         }
@@ -386,6 +387,13 @@ public class ImagesController : ControllerBase
         try
         {
             var result = await _imageService.BulkUploadImagesAsync(GetUserId(), parentType, parentId, fileStreams);
+
+            // Record metrics for successful uploads
+            var totalBytes = files.Sum(f => f.Length);
+            foreach (var _ in result.Uploaded)
+            {
+                TrueDopeMetrics.RecordImageUploaded(parentType.ToString(), totalBytes / result.Uploaded.Count);
+            }
 
             var message = result.Errors.Count > 0
                 ? $"Uploaded {result.Uploaded.Count} images with {result.Errors.Count} errors"

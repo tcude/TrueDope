@@ -71,6 +71,7 @@ public class AmmunitionController : ControllerBase
         }
 
         var ammoId = await _ammoService.CreateAmmoAsync(GetUserId(), dto);
+        TrueDopeMetrics.RecordAmmunitionCreated();
         return CreatedAtAction(nameof(GetAmmo), new { id = ammoId },
             ApiResponse<int>.Ok(ammoId, "Ammunition created successfully"));
     }
