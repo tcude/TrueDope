@@ -269,13 +269,14 @@ try
         app.UseSwaggerUI();
     }
 
-    app.UseSerilogRequestLogging();
-
     app.UseAuthentication();
     app.UseAuthorization();
 
-    // Add user info to log context (must be after authentication)
+    // Add user/request context to logs (must be after authentication)
     app.UseUserLogging();
+
+    // Serilog request logging - after UserLogging so context is available
+    app.UseSerilogRequestLogging();
 
     app.MapControllers();
 
