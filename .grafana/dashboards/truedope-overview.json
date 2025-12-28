@@ -40,8 +40,8 @@
       },
       {
         "type": "stat",
-        "title": "Request Rate",
-        "description": "HTTP requests per minute",
+        "title": "API Requests/min",
+        "description": "HTTP requests per minute hitting the backend API. Shows overall traffic load.",
         "gridPos": { "h": 4, "w": 6, "x": 0, "y": 1 },
         "datasource": { "type": "prometheus", "uid": "${DS_TRUEDOPE_PROMETHEUS}" },
         "targets": [
@@ -77,8 +77,8 @@
       },
       {
         "type": "stat",
-        "title": "Error Rate",
-        "description": "Percentage of 5xx responses",
+        "title": "Error Rate (%)",
+        "description": "Percentage of requests returning server errors (5xx status codes). Should stay near 0%. Yellow > 1%, Red > 5%.",
         "gridPos": { "h": 4, "w": 6, "x": 6, "y": 1 },
         "datasource": { "type": "prometheus", "uid": "${DS_TRUEDOPE_PROMETHEUS}" },
         "targets": [
@@ -117,8 +117,8 @@
       },
       {
         "type": "stat",
-        "title": "P95 Latency",
-        "description": "95th percentile response time",
+        "title": "Response Time (95th %ile)",
+        "description": "95% of requests complete faster than this time. If this spikes, most users are experiencing slowness. Green < 200ms, Yellow < 500ms, Red > 500ms.",
         "gridPos": { "h": 4, "w": 6, "x": 12, "y": 1 },
         "datasource": { "type": "prometheus", "uid": "${DS_TRUEDOPE_PROMETHEUS}" },
         "targets": [
@@ -154,8 +154,8 @@
       },
       {
         "type": "stat",
-        "title": "In-Flight Requests",
-        "description": "Currently processing requests",
+        "title": "Active Requests",
+        "description": "Number of requests currently being processed right now. High numbers indicate the server is busy. Yellow > 50, Red > 100.",
         "gridPos": { "h": 4, "w": 6, "x": 18, "y": 1 },
         "datasource": { "type": "prometheus", "uid": "${DS_TRUEDOPE_PROMETHEUS}" },
         "targets": [
@@ -190,15 +190,15 @@
       },
       {
         "type": "row",
-        "title": "Business Metrics (24h)",
+        "title": "Activity (Last 24 Hours)",
         "gridPos": { "h": 1, "w": 24, "x": 0, "y": 5 },
         "collapsed": false
       },
       {
         "type": "stat",
-        "title": "Sessions Today",
-        "description": "Shooting sessions created in last 24 hours",
-        "gridPos": { "h": 4, "w": 6, "x": 0, "y": 6 },
+        "title": "Sessions Created",
+        "description": "Shooting sessions created in the last 24 hours. This tracks overall user engagement with the app.",
+        "gridPos": { "h": 4, "w": 8, "x": 0, "y": 6 },
         "datasource": { "type": "prometheus", "uid": "${DS_TRUEDOPE_PROMETHEUS}" },
         "targets": [
           {
@@ -231,44 +231,9 @@
       },
       {
         "type": "stat",
-        "title": "DOPE Entries",
-        "description": "DOPE entries logged in last 24 hours",
-        "gridPos": { "h": 4, "w": 6, "x": 6, "y": 6 },
-        "datasource": { "type": "prometheus", "uid": "${DS_TRUEDOPE_PROMETHEUS}" },
-        "targets": [
-          {
-            "expr": "sum(increase(truedope_dope_entries_created_total[24h]))",
-            "refId": "A"
-          }
-        ],
-        "fieldConfig": {
-          "defaults": {
-            "unit": "none",
-            "decimals": 0,
-            "thresholds": {
-              "mode": "absolute",
-              "steps": [
-                { "color": "purple", "value": null }
-              ]
-            },
-            "color": { "mode": "thresholds" }
-          }
-        },
-        "options": {
-          "colorMode": "value",
-          "graphMode": "none",
-          "reduceOptions": {
-            "calcs": ["lastNotNull"],
-            "fields": "",
-            "values": false
-          }
-        }
-      },
-      {
-        "type": "stat",
-        "title": "Logins Today",
-        "description": "Successful authentications in last 24 hours",
-        "gridPos": { "h": 4, "w": 6, "x": 12, "y": 6 },
+        "title": "Successful Logins",
+        "description": "Successful user authentications in the last 24 hours. Shows how many times users logged in.",
+        "gridPos": { "h": 4, "w": 8, "x": 8, "y": 6 },
         "datasource": { "type": "prometheus", "uid": "${DS_TRUEDOPE_PROMETHEUS}" },
         "targets": [
           {
@@ -302,8 +267,8 @@
       {
         "type": "stat",
         "title": "Failed Logins",
-        "description": "Failed login attempts (watch for brute force)",
-        "gridPos": { "h": 4, "w": 6, "x": 18, "y": 6 },
+        "description": "Failed login attempts in the last 24 hours. High numbers could indicate brute force attacks or users having trouble logging in. Turns red when > 5 failures.",
+        "gridPos": { "h": 4, "w": 8, "x": 16, "y": 6 },
         "datasource": { "type": "prometheus", "uid": "${DS_TRUEDOPE_PROMETHEUS}" },
         "targets": [
           {
@@ -318,10 +283,10 @@
             "thresholds": {
               "mode": "absolute",
               "steps": [
-                { "color": "green", "value": null },
-                { "color": "yellow", "value": 10 },
-                { "color": "orange", "value": 50 },
-                { "color": "red", "value": 100 }
+                { "color": "text", "value": null },
+                { "color": "yellow", "value": 3 },
+                { "color": "orange", "value": 10 },
+                { "color": "red", "value": 25 }
               ]
             },
             "color": { "mode": "thresholds" }
@@ -346,7 +311,7 @@
       {
         "type": "timeseries",
         "title": "Requests by Status Code",
-        "description": "Requests per minute grouped by HTTP status code",
+        "description": "HTTP responses grouped by status code. 2xx = success (green), 4xx = client errors (yellow/orange), 5xx = server errors (red). Healthy apps are mostly green.",
         "gridPos": { "h": 8, "w": 12, "x": 0, "y": 11 },
         "datasource": { "type": "prometheus", "uid": "${DS_TRUEDOPE_PROMETHEUS}" },
         "targets": [
@@ -388,7 +353,7 @@
       {
         "type": "timeseries",
         "title": "Requests by Controller",
-        "description": "Requests per minute by API controller",
+        "description": "Traffic distribution across API endpoints. Shows which parts of the app are most heavily used. Useful for identifying hot spots.",
         "gridPos": { "h": 8, "w": 12, "x": 12, "y": 11 },
         "datasource": { "type": "prometheus", "uid": "${DS_TRUEDOPE_PROMETHEUS}" },
         "targets": [
@@ -427,7 +392,7 @@
       {
         "type": "timeseries",
         "title": "Response Time Percentiles",
-        "description": "p50, p95, and p99 latency over time",
+        "description": "Response time distribution over time. p50 (median) = half of requests are faster than this. p95 = 95% faster. p99 = 99% faster. Watch for p95/p99 spikes which affect user experience.",
         "gridPos": { "h": 8, "w": 16, "x": 0, "y": 20 },
         "datasource": { "type": "prometheus", "uid": "${DS_TRUEDOPE_PROMETHEUS}" },
         "targets": [
@@ -473,13 +438,13 @@
       },
       {
         "type": "bargauge",
-        "title": "Slowest Endpoints",
-        "description": "Average response time by endpoint",
+        "title": "Top 5 Slowest Endpoints",
+        "description": "The 5 slowest API endpoints by average response time. Green < 200ms, Yellow < 500ms, Red > 500ms. Focus optimization efforts on red endpoints.",
         "gridPos": { "h": 8, "w": 8, "x": 16, "y": 20 },
         "datasource": { "type": "prometheus", "uid": "${DS_TRUEDOPE_PROMETHEUS}" },
         "targets": [
           {
-            "expr": "topk(10, avg by (controller, action) (rate(http_request_duration_seconds_sum{job=\"truedope-backend\"}[5m]) / rate(http_request_duration_seconds_count{job=\"truedope-backend\"}[5m])))",
+            "expr": "topk(5, avg by (controller, action) (rate(http_request_duration_seconds_sum{job=\"truedope-backend\"}[5m]) / rate(http_request_duration_seconds_count{job=\"truedope-backend\"}[5m])))",
             "legendFormat": "{{controller}}/{{action}}",
             "refId": "A"
           }
@@ -506,7 +471,10 @@
             "calcs": ["lastNotNull"],
             "fields": "",
             "values": false
-          }
+          },
+          "showUnfilled": true,
+          "valueMode": "color",
+          "namePlacement": "auto"
         }
       },
       {
@@ -518,8 +486,8 @@
       {
         "type": "timeseries",
         "title": "Data Creation Activity",
-        "description": "Hourly data creation across entity types",
-        "gridPos": { "h": 8, "w": 8, "x": 0, "y": 29 },
+        "description": "Hourly data creation across entity types. Shows when users are most active logging shooting data.",
+        "gridPos": { "h": 8, "w": 12, "x": 0, "y": 29 },
         "datasource": { "type": "prometheus", "uid": "${DS_TRUEDOPE_PROMETHEUS}" },
         "targets": [
           {
@@ -565,8 +533,8 @@
       {
         "type": "timeseries",
         "title": "Authentication Activity",
-        "description": "Hourly auth events",
-        "gridPos": { "h": 8, "w": 8, "x": 8, "y": 29 },
+        "description": "Hourly authentication events. Watch for spikes in failed logins which could indicate attacks or UX issues.",
+        "gridPos": { "h": 8, "w": 12, "x": 12, "y": 29 },
         "datasource": { "type": "prometheus", "uid": "${DS_TRUEDOPE_PROMETHEUS}" },
         "targets": [
           {
@@ -610,48 +578,6 @@
         }
       },
       {
-        "type": "timeseries",
-        "title": "Equipment Creation (24h rolling)",
-        "description": "Equipment records created",
-        "gridPos": { "h": 8, "w": 8, "x": 16, "y": 29 },
-        "datasource": { "type": "prometheus", "uid": "${DS_TRUEDOPE_PROMETHEUS}" },
-        "targets": [
-          {
-            "expr": "increase(truedope_rifles_created_total[24h])",
-            "legendFormat": "Rifles",
-            "refId": "A"
-          },
-          {
-            "expr": "increase(truedope_ammunition_created_total[24h])",
-            "legendFormat": "Ammunition",
-            "refId": "B"
-          },
-          {
-            "expr": "increase(truedope_locations_created_total[24h])",
-            "legendFormat": "Locations",
-            "refId": "C"
-          }
-        ],
-        "fieldConfig": {
-          "defaults": {
-            "unit": "none",
-            "custom": {
-              "drawStyle": "line",
-              "lineInterpolation": "smooth",
-              "fillOpacity": 20,
-              "showPoints": "never"
-            }
-          }
-        },
-        "options": {
-          "legend": {
-            "displayMode": "table",
-            "placement": "right",
-            "calcs": ["lastNotNull", "sum"]
-          }
-        }
-      },
-      {
         "type": "row",
         "title": "Infrastructure",
         "gridPos": { "h": 1, "w": 24, "x": 0, "y": 37 },
@@ -659,8 +585,8 @@
       },
       {
         "type": "timeseries",
-        "title": "PostgreSQL Active Connections",
-        "description": "Database connection count",
+        "title": "PostgreSQL Connections",
+        "description": "Active database connections. The app uses connection pooling, so this should stay relatively stable. High numbers may indicate connection leaks.",
         "gridPos": { "h": 6, "w": 6, "x": 0, "y": 38 },
         "datasource": { "type": "prometheus", "uid": "${DS_TRUEDOPE_PROMETHEUS}" },
         "targets": [
@@ -718,8 +644,8 @@
       },
       {
         "type": "timeseries",
-        "title": "Redis Memory Usage",
-        "description": "Redis memory consumption",
+        "title": "Redis Memory",
+        "description": "Redis in-memory cache size. Used for JWT refresh tokens and caching. Should stay well under your server's RAM.",
         "gridPos": { "h": 6, "w": 6, "x": 6, "y": 38 },
         "datasource": { "type": "prometheus", "uid": "${DS_TRUEDOPE_PROMETHEUS}" },
         "targets": [
@@ -769,8 +695,8 @@
       },
       {
         "type": "timeseries",
-        "title": "Backend Memory Usage",
-        "description": ".NET process working set",
+        "title": "API Memory Usage",
+        "description": ".NET process memory (working set). Should stay relatively stable. Continuous growth without leveling off may indicate a memory leak.",
         "gridPos": { "h": 6, "w": 6, "x": 12, "y": 38 },
         "datasource": { "type": "prometheus", "uid": "${DS_TRUEDOPE_PROMETHEUS}" },
         "targets": [
@@ -820,8 +746,8 @@
       },
       {
         "type": "timeseries",
-        "title": "GC Collections/sec",
-        "description": ".NET garbage collection rate by generation",
+        "title": ".NET Garbage Collections/sec",
+        "description": "How often .NET cleans up unused memory. Gen 0 is frequent and fast, Gen 2 is rare but slow. Sustained high Gen 2 collections may indicate memory pressure.",
         "gridPos": { "h": 6, "w": 6, "x": 18, "y": 38 },
         "datasource": { "type": "prometheus", "uid": "${DS_TRUEDOPE_PROMETHEUS}" },
         "targets": [
@@ -851,8 +777,8 @@
       },
       {
         "type": "stat",
-        "title": "Backend Uptime",
-        "description": "Time since last backend restart",
+        "title": "API Uptime",
+        "description": "Time since the backend API last restarted. Yellow for first hour after restart (still warming up), then green.",
         "gridPos": { "h": 6, "w": 6, "x": 0, "y": 44 },
         "datasource": { "type": "prometheus", "uid": "${DS_TRUEDOPE_PROMETHEUS}" },
         "targets": [
@@ -979,8 +905,8 @@
       },
       {
         "type": "stat",
-        "title": "Total Images",
-        "description": "Total images uploaded all-time",
+        "title": "Total Images Stored",
+        "description": "Total number of images uploaded to MinIO storage all-time. This is cumulative and should only grow.",
         "gridPos": { "h": 6, "w": 6, "x": 18, "y": 44 },
         "datasource": { "type": "prometheus", "uid": "${DS_TRUEDOPE_PROMETHEUS}" },
         "targets": [
