@@ -235,6 +235,9 @@ public class GroupEntryDto
     public AmmoLotSummaryDto? AmmoLot { get; set; }
     public string? Notes { get; set; }
     public List<ImageDto> Images { get; set; } = new();
+
+    // Optional detailed measurement data
+    public GroupMeasurementDto? Measurement { get; set; }
 }
 
 public class CreateGroupEntryDto
