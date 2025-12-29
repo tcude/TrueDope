@@ -748,18 +748,24 @@ public class SessionService : ISessionService
             GroupEntryId = measurement.GroupEntryId,
             HolePositions = holePositions,
             BulletDiameter = measurement.BulletDiameter,
-            ExtremeSpread = measurement.ExtremeSpread,
+            ExtremeSpreadCtc = measurement.ExtremeSpreadCtc,
+            ExtremeSpreadEte = measurement.ExtremeSpreadEte,
             MeanRadius = measurement.MeanRadius,
-            HorizontalSpread = measurement.HorizontalSpread,
-            VerticalSpread = measurement.VerticalSpread,
+            HorizontalSpreadCtc = measurement.HorizontalSpreadCtc,
+            HorizontalSpreadEte = measurement.HorizontalSpreadEte,
+            VerticalSpreadCtc = measurement.VerticalSpreadCtc,
+            VerticalSpreadEte = measurement.VerticalSpreadEte,
             RadialStdDev = measurement.RadialStdDev,
             HorizontalStdDev = measurement.HorizontalStdDev,
             VerticalStdDev = measurement.VerticalStdDev,
             Cep50 = measurement.Cep50,
             PoiOffsetX = measurement.PoiOffsetX,
             PoiOffsetY = measurement.PoiOffsetY,
-            ExtremeSpreadMoa = measurement.ExtremeSpread.HasValue
-                ? _measurementCalculator.InchesToMoa(measurement.ExtremeSpread.Value, distanceYards)
+            ExtremeSpreadCtcMoa = measurement.ExtremeSpreadCtc.HasValue
+                ? _measurementCalculator.InchesToMoa(measurement.ExtremeSpreadCtc.Value, distanceYards)
+                : null,
+            ExtremeSpreadEteMoa = measurement.ExtremeSpreadEte.HasValue
+                ? _measurementCalculator.InchesToMoa(measurement.ExtremeSpreadEte.Value, distanceYards)
                 : null,
             MeanRadiusMoa = measurement.MeanRadius.HasValue
                 ? _measurementCalculator.InchesToMoa(measurement.MeanRadius.Value, distanceYards)

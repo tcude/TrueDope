@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using TrueDope.Api.Data;
@@ -11,9 +12,11 @@ using TrueDope.Api.Data;
 namespace TrueDope.Api.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20251228231607_AddGroupSizeMethodPreference")]
+    partial class AddGroupSizeMethodPreference
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -503,10 +506,7 @@ namespace TrueDope.Api.Migrations
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<decimal?>("ExtremeSpreadCtc")
-                        .HasColumnType("decimal(6,4)");
-
-                    b.Property<decimal?>("ExtremeSpreadEte")
+                    b.Property<decimal?>("ExtremeSpread")
                         .HasColumnType("decimal(6,4)");
 
                     b.Property<int>("GroupEntryId")
@@ -516,10 +516,7 @@ namespace TrueDope.Api.Migrations
                         .IsRequired()
                         .HasColumnType("jsonb");
 
-                    b.Property<decimal?>("HorizontalSpreadCtc")
-                        .HasColumnType("decimal(6,4)");
-
-                    b.Property<decimal?>("HorizontalSpreadEte")
+                    b.Property<decimal?>("HorizontalSpread")
                         .HasColumnType("decimal(6,4)");
 
                     b.Property<decimal?>("HorizontalStdDev")
@@ -546,10 +543,7 @@ namespace TrueDope.Api.Migrations
                     b.Property<DateTime>("UpdatedAt")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<decimal?>("VerticalSpreadCtc")
-                        .HasColumnType("decimal(6,4)");
-
-                    b.Property<decimal?>("VerticalSpreadEte")
+                    b.Property<decimal?>("VerticalSpread")
                         .HasColumnType("decimal(6,4)");
 
                     b.Property<decimal?>("VerticalStdDev")

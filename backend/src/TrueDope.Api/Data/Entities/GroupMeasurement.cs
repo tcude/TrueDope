@@ -26,22 +26,36 @@ public class GroupMeasurement
     public decimal BulletDiameter { get; set; }
 
     // ==================== Computed Metrics (inches) ====================
+    // CTC = Center-to-Center (what most shooters compare)
+    // ETE = Edge-to-Edge (CTC + bullet diameter, actual physical size)
 
-    // Extreme spread: max center-to-center + bullet diameter
+    // Extreme spread: max center-to-center distance
     [Column(TypeName = "decimal(6,4)")]
-    public decimal? ExtremeSpread { get; set; }
+    public decimal? ExtremeSpreadCtc { get; set; }
+
+    // Extreme spread edge-to-edge (CTC + bullet diameter)
+    [Column(TypeName = "decimal(6,4)")]
+    public decimal? ExtremeSpreadEte { get; set; }
 
     // Mean radius: average distance from centroid
     [Column(TypeName = "decimal(6,4)")]
     public decimal? MeanRadius { get; set; }
 
-    // Horizontal spread: max X - min X + bullet diameter
+    // Horizontal spread center-to-center: max X - min X
     [Column(TypeName = "decimal(6,4)")]
-    public decimal? HorizontalSpread { get; set; }
+    public decimal? HorizontalSpreadCtc { get; set; }
 
-    // Vertical spread: max Y - min Y + bullet diameter
+    // Horizontal spread edge-to-edge (CTC + bullet diameter)
     [Column(TypeName = "decimal(6,4)")]
-    public decimal? VerticalSpread { get; set; }
+    public decimal? HorizontalSpreadEte { get; set; }
+
+    // Vertical spread center-to-center: max Y - min Y
+    [Column(TypeName = "decimal(6,4)")]
+    public decimal? VerticalSpreadCtc { get; set; }
+
+    // Vertical spread edge-to-edge (CTC + bullet diameter)
+    [Column(TypeName = "decimal(6,4)")]
+    public decimal? VerticalSpreadEte { get; set; }
 
     // Standard deviations
     [Column(TypeName = "decimal(6,5)")]

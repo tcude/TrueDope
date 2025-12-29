@@ -92,10 +92,13 @@ public class GroupMeasurementsController : ControllerBase
             GroupEntryId = groupId,
             HolePositionsJson = JsonSerializer.Serialize(dto.HolePositions),
             BulletDiameter = dto.BulletDiameter,
-            ExtremeSpread = metrics.ExtremeSpread,
+            ExtremeSpreadCtc = metrics.ExtremeSpreadCtc,
+            ExtremeSpreadEte = metrics.ExtremeSpreadEte,
             MeanRadius = metrics.MeanRadius,
-            HorizontalSpread = metrics.HorizontalSpread,
-            VerticalSpread = metrics.VerticalSpread,
+            HorizontalSpreadCtc = metrics.HorizontalSpreadCtc,
+            HorizontalSpreadEte = metrics.HorizontalSpreadEte,
+            VerticalSpreadCtc = metrics.VerticalSpreadCtc,
+            VerticalSpreadEte = metrics.VerticalSpreadEte,
             RadialStdDev = metrics.RadialStdDev,
             HorizontalStdDev = metrics.HorizontalStdDev,
             VerticalStdDev = metrics.VerticalStdDev,
@@ -108,8 +111,8 @@ public class GroupMeasurementsController : ControllerBase
 
         _context.GroupMeasurements.Add(measurement);
 
-        // Update GroupEntry with MOA values
-        groupEntry.GroupSizeMoa = _calculator.InchesToMoa(metrics.ExtremeSpread, groupEntry.Distance);
+        // Update GroupEntry with MOA values (use CTC as the default/display value)
+        groupEntry.GroupSizeMoa = _calculator.InchesToMoa(metrics.ExtremeSpreadCtc, groupEntry.Distance);
         groupEntry.MeanRadiusMoa = _calculator.InchesToMoa(metrics.MeanRadius, groupEntry.Distance);
         groupEntry.NumberOfShots = dto.HolePositions.Count;
         groupEntry.UpdatedAt = DateTime.UtcNow;
@@ -174,10 +177,13 @@ public class GroupMeasurementsController : ControllerBase
 
             measurement.HolePositionsJson = JsonSerializer.Serialize(holePositions);
             measurement.BulletDiameter = bulletDiameter;
-            measurement.ExtremeSpread = metrics.ExtremeSpread;
+            measurement.ExtremeSpreadCtc = metrics.ExtremeSpreadCtc;
+            measurement.ExtremeSpreadEte = metrics.ExtremeSpreadEte;
             measurement.MeanRadius = metrics.MeanRadius;
-            measurement.HorizontalSpread = metrics.HorizontalSpread;
-            measurement.VerticalSpread = metrics.VerticalSpread;
+            measurement.HorizontalSpreadCtc = metrics.HorizontalSpreadCtc;
+            measurement.HorizontalSpreadEte = metrics.HorizontalSpreadEte;
+            measurement.VerticalSpreadCtc = metrics.VerticalSpreadCtc;
+            measurement.VerticalSpreadEte = metrics.VerticalSpreadEte;
             measurement.RadialStdDev = metrics.RadialStdDev;
             measurement.HorizontalStdDev = metrics.HorizontalStdDev;
             measurement.VerticalStdDev = metrics.VerticalStdDev;
@@ -185,8 +191,8 @@ public class GroupMeasurementsController : ControllerBase
             measurement.PoiOffsetX = metrics.CentroidX;
             measurement.PoiOffsetY = metrics.CentroidY;
 
-            // Update GroupEntry MOA values
-            groupEntry.GroupSizeMoa = _calculator.InchesToMoa(metrics.ExtremeSpread, groupEntry.Distance);
+            // Update GroupEntry MOA values (use CTC as the default/display value)
+            groupEntry.GroupSizeMoa = _calculator.InchesToMoa(metrics.ExtremeSpreadCtc, groupEntry.Distance);
             groupEntry.MeanRadiusMoa = _calculator.InchesToMoa(metrics.MeanRadius, groupEntry.Distance);
             groupEntry.NumberOfShots = holePositions.Count;
         }
@@ -251,18 +257,24 @@ public class GroupMeasurementsController : ControllerBase
             GroupEntryId = measurement.GroupEntryId,
             HolePositions = holePositions,
             BulletDiameter = measurement.BulletDiameter,
-            ExtremeSpread = measurement.ExtremeSpread,
+            ExtremeSpreadCtc = measurement.ExtremeSpreadCtc,
+            ExtremeSpreadEte = measurement.ExtremeSpreadEte,
             MeanRadius = measurement.MeanRadius,
-            HorizontalSpread = measurement.HorizontalSpread,
-            VerticalSpread = measurement.VerticalSpread,
+            HorizontalSpreadCtc = measurement.HorizontalSpreadCtc,
+            HorizontalSpreadEte = measurement.HorizontalSpreadEte,
+            VerticalSpreadCtc = measurement.VerticalSpreadCtc,
+            VerticalSpreadEte = measurement.VerticalSpreadEte,
             RadialStdDev = measurement.RadialStdDev,
             HorizontalStdDev = measurement.HorizontalStdDev,
             VerticalStdDev = measurement.VerticalStdDev,
             Cep50 = measurement.Cep50,
             PoiOffsetX = measurement.PoiOffsetX,
             PoiOffsetY = measurement.PoiOffsetY,
-            ExtremeSpreadMoa = measurement.ExtremeSpread.HasValue
-                ? _calculator.InchesToMoa(measurement.ExtremeSpread.Value, distanceYards)
+            ExtremeSpreadCtcMoa = measurement.ExtremeSpreadCtc.HasValue
+                ? _calculator.InchesToMoa(measurement.ExtremeSpreadCtc.Value, distanceYards)
+                : null,
+            ExtremeSpreadEteMoa = measurement.ExtremeSpreadEte.HasValue
+                ? _calculator.InchesToMoa(measurement.ExtremeSpreadEte.Value, distanceYards)
                 : null,
             MeanRadiusMoa = measurement.MeanRadius.HasValue
                 ? _calculator.InchesToMoa(measurement.MeanRadius.Value, distanceYards)

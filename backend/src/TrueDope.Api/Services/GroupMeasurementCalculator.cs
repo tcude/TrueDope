@@ -3,10 +3,42 @@ namespace TrueDope.Api.Services;
 public class GroupMetrics
 {
     // All values in inches unless noted
-    public decimal ExtremeSpread { get; set; }
+
+    /// <summary>
+    /// Extreme Spread - Center-to-Center (CTC).
+    /// Distance between the centers of the two farthest holes.
+    /// This is what most shooters compare when discussing group size.
+    /// </summary>
+    public decimal ExtremeSpreadCtc { get; set; }
+
+    /// <summary>
+    /// Extreme Spread - Edge-to-Edge (ETE).
+    /// CTC + bullet diameter. The actual physical size of the group on paper.
+    /// </summary>
+    public decimal ExtremeSpreadEte { get; set; }
+
     public decimal MeanRadius { get; set; }
-    public decimal HorizontalSpread { get; set; }
-    public decimal VerticalSpread { get; set; }
+
+    /// <summary>
+    /// Horizontal Spread - Center-to-Center
+    /// </summary>
+    public decimal HorizontalSpreadCtc { get; set; }
+
+    /// <summary>
+    /// Horizontal Spread - Edge-to-Edge (CTC + bullet diameter)
+    /// </summary>
+    public decimal HorizontalSpreadEte { get; set; }
+
+    /// <summary>
+    /// Vertical Spread - Center-to-Center
+    /// </summary>
+    public decimal VerticalSpreadCtc { get; set; }
+
+    /// <summary>
+    /// Vertical Spread - Edge-to-Edge (CTC + bullet diameter)
+    /// </summary>
+    public decimal VerticalSpreadEte { get; set; }
+
     public decimal RadialStdDev { get; set; }
     public decimal HorizontalStdDev { get; set; }
     public decimal VerticalStdDev { get; set; }
@@ -43,7 +75,8 @@ public class GroupMeasurementCalculator : IGroupMeasurementCalculator
         var centroidY = holePositions.Average(h => h.Y);
 
         // ==================== Extreme Spread ====================
-        // Maximum center-to-center distance + bullet diameter (edge-to-edge)
+        // CTC = Center-to-Center (what most shooters compare)
+        // ETE = Edge-to-Edge (CTC + bullet diameter, actual physical size)
         decimal maxCenterToCenter = 0;
         for (int i = 0; i < holePositions.Count; i++)
         {
@@ -54,7 +87,8 @@ public class GroupMeasurementCalculator : IGroupMeasurementCalculator
                     maxCenterToCenter = dist;
             }
         }
-        var extremeSpread = maxCenterToCenter + bulletDiameter;
+        var extremeSpreadCtc = maxCenterToCenter;
+        var extremeSpreadEte = maxCenterToCenter + bulletDiameter;
 
         // ==================== Mean Radius ====================
         // Average distance from centroid
@@ -62,8 +96,10 @@ public class GroupMeasurementCalculator : IGroupMeasurementCalculator
         var meanRadius = radii.Average();
 
         // ==================== H/V Spread ====================
-        var horizontalSpread = holePositions.Max(h => h.X) - holePositions.Min(h => h.X) + bulletDiameter;
-        var verticalSpread = holePositions.Max(h => h.Y) - holePositions.Min(h => h.Y) + bulletDiameter;
+        var horizontalSpreadCtc = holePositions.Max(h => h.X) - holePositions.Min(h => h.X);
+        var horizontalSpreadEte = horizontalSpreadCtc + bulletDiameter;
+        var verticalSpreadCtc = holePositions.Max(h => h.Y) - holePositions.Min(h => h.Y);
+        var verticalSpreadEte = verticalSpreadCtc + bulletDiameter;
 
         // ==================== Standard Deviations ====================
         // Using population standard deviation (divide by N, not N-1)
@@ -96,10 +132,13 @@ public class GroupMeasurementCalculator : IGroupMeasurementCalculator
 
         return new GroupMetrics
         {
-            ExtremeSpread = Math.Round(extremeSpread, 4),
+            ExtremeSpreadCtc = Math.Round(extremeSpreadCtc, 4),
+            ExtremeSpreadEte = Math.Round(extremeSpreadEte, 4),
             MeanRadius = Math.Round(meanRadius, 4),
-            HorizontalSpread = Math.Round(horizontalSpread, 4),
-            VerticalSpread = Math.Round(verticalSpread, 4),
+            HorizontalSpreadCtc = Math.Round(horizontalSpreadCtc, 4),
+            HorizontalSpreadEte = Math.Round(horizontalSpreadEte, 4),
+            VerticalSpreadCtc = Math.Round(verticalSpreadCtc, 4),
+            VerticalSpreadEte = Math.Round(verticalSpreadEte, 4),
             RadialStdDev = Math.Round(radialStdDev, 5),
             HorizontalStdDev = Math.Round(horizontalStdDev, 5),
             VerticalStdDev = Math.Round(verticalStdDev, 5),

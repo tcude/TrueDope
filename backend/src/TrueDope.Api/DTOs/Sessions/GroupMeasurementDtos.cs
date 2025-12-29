@@ -33,10 +33,28 @@ public class GroupMeasurementDto
     public decimal BulletDiameter { get; set; }
 
     // Core metrics (inches)
-    public decimal? ExtremeSpread { get; set; }
+    // CTC = Center-to-Center (what most shooters compare)
+    // ETE = Edge-to-Edge (CTC + bullet diameter, actual physical size)
+
+    /// <summary>Extreme spread center-to-center in inches</summary>
+    public decimal? ExtremeSpreadCtc { get; set; }
+
+    /// <summary>Extreme spread edge-to-edge in inches (CTC + bullet diameter)</summary>
+    public decimal? ExtremeSpreadEte { get; set; }
+
     public decimal? MeanRadius { get; set; }
-    public decimal? HorizontalSpread { get; set; }
-    public decimal? VerticalSpread { get; set; }
+
+    /// <summary>Horizontal spread center-to-center in inches</summary>
+    public decimal? HorizontalSpreadCtc { get; set; }
+
+    /// <summary>Horizontal spread edge-to-edge in inches</summary>
+    public decimal? HorizontalSpreadEte { get; set; }
+
+    /// <summary>Vertical spread center-to-center in inches</summary>
+    public decimal? VerticalSpreadCtc { get; set; }
+
+    /// <summary>Vertical spread edge-to-edge in inches</summary>
+    public decimal? VerticalSpreadEte { get; set; }
 
     // Statistical metrics
     public decimal? RadialStdDev { get; set; }
@@ -49,7 +67,12 @@ public class GroupMeasurementDto
     public decimal? PoiOffsetY { get; set; }
 
     // MOA conversions (computed from inches + distance)
-    public decimal? ExtremeSpreadMoa { get; set; }
+    /// <summary>Extreme spread CTC in MOA</summary>
+    public decimal? ExtremeSpreadCtcMoa { get; set; }
+
+    /// <summary>Extreme spread ETE in MOA</summary>
+    public decimal? ExtremeSpreadEteMoa { get; set; }
+
     public decimal? MeanRadiusMoa { get; set; }
 
     // Metadata

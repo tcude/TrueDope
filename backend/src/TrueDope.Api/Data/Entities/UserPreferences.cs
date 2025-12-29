@@ -21,6 +21,9 @@ public class UserPreferences
     // Theme
     public ThemePreference Theme { get; set; } = ThemePreference.System;
 
+    // Group Measurement
+    public GroupSizeMethod GroupSizeMethod { get; set; } = GroupSizeMethod.CenterToCenter;
+
     // Audit
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
     public DateTime UpdatedAt { get; set; } = DateTime.UtcNow;
