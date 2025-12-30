@@ -21,4 +21,7 @@ public class UpdatePreferencesRequest
 
     [RegularExpression("^(system|light|dark)$", ErrorMessage = "Theme must be 'system', 'light', or 'dark'")]
     public string? Theme { get; set; }
+
+    [RegularExpression("^(ctc|ete)$", ErrorMessage = "Group size method must be 'ctc' (center-to-center) or 'ete' (edge-to-edge)")]
+    public string? GroupSizeMethod { get; set; }
 }

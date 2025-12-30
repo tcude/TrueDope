@@ -23,6 +23,7 @@ public class ApplicationDbContext : IdentityDbContext<User>
     public DbSet<ChronoSession> ChronoSessions => Set<ChronoSession>();
     public DbSet<VelocityReading> VelocityReadings => Set<VelocityReading>();
     public DbSet<GroupEntry> GroupEntries => Set<GroupEntry>();
+    public DbSet<GroupMeasurement> GroupMeasurements => Set<GroupMeasurement>();
     public DbSet<Image> Images => Set<Image>();
     public DbSet<UserPreferences> UserPreferences => Set<UserPreferences>();
     public DbSet<AdminAuditLog> AdminAuditLogs => Set<AdminAuditLog>();
@@ -241,6 +242,35 @@ public class ApplicationDbContext : IdentityDbContext<User>
                 .OnDelete(DeleteBehavior.SetNull);
 
             entity.HasIndex(g => g.RangeSessionId);
+        });
+
+        // =====================
+        // GroupMeasurement (1:1 with GroupEntry)
+        // =====================
+        builder.Entity<GroupMeasurement>(entity =>
+        {
+            entity.HasOne(m => m.GroupEntry)
+                .WithOne(g => g.Measurement)
+                .HasForeignKey<GroupMeasurement>(m => m.GroupEntryId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            entity.HasOne(m => m.OriginalImage)
+                .WithMany()
+                .HasForeignKey(m => m.OriginalImageId)
+                .OnDelete(DeleteBehavior.SetNull);
+
+            entity.HasOne(m => m.AnnotatedImage)
+                .WithMany()
+                .HasForeignKey(m => m.AnnotatedImageId)
+                .OnDelete(DeleteBehavior.SetNull);
+
+            // Ensure 1:1 relationship
+            entity.HasIndex(m => m.GroupEntryId).IsUnique();
+
+            // Store enum as string
+            entity.Property(m => m.CalibrationMethod)
+                .HasConversion<string>()
+                .HasMaxLength(20);
         });
 
         // =====================

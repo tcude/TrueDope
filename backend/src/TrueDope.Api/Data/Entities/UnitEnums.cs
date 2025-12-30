@@ -36,3 +36,14 @@ public enum ThemePreference
     Light = 1,
     Dark = 2
 }
+
+/// <summary>
+/// How group size (extreme spread) is measured.
+/// CTC = Center-to-Center (distance between farthest hole centers)
+/// ETE = Edge-to-Edge (CTC + bullet diameter, actual physical group size)
+/// </summary>
+public enum GroupSizeMethod
+{
+    CenterToCenter = 0,  // Default - matches common apps like Ballistic-X
+    EdgeToEdge = 1
+}

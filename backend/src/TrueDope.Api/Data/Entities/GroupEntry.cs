@@ -51,6 +51,9 @@ public class GroupEntry
     // Images of this specific group
     public ICollection<Image> Images { get; set; } = new List<Image>();
 
+    // Optional 1:1 detailed measurement data
+    public GroupMeasurement? Measurement { get; set; }
+
     // Computed: Group size in inches
     [NotMapped]
     public decimal? GroupSizeInches => GroupSizeMoa.HasValue

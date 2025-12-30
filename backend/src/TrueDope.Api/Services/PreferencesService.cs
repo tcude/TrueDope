@@ -76,6 +76,9 @@ public class PreferencesService : IPreferencesService
         if (request.Theme != null)
             preferences.Theme = ParseTheme(request.Theme);
 
+        if (request.GroupSizeMethod != null)
+            preferences.GroupSizeMethod = ParseGroupSizeMethod(request.GroupSizeMethod);
+
         preferences.UpdatedAt = DateTime.UtcNow;
 
         await _context.SaveChangesAsync();
@@ -115,7 +118,8 @@ public class PreferencesService : IPreferencesService
             TemperatureUnit = preferences.TemperatureUnit.ToString().ToLowerInvariant(),
             PressureUnit = preferences.PressureUnit.ToString().ToLowerInvariant(),
             VelocityUnit = preferences.VelocityUnit.ToString().ToLowerInvariant(),
-            Theme = preferences.Theme.ToString().ToLowerInvariant()
+            Theme = preferences.Theme.ToString().ToLowerInvariant(),
+            GroupSizeMethod = preferences.GroupSizeMethod == GroupSizeMethod.CenterToCenter ? "ctc" : "ete"
         };
     }
 
@@ -160,5 +164,12 @@ public class PreferencesService : IPreferencesService
         "light" => ThemePreference.Light,
         "dark" => ThemePreference.Dark,
         _ => ThemePreference.System
+    };
+
+    private static GroupSizeMethod ParseGroupSizeMethod(string value) => value.ToLowerInvariant() switch
+    {
+        "ctc" => GroupSizeMethod.CenterToCenter,
+        "ete" => GroupSizeMethod.EdgeToEdge,
+        _ => GroupSizeMethod.CenterToCenter
     };
 }

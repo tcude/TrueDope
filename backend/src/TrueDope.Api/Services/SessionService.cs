@@ -1,3 +1,4 @@
+using System.Text.Json;
 using Microsoft.EntityFrameworkCore;
 using TrueDope.Api.Data;
 using TrueDope.Api.Data.Entities;
@@ -10,11 +11,16 @@ public class SessionService : ISessionService
 {
     private readonly ApplicationDbContext _context;
     private readonly ILogger<SessionService> _logger;
+    private readonly IGroupMeasurementCalculator _measurementCalculator;
 
-    public SessionService(ApplicationDbContext context, ILogger<SessionService> logger)
+    public SessionService(
+        ApplicationDbContext context,
+        ILogger<SessionService> logger,
+        IGroupMeasurementCalculator measurementCalculator)
     {
         _context = context;
         _logger = logger;
+        _measurementCalculator = measurementCalculator;
     }
 
     public async Task<PaginatedResponse<SessionListDto>> GetSessionsAsync(string userId, SessionFilterDto filter)
@@ -157,6 +163,12 @@ public class SessionService : ISessionService
                 .ThenInclude(g => g.AmmoLot)
             .Include(s => s.GroupEntries)
                 .ThenInclude(g => g.Images)
+            .Include(s => s.GroupEntries)
+                .ThenInclude(g => g.Measurement)
+                    .ThenInclude(m => m!.OriginalImage)
+            .Include(s => s.GroupEntries)
+                .ThenInclude(g => g.Measurement)
+                    .ThenInclude(m => m!.AnnotatedImage)
             .Include(s => s.Images)
             .FirstOrDefaultAsync(s => s.Id == sessionId && s.UserId == userId);
 
@@ -725,6 +737,64 @@ public class SessionService : ISessionService
         await _context.SaveChangesAsync();
     }
 
+    private GroupMeasurementDto MapMeasurementToDto(GroupMeasurement measurement, int distanceYards)
+    {
+        var holePositions = JsonSerializer.Deserialize<List<HolePosition>>(measurement.HolePositionsJson)
+            ?? new List<HolePosition>();
+
+        return new GroupMeasurementDto
+        {
+            Id = measurement.Id,
+            GroupEntryId = measurement.GroupEntryId,
+            HolePositions = holePositions,
+            BulletDiameter = measurement.BulletDiameter,
+            ExtremeSpreadCtc = measurement.ExtremeSpreadCtc,
+            ExtremeSpreadEte = measurement.ExtremeSpreadEte,
+            MeanRadius = measurement.MeanRadius,
+            HorizontalSpreadCtc = measurement.HorizontalSpreadCtc,
+            HorizontalSpreadEte = measurement.HorizontalSpreadEte,
+            VerticalSpreadCtc = measurement.VerticalSpreadCtc,
+            VerticalSpreadEte = measurement.VerticalSpreadEte,
+            RadialStdDev = measurement.RadialStdDev,
+            HorizontalStdDev = measurement.HorizontalStdDev,
+            VerticalStdDev = measurement.VerticalStdDev,
+            Cep50 = measurement.Cep50,
+            PoiOffsetX = measurement.PoiOffsetX,
+            PoiOffsetY = measurement.PoiOffsetY,
+            ExtremeSpreadCtcMoa = measurement.ExtremeSpreadCtc.HasValue
+                ? _measurementCalculator.InchesToMoa(measurement.ExtremeSpreadCtc.Value, distanceYards)
+                : null,
+            ExtremeSpreadEteMoa = measurement.ExtremeSpreadEte.HasValue
+                ? _measurementCalculator.InchesToMoa(measurement.ExtremeSpreadEte.Value, distanceYards)
+                : null,
+            MeanRadiusMoa = measurement.MeanRadius.HasValue
+                ? _measurementCalculator.InchesToMoa(measurement.MeanRadius.Value, distanceYards)
+                : null,
+            CalibrationMethod = measurement.CalibrationMethod.ToString().ToLowerInvariant(),
+            MeasurementConfidence = measurement.MeasurementConfidence,
+            OriginalImage = measurement.OriginalImage != null ? new ImageDto
+            {
+                Id = measurement.OriginalImage.Id,
+                Url = $"/api/images/{measurement.OriginalImage.Id}",
+                ThumbnailUrl = $"/api/images/{measurement.OriginalImage.Id}/thumbnail",
+                Caption = measurement.OriginalImage.Caption,
+                OriginalFileName = measurement.OriginalImage.OriginalFileName,
+                FileSize = measurement.OriginalImage.FileSize
+            } : null,
+            AnnotatedImage = measurement.AnnotatedImage != null ? new ImageDto
+            {
+                Id = measurement.AnnotatedImage.Id,
+                Url = $"/api/images/{measurement.AnnotatedImage.Id}",
+                ThumbnailUrl = $"/api/images/{measurement.AnnotatedImage.Id}/thumbnail",
+                Caption = measurement.AnnotatedImage.Caption,
+                OriginalFileName = measurement.AnnotatedImage.OriginalFileName,
+                FileSize = measurement.AnnotatedImage.FileSize
+            } : null,
+            CreatedAt = measurement.CreatedAt,
+            UpdatedAt = measurement.UpdatedAt
+        };
+    }
+
     private SessionDetailDto MapToDetailDto(RangeSession session)
     {
         return new SessionDetailDto
@@ -838,15 +908,22 @@ public class SessionService : ISessionService
                     LotNumber = g.AmmoLot.LotNumber
                 } : null,
                 Notes = g.Notes,
-                Images = g.Images.Select(i => new ImageDto
-                {
-                    Id = i.Id,
-                    Url = $"/api/images/{i.Id}",
-                    ThumbnailUrl = $"/api/images/{i.Id}/thumbnail",
-                    Caption = i.Caption,
-                    OriginalFileName = i.OriginalFileName,
-                    FileSize = i.FileSize
-                }).ToList()
+                // Filter out measurement images from group images to avoid duplication
+                // Measurement images are shown via Measurement.OriginalImage/AnnotatedImage
+                Images = g.Images
+                    .Where(i =>
+                        (g.Measurement?.OriginalImageId == null || i.Id != g.Measurement.OriginalImageId) &&
+                        (g.Measurement?.AnnotatedImageId == null || i.Id != g.Measurement.AnnotatedImageId))
+                    .Select(i => new ImageDto
+                    {
+                        Id = i.Id,
+                        Url = $"/api/images/{i.Id}",
+                        ThumbnailUrl = $"/api/images/{i.Id}/thumbnail",
+                        Caption = i.Caption,
+                        OriginalFileName = i.OriginalFileName,
+                        FileSize = i.FileSize
+                    }).ToList(),
+                Measurement = g.Measurement != null ? MapMeasurementToDto(g.Measurement, g.Distance) : null
             }).OrderBy(g => g.GroupNumber).ToList(),
             Images = session.Images.Select(i => new ImageDto
             {

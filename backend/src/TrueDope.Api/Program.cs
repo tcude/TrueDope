@@ -147,6 +147,9 @@ try
     // Register Phase 11 services (Security & Audit)
     builder.Services.AddScoped<IAdminAuditService, AdminAuditService>();
 
+    // Register Group Measurement services
+    builder.Services.AddScoped<IGroupMeasurementCalculator, GroupMeasurementCalculator>();
+
     builder.Services.AddMemoryCache();
 
     // Configure MinIO
