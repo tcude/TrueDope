@@ -6,6 +6,7 @@ namespace TrueDope.Api.DTOs.Analytics;
 
 public class AnalyticsSummaryDto
 {
+    public int TotalRifles { get; set; }
     public int TotalSessions { get; set; }
     public int TotalRoundsFired { get; set; }
     public LongestShotDto? LongestShot { get; set; }

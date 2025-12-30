@@ -17,6 +17,12 @@ public class AnalyticsService : IAnalyticsService
     {
         var summary = new AnalyticsSummaryDto();
 
+        // Total rifles
+        summary.TotalRifles = await _context.RifleSetups
+            .AsNoTracking()
+            .Where(r => r.UserId == userId)
+            .CountAsync();
+
         // Total sessions (AsNoTracking implicit for aggregates but explicit for clarity)
         summary.TotalSessions = await _context.RangeSessions
             .AsNoTracking()
