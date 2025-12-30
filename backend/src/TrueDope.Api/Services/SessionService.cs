@@ -908,15 +908,21 @@ public class SessionService : ISessionService
                     LotNumber = g.AmmoLot.LotNumber
                 } : null,
                 Notes = g.Notes,
-                Images = g.Images.Select(i => new ImageDto
-                {
-                    Id = i.Id,
-                    Url = $"/api/images/{i.Id}",
-                    ThumbnailUrl = $"/api/images/{i.Id}/thumbnail",
-                    Caption = i.Caption,
-                    OriginalFileName = i.OriginalFileName,
-                    FileSize = i.FileSize
-                }).ToList(),
+                // Filter out measurement images from group images to avoid duplication
+                // Measurement images are shown via Measurement.OriginalImage/AnnotatedImage
+                Images = g.Images
+                    .Where(i =>
+                        (g.Measurement?.OriginalImageId == null || i.Id != g.Measurement.OriginalImageId) &&
+                        (g.Measurement?.AnnotatedImageId == null || i.Id != g.Measurement.AnnotatedImageId))
+                    .Select(i => new ImageDto
+                    {
+                        Id = i.Id,
+                        Url = $"/api/images/{i.Id}",
+                        ThumbnailUrl = $"/api/images/{i.Id}/thumbnail",
+                        Caption = i.Caption,
+                        OriginalFileName = i.OriginalFileName,
+                        FileSize = i.FileSize
+                    }).ToList(),
                 Measurement = g.Measurement != null ? MapMeasurementToDto(g.Measurement, g.Distance) : null
             }).OrderBy(g => g.GroupNumber).ToList(),
             Images = session.Images.Select(i => new ImageDto

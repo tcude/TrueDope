@@ -6,6 +6,7 @@ using Microsoft.EntityFrameworkCore;
 using TrueDope.Api.Data;
 using TrueDope.Api.Data.Entities;
 using TrueDope.Api.DTOs;
+using TrueDope.Api.DTOs.Images;
 using TrueDope.Api.DTOs.Sessions;
 using TrueDope.Api.Services;
 
@@ -18,15 +19,20 @@ public class GroupMeasurementsController : ControllerBase
 {
     private readonly ApplicationDbContext _context;
     private readonly IGroupMeasurementCalculator _calculator;
+    private readonly IImageService _imageService;
     private readonly ILogger<GroupMeasurementsController> _logger;
+
+    private const long MaxFileSize = 20 * 1024 * 1024; // 20MB
 
     public GroupMeasurementsController(
         ApplicationDbContext context,
         IGroupMeasurementCalculator calculator,
+        IImageService imageService,
         ILogger<GroupMeasurementsController> logger)
     {
         _context = context;
         _calculator = calculator;
+        _imageService = imageService;
         _logger = logger;
     }
 
@@ -234,6 +240,109 @@ public class GroupMeasurementsController : ControllerBase
         _logger.LogInformation("Deleted measurement for group {GroupId}", groupId);
 
         return Ok(ApiResponse.Ok("Measurement deleted successfully"));
+    }
+
+    /// <summary>
+    /// Upload images for a group measurement (original and/or annotated)
+    /// </summary>
+    [HttpPost("images")]
+    [RequestSizeLimit(MaxFileSize * 2)] // Allow two images
+    [ProducesResponseType(typeof(ApiResponse<GroupMeasurementDto>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ApiErrorResponse), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(ApiErrorResponse), StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> UploadMeasurementImages(
+        int groupId,
+        IFormFile? originalImage,
+        IFormFile? annotatedImage)
+    {
+        if (originalImage == null && annotatedImage == null)
+            return BadRequest(ApiErrorResponse.Create("NO_FILES", "At least one image is required"));
+
+        var groupEntry = await GetGroupEntryWithAuth(groupId);
+        if (groupEntry == null)
+            return NotFound(ApiErrorResponse.Create("GROUP_NOT_FOUND", "Group entry not found"));
+
+        var measurement = await _context.GroupMeasurements
+            .Include(m => m.OriginalImage)
+            .Include(m => m.AnnotatedImage)
+            .FirstOrDefaultAsync(m => m.GroupEntryId == groupId);
+
+        if (measurement == null)
+            return NotFound(ApiErrorResponse.Create("MEASUREMENT_NOT_FOUND", "No measurement data for this group. Create a measurement first."));
+
+        var userId = GetUserId();
+
+        try
+        {
+            // Upload original image if provided
+            if (originalImage != null)
+            {
+                if (originalImage.Length > MaxFileSize)
+                    return BadRequest(ApiErrorResponse.Create("FILE_TOO_LARGE", "Original image exceeds maximum size of 20MB"));
+
+                // Delete old original image if exists
+                if (measurement.OriginalImageId.HasValue)
+                {
+                    await _imageService.DeleteImageAsync(userId, measurement.OriginalImageId.Value);
+                }
+
+                using var stream = originalImage.OpenReadStream();
+                var result = await _imageService.UploadImageAsync(
+                    userId,
+                    ImageParentType.Group,
+                    groupId,
+                    stream,
+                    $"measurement_original_{originalImage.FileName}",
+                    originalImage.ContentType
+                );
+                measurement.OriginalImageId = result.Id;
+                _logger.LogInformation("Uploaded original measurement image {ImageId} for group {GroupId}", result.Id, groupId);
+            }
+
+            // Upload annotated image if provided
+            if (annotatedImage != null)
+            {
+                if (annotatedImage.Length > MaxFileSize)
+                    return BadRequest(ApiErrorResponse.Create("FILE_TOO_LARGE", "Annotated image exceeds maximum size of 20MB"));
+
+                // Delete old annotated image if exists
+                if (measurement.AnnotatedImageId.HasValue)
+                {
+                    await _imageService.DeleteImageAsync(userId, measurement.AnnotatedImageId.Value);
+                }
+
+                using var stream = annotatedImage.OpenReadStream();
+                var result = await _imageService.UploadImageAsync(
+                    userId,
+                    ImageParentType.Group,
+                    groupId,
+                    stream,
+                    $"measurement_annotated_{annotatedImage.FileName}",
+                    annotatedImage.ContentType
+                );
+                measurement.AnnotatedImageId = result.Id;
+                _logger.LogInformation("Uploaded annotated measurement image {ImageId} for group {GroupId}", result.Id, groupId);
+            }
+
+            measurement.UpdatedAt = DateTime.UtcNow;
+            await _context.SaveChangesAsync();
+
+            // Reload to get updated image references
+            await _context.Entry(measurement).Reference(m => m.OriginalImage).LoadAsync();
+            await _context.Entry(measurement).Reference(m => m.AnnotatedImage).LoadAsync();
+
+            var dto = MapToDto(measurement, groupEntry.Distance);
+            return Ok(ApiResponse<GroupMeasurementDto>.Ok(dto, "Images uploaded successfully"));
+        }
+        catch (NotSupportedException ex)
+        {
+            return BadRequest(ApiErrorResponse.Create("FORMAT_NOT_SUPPORTED", ex.Message));
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Failed to upload measurement images for group {GroupId}", groupId);
+            return StatusCode(500, ApiErrorResponse.Create("UPLOAD_FAILED", "Failed to upload images"));
+        }
     }
 
     // ==================== Private Helpers ====================
