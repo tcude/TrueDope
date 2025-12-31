@@ -122,6 +122,7 @@ export interface DopeDataPointDto {
 export interface VelocityTrendsFilterDto {
   ammoId: number;
   lotId?: number;
+  rifleId?: number;
   fromDate?: string;
   toDate?: string;
 }
@@ -132,6 +133,8 @@ export interface VelocityTrendsDto {
   caliber: string;
   lotId: number | null;
   lotNumber: string | null;
+  rifleId: number | null;
+  rifleName: string | null;
   sessions: VelocitySessionDto[];
   aggregates: VelocityAggregatesDto | null;
   correlation: VelocityCorrelationDto | null;
@@ -176,7 +179,14 @@ export interface VelocityCorrelationDto {
 }
 
 // Ammo Comparison Types
+export interface AmmoComparisonFilterDto {
+  ammoIds: number[];
+  rifleId?: number;
+}
+
 export interface AmmoComparisonDto {
+  rifleId: number | null;
+  rifleName: string | null;
   ammunitions: AmmoComparisonItemDto[];
   comparison: AmmoComparisonSummaryDto;
 }
@@ -211,9 +221,16 @@ export interface AmmoComparisonSummaryDto {
 }
 
 // Lot Comparison Types
+export interface LotComparisonFilterDto {
+  ammoId: number;
+  rifleId?: number;
+}
+
 export interface LotComparisonDto {
   ammoId: number;
   ammoName: string;
+  rifleId: number | null;
+  rifleName: string | null;
   lots: LotComparisonItemDto[];
   comparison: LotComparisonSummaryDto;
 }

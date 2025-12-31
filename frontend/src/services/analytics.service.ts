@@ -53,10 +53,15 @@ export const analyticsService = {
   /**
    * Compare multiple ammunition types
    */
-  compareAmmo: async (ammoIds: number[]): Promise<AmmoComparisonDto> => {
-    const response = await api.get<ApiResponse<AmmoComparisonDto>>('/analytics/ammo-comparison', {
-      params: { ammoIds: ammoIds.join(',') },
-    });
+  compareAmmo: async (ammoIds: number[], rifleId?: number): Promise<AmmoComparisonDto> => {
+    // Build query string manually for array params (ASP.NET Core expects repeated params)
+    const queryParts: string[] = ammoIds.map((id) => `ammoIds=${id}`);
+    if (rifleId) queryParts.push(`rifleId=${rifleId}`);
+    const queryString = queryParts.join('&');
+
+    const response = await api.get<ApiResponse<AmmoComparisonDto>>(
+      `/analytics/ammo-comparison?${queryString}`
+    );
     if (!response.data.success || !response.data.data) {
       throw new Error(response.data.error?.description || 'Failed to fetch ammo comparison');
     }
@@ -66,9 +71,12 @@ export const analyticsService = {
   /**
    * Compare lots for a specific ammunition
    */
-  compareLots: async (ammoId: number): Promise<LotComparisonDto> => {
+  compareLots: async (ammoId: number, rifleId?: number): Promise<LotComparisonDto> => {
+    const params: { ammoId: number; rifleId?: number } = { ammoId };
+    if (rifleId) params.rifleId = rifleId;
+
     const response = await api.get<ApiResponse<LotComparisonDto>>('/analytics/lot-comparison', {
-      params: { ammoId },
+      params,
     });
     if (!response.data.success || !response.data.data) {
       throw new Error(response.data.error?.description || 'Failed to fetch lot comparison');

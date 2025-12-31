@@ -411,7 +411,8 @@ public class AnalyticsService : IAnalyticsService
             AmmoId = ammo.Id,
             AmmoName = ammo.DisplayName,
             Caliber = ammo.Caliber,
-            LotId = filter.LotId
+            LotId = filter.LotId,
+            RifleId = filter.RifleId
         };
 
         // Get lot number if filtering by lot
@@ -425,10 +426,24 @@ public class AnalyticsService : IAnalyticsService
             result.LotNumber = lot;
         }
 
+        // Get rifle name if filtering by rifle
+        if (filter.RifleId.HasValue)
+        {
+            var rifle = await _context.RifleSetups
+                .AsNoTracking()
+                .Where(r => r.Id == filter.RifleId.Value && r.UserId == userId)
+                .Select(r => r.Name)
+                .FirstOrDefaultAsync();
+            result.RifleName = rifle;
+        }
+
         // Build query - no Include needed since we use Select projection
         var query = _context.ChronoSessions
             .AsNoTracking()
             .Where(cs => cs.AmmunitionId == filter.AmmoId && cs.RangeSession.UserId == userId);
+
+        if (filter.RifleId.HasValue)
+            query = query.Where(cs => cs.RangeSession.RifleSetupId == filter.RifleId.Value);
 
         if (filter.LotId.HasValue)
             query = query.Where(cs => cs.AmmoLotId == filter.LotId.Value);
@@ -495,16 +510,30 @@ public class AnalyticsService : IAnalyticsService
         return result;
     }
 
-    public async Task<AmmoComparisonDto> GetAmmoComparisonAsync(string userId, int[] ammoIds)
+    public async Task<AmmoComparisonDto> GetAmmoComparisonAsync(string userId, AmmoComparisonFilterDto filter)
     {
-        if (ammoIds.Length > 5)
+        if (filter.AmmoIds.Length > 5)
         {
             throw new InvalidOperationException("Maximum 5 ammunition types can be compared at once");
         }
 
-        var result = new AmmoComparisonDto();
+        var result = new AmmoComparisonDto
+        {
+            RifleId = filter.RifleId
+        };
 
-        foreach (var ammoId in ammoIds)
+        // Get rifle name if filtering by rifle
+        if (filter.RifleId.HasValue)
+        {
+            var rifle = await _context.RifleSetups
+                .AsNoTracking()
+                .Where(r => r.Id == filter.RifleId.Value && r.UserId == userId)
+                .Select(r => r.Name)
+                .FirstOrDefaultAsync();
+            result.RifleName = rifle;
+        }
+
+        foreach (var ammoId in filter.AmmoIds)
         {
             var ammo = await _context.Ammunition
                 .AsNoTracking()
@@ -521,10 +550,15 @@ public class AnalyticsService : IAnalyticsService
             };
 
             // Get velocity stats
-            var chronoData = await _context.ChronoSessions
+            var chronoQuery = _context.ChronoSessions
                 .AsNoTracking()
                 .Where(cs => cs.AmmunitionId == ammoId && cs.RangeSession.UserId == userId)
-                .Where(cs => cs.AverageVelocity.HasValue)
+                .Where(cs => cs.AverageVelocity.HasValue);
+
+            if (filter.RifleId.HasValue)
+                chronoQuery = chronoQuery.Where(cs => cs.RangeSession.RifleSetupId == filter.RifleId.Value);
+
+            var chronoData = await chronoQuery
                 .Select(cs => new
                 {
                     cs.AverageVelocity,
@@ -548,10 +582,15 @@ public class AnalyticsService : IAnalyticsService
             }
 
             // Get group stats
-            var groupData = await _context.GroupEntries
+            var groupQuery = _context.GroupEntries
                 .AsNoTracking()
                 .Where(g => g.AmmunitionId == ammoId && g.RangeSession.UserId == userId)
-                .Where(g => g.GroupSizeMoa.HasValue)
+                .Where(g => g.GroupSizeMoa.HasValue);
+
+            if (filter.RifleId.HasValue)
+                groupQuery = groupQuery.Where(g => g.RangeSession.RifleSetupId == filter.RifleId.Value);
+
+            var groupData = await groupQuery
                 .Select(g => new
                 {
                     g.GroupSizeMoa,
@@ -601,11 +640,11 @@ public class AnalyticsService : IAnalyticsService
         return result;
     }
 
-    public async Task<LotComparisonDto> GetLotComparisonAsync(string userId, int ammoId)
+    public async Task<LotComparisonDto> GetLotComparisonAsync(string userId, LotComparisonFilterDto filter)
     {
         var ammo = await _context.Ammunition
             .AsNoTracking()
-            .Where(a => a.Id == ammoId && a.UserId == userId)
+            .Where(a => a.Id == filter.AmmoId && a.UserId == userId)
             .FirstOrDefaultAsync();
 
         if (ammo == null)
@@ -616,12 +655,24 @@ public class AnalyticsService : IAnalyticsService
         var result = new LotComparisonDto
         {
             AmmoId = ammo.Id,
-            AmmoName = ammo.DisplayName
+            AmmoName = ammo.DisplayName,
+            RifleId = filter.RifleId
         };
+
+        // Get rifle name if filtering by rifle
+        if (filter.RifleId.HasValue)
+        {
+            var rifle = await _context.RifleSetups
+                .AsNoTracking()
+                .Where(r => r.Id == filter.RifleId.Value && r.UserId == userId)
+                .Select(r => r.Name)
+                .FirstOrDefaultAsync();
+            result.RifleName = rifle;
+        }
 
         var lots = await _context.AmmoLots
             .AsNoTracking()
-            .Where(l => l.AmmunitionId == ammoId && l.UserId == userId)
+            .Where(l => l.AmmunitionId == filter.AmmoId && l.UserId == userId)
             .ToListAsync();
 
         foreach (var lot in lots)
@@ -634,10 +685,15 @@ public class AnalyticsService : IAnalyticsService
             };
 
             // Get velocity stats for this lot
-            var chronoData = await _context.ChronoSessions
+            var chronoQuery = _context.ChronoSessions
                 .AsNoTracking()
                 .Where(cs => cs.AmmoLotId == lot.Id && cs.RangeSession.UserId == userId)
-                .Where(cs => cs.AverageVelocity.HasValue)
+                .Where(cs => cs.AverageVelocity.HasValue);
+
+            if (filter.RifleId.HasValue)
+                chronoQuery = chronoQuery.Where(cs => cs.RangeSession.RifleSetupId == filter.RifleId.Value);
+
+            var chronoData = await chronoQuery
                 .Select(cs => new
                 {
                     cs.AverageVelocity,
@@ -661,10 +717,15 @@ public class AnalyticsService : IAnalyticsService
             }
 
             // Get group stats for this lot
-            var groupData = await _context.GroupEntries
+            var groupQuery = _context.GroupEntries
                 .AsNoTracking()
                 .Where(g => g.AmmoLotId == lot.Id && g.RangeSession.UserId == userId)
-                .Where(g => g.GroupSizeMoa.HasValue)
+                .Where(g => g.GroupSizeMoa.HasValue);
+
+            if (filter.RifleId.HasValue)
+                groupQuery = groupQuery.Where(g => g.RangeSession.RifleSetupId == filter.RifleId.Value);
+
+            var groupData = await groupQuery
                 .Select(g => new
                 {
                     g.GroupSizeMoa,

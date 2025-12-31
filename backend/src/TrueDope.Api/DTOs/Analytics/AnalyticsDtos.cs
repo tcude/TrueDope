@@ -149,6 +149,7 @@ public class VelocityTrendsFilterDto
 {
     public int AmmoId { get; set; }
     public int? LotId { get; set; }
+    public int? RifleId { get; set; }
     public DateTime? FromDate { get; set; }
     public DateTime? ToDate { get; set; }
 }
@@ -160,6 +161,8 @@ public class VelocityTrendsDto
     public string Caliber { get; set; } = string.Empty;
     public int? LotId { get; set; }
     public string? LotNumber { get; set; }
+    public int? RifleId { get; set; }
+    public string? RifleName { get; set; }
     public List<VelocitySessionDto> Sessions { get; set; } = new();
     public VelocityAggregatesDto Aggregates { get; set; } = new();
     public VelocityCorrelationDto? Correlation { get; set; }
@@ -212,8 +215,16 @@ public class VelocityCorrelationDto
 // Ammo Comparison DTOs
 // =====================
 
+public class AmmoComparisonFilterDto
+{
+    public int[] AmmoIds { get; set; } = Array.Empty<int>();
+    public int? RifleId { get; set; }
+}
+
 public class AmmoComparisonDto
 {
+    public int? RifleId { get; set; }
+    public string? RifleName { get; set; }
     public List<AmmoComparisonItemDto> Ammunitions { get; set; } = new();
     public ComparisonWinnersDto Comparison { get; set; } = new();
 }
@@ -255,10 +266,18 @@ public class ComparisonWinnersDto
 // Lot Comparison DTOs
 // =====================
 
+public class LotComparisonFilterDto
+{
+    public int AmmoId { get; set; }
+    public int? RifleId { get; set; }
+}
+
 public class LotComparisonDto
 {
     public int AmmoId { get; set; }
     public string AmmoName { get; set; } = string.Empty;
+    public int? RifleId { get; set; }
+    public string? RifleName { get; set; }
     public List<LotComparisonItemDto> Lots { get; set; } = new();
     public LotComparisonSummaryDto Comparison { get; set; } = new();
 }

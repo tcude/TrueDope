@@ -13,33 +13,44 @@ import { Card, CardContent, CardHeader, CardTitle } from '../../components/ui/ca
 import { Button } from '../../components/ui/button';
 import { Select } from '../../components/ui/select';
 import { PageHeader } from '../../components/ui/page-header';
-import { analyticsService, ammunitionService } from '../../services';
-import type { LotComparisonDto, AmmoListDto } from '../../types';
+import { analyticsService, ammunitionService, riflesService } from '../../services';
+import type { LotComparisonDto, AmmoListDto, RifleListDto } from '../../types';
 
 // Color palette for lot comparisons
 const COLORS = ['#2563eb', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6', '#ec4899', '#06b6d4', '#84cc16'];
 
 export default function LotComparison() {
   // State
+  const [rifles, setRifles] = useState<RifleListDto[]>([]);
+  const [selectedRifleId, setSelectedRifleId] = useState<number | null>(null);
   const [ammunition, setAmmunition] = useState<AmmoListDto[]>([]);
   const [selectedAmmoId, setSelectedAmmoId] = useState<number | null>(null);
   const [data, setData] = useState<LotComparisonDto | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  // Load ammunition on mount
+  // Load rifles and ammunition on mount
   useEffect(() => {
-    const loadAmmunition = async () => {
+    const loadData = async () => {
       try {
-        const response = await ammunitionService.getAll({ pageSize: 1000 });
+        const [riflesResponse, ammoResponse] = await Promise.all([
+          riflesService.getAll({ pageSize: 1000 }),
+          ammunitionService.getAll({ pageSize: 1000 }),
+        ]);
+        setRifles(riflesResponse.items || []);
         // Filter to ammunition with lots
-        const ammoWithLots = (response.items || []).filter((a) => a.lotCount > 0);
+        const ammoWithLots = (ammoResponse.items || []).filter((a) => a.lotCount > 0);
         setAmmunition(ammoWithLots);
+
+        // Auto-select if only one rifle
+        if (riflesResponse.items?.length === 1) {
+          setSelectedRifleId(riflesResponse.items[0].id);
+        }
       } catch (err) {
-        console.error('Failed to load ammunition:', err);
+        console.error('Failed to load data:', err);
       }
     };
-    loadAmmunition();
+    loadData();
   }, []);
 
   // Fetch comparison data
@@ -50,7 +61,7 @@ export default function LotComparison() {
     setError(null);
 
     try {
-      const result = await analyticsService.compareLots(selectedAmmoId);
+      const result = await analyticsService.compareLots(selectedAmmoId, selectedRifleId || undefined);
       setData(result);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to fetch lot comparison');
@@ -58,7 +69,7 @@ export default function LotComparison() {
     } finally {
       setLoading(false);
     }
-  }, [selectedAmmoId]);
+  }, [selectedAmmoId, selectedRifleId]);
 
   // Auto-fetch when ammunition is selected
   useEffect(() => {
@@ -66,6 +77,10 @@ export default function LotComparison() {
       fetchData();
     }
   }, [selectedAmmoId, fetchData]);
+
+  const handleRifleChange = (value: string) => {
+    setSelectedRifleId(value ? parseInt(value, 10) : null);
+  };
 
   const handleAmmoChange = (value: string) => {
     const id = value ? parseInt(value, 10) : null;
@@ -111,8 +126,25 @@ export default function LotComparison() {
           <CardTitle>Select Ammunition</CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="flex gap-4 items-end">
-            <div className="flex-1 max-w-md">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 items-end">
+            <div>
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                Rifle (Optional)
+              </label>
+              <Select
+                value={selectedRifleId?.toString() || ''}
+                onChange={handleRifleChange}
+                placeholder="All Rifles"
+                options={[
+                  { value: '', label: 'All Rifles' },
+                  ...rifles.map((rifle) => ({
+                    value: rifle.id.toString(),
+                    label: rifle.name,
+                  })),
+                ]}
+              />
+            </div>
+            <div>
               <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                 Ammunition
               </label>
@@ -126,11 +158,13 @@ export default function LotComparison() {
                 }))}
               />
             </div>
-            {selectedAmmoId && (
-              <Button onClick={fetchData} disabled={loading}>
-                {loading ? 'Loading...' : 'Refresh'}
-              </Button>
-            )}
+            <div>
+              {selectedAmmoId && (
+                <Button onClick={fetchData} disabled={loading}>
+                  {loading ? 'Loading...' : 'Refresh'}
+                </Button>
+              )}
+            </div>
           </div>
 
           {ammunition.length === 0 && (

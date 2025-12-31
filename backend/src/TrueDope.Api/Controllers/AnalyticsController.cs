@@ -101,6 +101,7 @@ public class AnalyticsController : ControllerBase
     public async Task<ActionResult<ApiResponse<VelocityTrendsDto>>> GetVelocityTrends(
         [FromQuery] int ammoId,
         [FromQuery] int? lotId,
+        [FromQuery] int? rifleId,
         [FromQuery] DateTime? fromDate,
         [FromQuery] DateTime? toDate)
     {
@@ -110,6 +111,7 @@ public class AnalyticsController : ControllerBase
         {
             AmmoId = ammoId,
             LotId = lotId,
+            RifleId = rifleId,
             // Convert dates to UTC if they come in with Kind=Unspecified
             FromDate = fromDate.HasValue ? DateTime.SpecifyKind(fromDate.Value, DateTimeKind.Utc) : null,
             ToDate = toDate.HasValue ? DateTime.SpecifyKind(toDate.Value, DateTimeKind.Utc) : null
@@ -140,7 +142,8 @@ public class AnalyticsController : ControllerBase
     /// </summary>
     [HttpGet("ammo-comparison")]
     public async Task<ActionResult<ApiResponse<AmmoComparisonDto>>> GetAmmoComparison(
-        [FromQuery] int[] ammoIds)
+        [FromQuery] int[] ammoIds,
+        [FromQuery] int? rifleId)
     {
         var userId = GetUserId();
 
@@ -162,9 +165,15 @@ public class AnalyticsController : ControllerBase
             });
         }
 
+        var filter = new AmmoComparisonFilterDto
+        {
+            AmmoIds = ammoIds,
+            RifleId = rifleId
+        };
+
         try
         {
-            var data = await _analyticsService.GetAmmoComparisonAsync(userId, ammoIds);
+            var data = await _analyticsService.GetAmmoComparisonAsync(userId, filter);
 
             return Ok(new ApiResponse<AmmoComparisonDto>
             {
@@ -187,13 +196,20 @@ public class AnalyticsController : ControllerBase
     /// </summary>
     [HttpGet("lot-comparison")]
     public async Task<ActionResult<ApiResponse<LotComparisonDto>>> GetLotComparison(
-        [FromQuery] int ammoId)
+        [FromQuery] int ammoId,
+        [FromQuery] int? rifleId)
     {
         var userId = GetUserId();
 
+        var filter = new LotComparisonFilterDto
+        {
+            AmmoId = ammoId,
+            RifleId = rifleId
+        };
+
         try
         {
-            var data = await _analyticsService.GetLotComparisonAsync(userId, ammoId);
+            var data = await _analyticsService.GetLotComparisonAsync(userId, filter);
 
             return Ok(new ApiResponse<LotComparisonDto>
             {

@@ -11,32 +11,44 @@ import {
 } from 'recharts';
 import { Card, CardContent, CardHeader, CardTitle } from '../../components/ui/card';
 import { Button } from '../../components/ui/button';
+import { Select } from '../../components/ui/select';
 import { PageHeader } from '../../components/ui/page-header';
-import { analyticsService, ammunitionService } from '../../services';
-import type { AmmoComparisonDto, AmmoListDto } from '../../types';
+import { analyticsService, ammunitionService, riflesService } from '../../services';
+import type { AmmoComparisonDto, AmmoListDto, RifleListDto } from '../../types';
 
 // Color palette for ammunition comparisons
 const COLORS = ['#2563eb', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6', '#ec4899'];
 
 export default function AmmoComparison() {
   // State
+  const [rifles, setRifles] = useState<RifleListDto[]>([]);
+  const [selectedRifleId, setSelectedRifleId] = useState<number | null>(null);
   const [ammunition, setAmmunition] = useState<AmmoListDto[]>([]);
   const [selectedAmmoIds, setSelectedAmmoIds] = useState<number[]>([]);
   const [data, setData] = useState<AmmoComparisonDto | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  // Load ammunition on mount
+  // Load rifles and ammunition on mount
   useEffect(() => {
-    const loadAmmunition = async () => {
+    const loadData = async () => {
       try {
-        const response = await ammunitionService.getAll({ pageSize: 1000 });
-        setAmmunition(response.items || []);
+        const [riflesResponse, ammoResponse] = await Promise.all([
+          riflesService.getAll({ pageSize: 1000 }),
+          ammunitionService.getAll({ pageSize: 1000 }),
+        ]);
+        setRifles(riflesResponse.items || []);
+        setAmmunition(ammoResponse.items || []);
+
+        // Auto-select if only one rifle
+        if (riflesResponse.items?.length === 1) {
+          setSelectedRifleId(riflesResponse.items[0].id);
+        }
       } catch (err) {
-        console.error('Failed to load ammunition:', err);
+        console.error('Failed to load data:', err);
       }
     };
-    loadAmmunition();
+    loadData();
   }, []);
 
   // Fetch comparison data
@@ -47,7 +59,7 @@ export default function AmmoComparison() {
     setError(null);
 
     try {
-      const result = await analyticsService.compareAmmo(selectedAmmoIds);
+      const result = await analyticsService.compareAmmo(selectedAmmoIds, selectedRifleId || undefined);
       setData(result);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to fetch comparison');
@@ -55,7 +67,11 @@ export default function AmmoComparison() {
     } finally {
       setLoading(false);
     }
-  }, [selectedAmmoIds]);
+  }, [selectedAmmoIds, selectedRifleId]);
+
+  const handleRifleChange = (value: string) => {
+    setSelectedRifleId(value ? parseInt(value, 10) : null);
+  };
 
   const toggleAmmo = (ammoId: number) => {
     setSelectedAmmoIds((prev) => {
@@ -128,6 +144,27 @@ export default function AmmoComparison() {
           </div>
         </CardHeader>
         <CardContent>
+          {/* Rifle Filter */}
+          <div className="mb-4">
+            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+              Filter by Rifle (Optional)
+            </label>
+            <div className="max-w-xs">
+              <Select
+                value={selectedRifleId?.toString() || ''}
+                onChange={handleRifleChange}
+                placeholder="All Rifles"
+                options={[
+                  { value: '', label: 'All Rifles' },
+                  ...rifles.map((rifle) => ({
+                    value: rifle.id.toString(),
+                    label: rifle.name,
+                  })),
+                ]}
+              />
+            </div>
+          </div>
+
           <div className="flex flex-wrap gap-2">
             {ammunition.map((ammo) => {
               const isSelected = selectedAmmoIds.includes(ammo.id);

@@ -19,18 +19,21 @@ import { Select } from '../../components/ui/select';
 import { Input } from '../../components/ui/input';
 import { StatCard, StatIcons } from '../../components/ui/stat-card';
 import { PageHeader } from '../../components/ui/page-header';
-import { analyticsService, ammunitionService } from '../../services';
+import { analyticsService, ammunitionService, riflesService } from '../../services';
 import type {
   VelocityTrendsDto,
   VelocityTrendsFilterDto,
   AmmoListDto,
   AmmoLotDto,
+  RifleListDto,
 } from '../../types';
 
 export default function VelocityTrends() {
   const navigate = useNavigate();
 
   // Selection state
+  const [rifles, setRifles] = useState<RifleListDto[]>([]);
+  const [selectedRifleId, setSelectedRifleId] = useState<number | null>(null);
   const [ammunition, setAmmunition] = useState<AmmoListDto[]>([]);
   const [selectedAmmoId, setSelectedAmmoId] = useState<number | null>(null);
   const [lots, setLots] = useState<AmmoLotDto[]>([]);
@@ -45,17 +48,26 @@ export default function VelocityTrends() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  // Load ammunition on mount
+  // Load rifles and ammunition on mount
   useEffect(() => {
-    const loadAmmunition = async () => {
+    const loadData = async () => {
       try {
-        const response = await ammunitionService.getAll({ pageSize: 1000 });
-        setAmmunition(response.items || []);
+        const [riflesResponse, ammoResponse] = await Promise.all([
+          riflesService.getAll({ pageSize: 1000 }),
+          ammunitionService.getAll({ pageSize: 1000 }),
+        ]);
+        setRifles(riflesResponse.items || []);
+        setAmmunition(ammoResponse.items || []);
+
+        // Auto-select if only one rifle
+        if (riflesResponse.items?.length === 1) {
+          setSelectedRifleId(riflesResponse.items[0].id);
+        }
       } catch (err) {
-        console.error('Failed to load ammunition:', err);
+        console.error('Failed to load data:', err);
       }
     };
-    loadAmmunition();
+    loadData();
   }, []);
 
   // Load lots when ammunition changes
@@ -89,6 +101,7 @@ export default function VelocityTrends() {
         ammoId: selectedAmmoId,
       };
 
+      if (selectedRifleId) filter.rifleId = selectedRifleId;
       if (selectedLotId) filter.lotId = selectedLotId;
       if (fromDate) filter.fromDate = fromDate;
       if (toDate) filter.toDate = toDate;
@@ -101,7 +114,11 @@ export default function VelocityTrends() {
     } finally {
       setLoading(false);
     }
-  }, [selectedAmmoId, selectedLotId, fromDate, toDate]);
+  }, [selectedAmmoId, selectedRifleId, selectedLotId, fromDate, toDate]);
+
+  const handleRifleChange = (value: string) => {
+    setSelectedRifleId(value ? parseInt(value, 10) : null);
+  };
 
   // Auto-fetch when ammo is selected
   useEffect(() => {
@@ -167,7 +184,25 @@ export default function VelocityTrends() {
           <CardTitle>Select Ammunition</CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
+            <div>
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                Rifle (Optional)
+              </label>
+              <Select
+                value={selectedRifleId?.toString() || ''}
+                onChange={handleRifleChange}
+                placeholder="All Rifles"
+                options={[
+                  { value: '', label: 'All Rifles' },
+                  ...rifles.map((rifle) => ({
+                    value: rifle.id.toString(),
+                    label: rifle.name,
+                  })),
+                ]}
+              />
+            </div>
+
             <div>
               <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                 Ammunition
@@ -260,6 +295,12 @@ export default function VelocityTrends() {
           <Card>
             <CardContent className="pt-6">
               <div className="flex flex-wrap items-center gap-4">
+                {data.rifleName && (
+                  <div>
+                    <span className="text-sm text-gray-500 dark:text-gray-400">Rifle:</span>
+                    <span className="ml-2 font-medium text-gray-900 dark:text-gray-100">{data.rifleName}</span>
+                  </div>
+                )}
                 <div>
                   <span className="text-sm text-gray-500 dark:text-gray-400">Ammunition:</span>
                   <span className="ml-2 font-medium text-gray-900 dark:text-gray-100">{data.ammoName}</span>
