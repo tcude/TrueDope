@@ -9,7 +9,7 @@ public interface IAmmoService
     Task<PaginatedResponse<AmmoListDto>> GetAmmoAsync(string userId, AmmoFilterDto filter);
     Task<AmmoDetailDto?> GetAmmoAsync(string userId, int ammoId);
     Task<int> CreateAmmoAsync(string userId, CreateAmmoDto dto);
-    Task<bool> UpdateAmmoAsync(string userId, int ammoId, UpdateAmmoDto dto);
+    Task<AmmoDetailDto?> UpdateAmmoAsync(string userId, int ammoId, UpdateAmmoDto dto);
     Task<bool> DeleteAmmoAsync(string userId, int ammoId);
     Task<bool> HasSessionsAsync(string userId, int ammoId);
 

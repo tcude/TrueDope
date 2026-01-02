@@ -80,7 +80,7 @@ public class AmmunitionController : ControllerBase
     /// Update ammunition
     /// </summary>
     [HttpPut("{id:int}")]
-    [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ApiResponse<AmmoDetailDto>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ApiErrorResponse), StatusCodes.Status404NotFound)]
     [ProducesResponseType(typeof(ApiErrorResponse), StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> UpdateAmmo(int id, [FromBody] UpdateAmmoDto dto)
@@ -96,12 +96,12 @@ public class AmmunitionController : ControllerBase
             return BadRequest(ApiErrorResponse.ValidationError("Validation failed", errors));
         }
 
-        var updated = await _ammoService.UpdateAmmoAsync(GetUserId(), id, dto);
+        var updatedAmmo = await _ammoService.UpdateAmmoAsync(GetUserId(), id, dto);
 
-        if (!updated)
+        if (updatedAmmo == null)
             return NotFound(ApiErrorResponse.Create("AMMO_NOT_FOUND", "Ammunition not found"));
 
-        return Ok(ApiResponse.Ok("Ammunition updated successfully"));
+        return Ok(ApiResponse<AmmoDetailDto>.Ok(updatedAmmo, "Ammunition updated successfully"));
     }
 
     /// <summary>

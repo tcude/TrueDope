@@ -164,13 +164,15 @@ public class AmmoService : IAmmoService
         return ammo.Id;
     }
 
-    public async Task<bool> UpdateAmmoAsync(string userId, int ammoId, UpdateAmmoDto dto)
+    public async Task<AmmoDetailDto?> UpdateAmmoAsync(string userId, int ammoId, UpdateAmmoDto dto)
     {
         var ammo = await _context.Ammunition
+            .Include(a => a.AmmoLots)
+                .ThenInclude(l => l.ChronoSessions)
             .FirstOrDefaultAsync(a => a.Id == ammoId && a.UserId == userId);
 
         if (ammo == null)
-            return false;
+            return null;
 
         if (dto.Manufacturer != null) ammo.Manufacturer = dto.Manufacturer;
         if (dto.Name != null) ammo.Name = dto.Name;
@@ -185,7 +187,36 @@ public class AmmoService : IAmmoService
         ammo.UpdatedAt = DateTime.UtcNow;
 
         await _context.SaveChangesAsync();
-        return true;
+
+        return new AmmoDetailDto
+        {
+            Id = ammo.Id,
+            Manufacturer = ammo.Manufacturer,
+            Name = ammo.Name,
+            Caliber = ammo.Caliber,
+            Grain = ammo.Grain,
+            BulletType = ammo.BulletType,
+            CostPerRound = ammo.CostPerRound,
+            BallisticCoefficient = ammo.BallisticCoefficient,
+            DragModel = ammo.DragModel,
+            Notes = ammo.Notes,
+            DisplayName = ammo.DisplayName,
+            Lots = ammo.AmmoLots.Select(l => new AmmoLotDto
+            {
+                Id = l.Id,
+                LotNumber = l.LotNumber,
+                PurchaseDate = l.PurchaseDate,
+                InitialQuantity = l.InitialQuantity,
+                PurchasePrice = l.PurchasePrice,
+                CostPerRound = l.CostPerRound,
+                Notes = l.Notes,
+                DisplayName = l.DisplayName,
+                SessionCount = l.ChronoSessions.Count,
+                CreatedAt = l.CreatedAt
+            }).ToList(),
+            CreatedAt = ammo.CreatedAt,
+            UpdatedAt = ammo.UpdatedAt
+        };
     }
 
     public async Task<bool> DeleteAmmoAsync(string userId, int ammoId)
