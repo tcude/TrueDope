@@ -309,13 +309,13 @@ public class SessionService : ISessionService
         return session.Id;
     }
 
-    public async Task<bool> UpdateSessionAsync(string userId, int sessionId, UpdateSessionDto dto)
+    public async Task<SessionDetailDto?> UpdateSessionAsync(string userId, int sessionId, UpdateSessionDto dto)
     {
         var session = await _context.RangeSessions
             .FirstOrDefaultAsync(s => s.Id == sessionId && s.UserId == userId);
 
         if (session == null)
-            return false;
+            return null;
 
         // Update fields if provided
         if (dto.SessionDate.HasValue)
@@ -365,7 +365,9 @@ public class SessionService : ISessionService
         session.UpdatedAt = DateTime.UtcNow;
 
         await _context.SaveChangesAsync();
-        return true;
+
+        // Return the updated session detail
+        return await GetSessionAsync(userId, sessionId);
     }
 
     public async Task<bool> DeleteSessionAsync(string userId, int sessionId)

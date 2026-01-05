@@ -87,7 +87,7 @@ public class SessionsController : ControllerBase
     /// Update a session
     /// </summary>
     [HttpPut("{id:int}")]
-    [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ApiResponse<SessionDetailDto>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ApiErrorResponse), StatusCodes.Status404NotFound)]
     [ProducesResponseType(typeof(ApiErrorResponse), StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> UpdateSession(int id, [FromBody] UpdateSessionDto dto)
@@ -107,10 +107,10 @@ public class SessionsController : ControllerBase
         {
             var updated = await _sessionService.UpdateSessionAsync(GetUserId(), id, dto);
 
-            if (!updated)
+            if (updated == null)
                 return NotFound(ApiErrorResponse.Create("SESSION_NOT_FOUND", "Session not found"));
 
-            return Ok(ApiResponse.Ok("Session updated successfully"));
+            return Ok(ApiResponse<SessionDetailDto>.Ok(updated, "Session updated successfully"));
         }
         catch (ArgumentException ex)
         {

@@ -9,7 +9,7 @@ public interface ISessionService
     Task<PaginatedResponse<SessionListDto>> GetSessionsAsync(string userId, SessionFilterDto filter);
     Task<SessionDetailDto?> GetSessionAsync(string userId, int sessionId);
     Task<int> CreateSessionAsync(string userId, CreateSessionDto dto);
-    Task<bool> UpdateSessionAsync(string userId, int sessionId, UpdateSessionDto dto);
+    Task<SessionDetailDto?> UpdateSessionAsync(string userId, int sessionId, UpdateSessionDto dto);
     Task<bool> DeleteSessionAsync(string userId, int sessionId);
 
     // DOPE operations
