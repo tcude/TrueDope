@@ -144,6 +144,8 @@ private let commonCalibers = [
 
 ## Bug #3: Session Edit/Note Save Fails with "Server returned an empty response"
 
+### Status: ✅ FIXED (January 4, 2026)
+
 ### Symptom
 When editing a session (particularly adding/modifying notes), a popup appears: **"Failed to save: Server returned an empty response."**
 
@@ -174,67 +176,28 @@ func updateSession(id: Int, _ request: UpdateSessionRequest) async throws -> Ses
 
 When `APIClient.requestData()` receives a response with `data: null`, it throws `APIError.emptyResponse`.
 
-### Files to Modify
-
-**Option A (Recommended): Fix Backend to Return Updated Session**
+### Files Modified
 
 | File | Change |
 |------|--------|
-| `TrueDope/backend/src/TrueDope.Api/Controllers/SessionsController.cs` | Update PUT endpoint to return the updated session data |
-| `TrueDope/backend/src/TrueDope.Api/Services/SessionService.cs` | Change `UpdateSessionAsync` to return `SessionDetailDto` instead of `bool` |
+| `TrueDope/backend/src/TrueDope.Api/Services/ISessionService.cs` | Changed `UpdateSessionAsync` return type from `Task<bool>` to `Task<SessionDetailDto?>` |
+| `TrueDope/backend/src/TrueDope.Api/Services/SessionService.cs` | Updated `UpdateSessionAsync` to return `null` on not found, and call `GetSessionAsync()` to return the full updated session after saving |
+| `TrueDope/backend/src/TrueDope.Api/Controllers/SessionsController.cs` | Updated PUT endpoint to return `ApiResponse<SessionDetailDto>.Ok(updated)` with the full session data |
 
-**Option B (Alternative): Fix iOS to Handle Empty Response**
+### Additional UX Enhancement
+
+Also added "Save Details" button state tracking:
 
 | File | Change |
 |------|--------|
-| `TrueDope-iOS/TrueDope-iOS/Core/Services/SessionService.swift` | Use `requestVoid()` instead of `requestData()` for updates |
-| `TrueDope-iOS/TrueDope-iOS/Features/Sessions/SessionEditViewModel.swift` | Handle void response and manually refresh session |
-
-### Fix Details (Option A - Recommended)
-
-1. **Update SessionService.cs `UpdateSessionAsync` method** to return the updated session:
-```csharp
-public async Task<SessionDetailDto?> UpdateSessionAsync(string userId, int sessionId, UpdateSessionDto dto)
-{
-    var session = await _context.RangeSessions
-        .FirstOrDefaultAsync(s => s.Id == sessionId && s.UserId == userId);
-
-    if (session == null)
-        return null;
-
-    // ... existing update logic ...
-
-    session.UpdatedAt = DateTime.UtcNow;
-    await _context.SaveChangesAsync();
-
-    // Return the updated session detail
-    return await GetSessionDetailAsync(userId, sessionId);
-}
-```
-
-2. **Update SessionsController.cs PUT endpoint**:
-```csharp
-[HttpPut("{id:int}")]
-[ProducesResponseType(typeof(ApiResponse<SessionDetailDto>), StatusCodes.Status200OK)]
-[ProducesResponseType(typeof(ApiErrorResponse), StatusCodes.Status404NotFound)]
-public async Task<IActionResult> UpdateSession(int id, [FromBody] UpdateSessionDto dto)
-{
-    // ... validation ...
-
-    var updated = await _sessionService.UpdateSessionAsync(GetUserId(), id, dto);
-
-    if (updated == null)
-        return NotFound(ApiErrorResponse.Create("SESSION_NOT_FOUND", "Session not found"));
-
-    return Ok(ApiResponse<SessionDetailDto>.Ok(updated, "Session updated successfully"));
-}
-```
+| `TrueDope-iOS/TrueDope-iOS/Features/Sessions/SessionEditViewModel.swift` | Added `hasUnsavedChanges` computed property that compares form values against original session |
+| `TrueDope-iOS/TrueDope-iOS/Features/Sessions/SessionEditView.swift` | Button is now disabled and grayed out when no changes; enabled with accent color when changes exist |
 
 ---
 
 ## Implementation Order
 
-1. **Bug #3** - Session save empty response (backend fix, highest impact)
+1. **Bug #3** - Session save empty response (backend fix, highest impact) ✅ COMPLETE
 2. **Bug #1** - Image upload response parsing (iOS fix)
 3. **Bug #2** - Ammunition caliber UX (iOS fix, includes 6 ARC addition)
 
@@ -257,8 +220,10 @@ public async Task<IActionResult> UpdateSession(int id, [FromBody] UpdateSessionD
 - [ ] Verify custom caliber text field does NOT disappear while typing
 
 ### Bug #3 - Session Save
-- [ ] Edit session notes and save
-- [ ] Edit session date and save
-- [ ] Edit session conditions and save
-- [ ] Verify no "empty response" errors
-- [ ] Verify updated data reflects correctly after save
+- [x] Edit session notes and save
+- [x] Edit session date and save
+- [x] Edit session conditions and save
+- [x] Verify no "empty response" errors
+- [x] Verify updated data reflects correctly after save
+- [x] Verify Save button is grayed out when no changes
+- [x] Verify Save button is blue/enabled when changes exist
