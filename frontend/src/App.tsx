@@ -49,6 +49,8 @@ const CostAnalysis = lazy(() => import('./pages/analytics/CostAnalysis'));
 
 // Legal
 const PrivacyPolicy = lazy(() => import('./pages/legal/PrivacyPolicy'));
+const FAQ = lazy(() => import('./pages/legal/FAQ'));
+const TermsOfService = lazy(() => import('./pages/legal/TermsOfService'));
 
 // Loading fallback
 function PageLoader() {
@@ -93,6 +95,22 @@ function AppContent() {
         element={
           <Suspense fallback={<PageLoader />}>
             <PrivacyPolicy />
+          </Suspense>
+        }
+      />
+      <Route
+        path="/faq"
+        element={
+          <Suspense fallback={<PageLoader />}>
+            <FAQ />
+          </Suspense>
+        }
+      />
+      <Route
+        path="/terms"
+        element={
+          <Suspense fallback={<PageLoader />}>
+            <TermsOfService />
           </Suspense>
         }
       />
