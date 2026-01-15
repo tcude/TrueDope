@@ -147,6 +147,9 @@ try
     // Register Phase 11 services (Security & Audit)
     builder.Services.AddScoped<IAdminAuditService, AdminAuditService>();
 
+    // Register User Data Clone service (Admin functionality)
+    builder.Services.AddScoped<IUserDataCloneService, UserDataCloneService>();
+
     // Register Group Measurement services
     builder.Services.AddScoped<IGroupMeasurementCalculator, GroupMeasurementCalculator>();
 

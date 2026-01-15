@@ -22,6 +22,7 @@ public class AdminController : ControllerBase
     private readonly IJwtService _jwtService;
     private readonly IAdminStatsService _statsService;
     private readonly IAdminAuditService _auditService;
+    private readonly IUserDataCloneService _cloneService;
     private readonly ILogger<AdminController> _logger;
 
     public AdminController(
@@ -30,6 +31,7 @@ public class AdminController : ControllerBase
         IJwtService jwtService,
         IAdminStatsService statsService,
         IAdminAuditService auditService,
+        IUserDataCloneService cloneService,
         ILogger<AdminController> logger)
     {
         _userManager = userManager;
@@ -37,6 +39,7 @@ public class AdminController : ControllerBase
         _jwtService = jwtService;
         _statsService = statsService;
         _auditService = auditService;
+        _cloneService = cloneService;
         _logger = logger;
     }
 
@@ -375,6 +378,93 @@ public class AdminController : ControllerBase
         _logger.LogInformation("Admin enabled user: {UserId}", userId);
 
         return Ok(ApiResponse.Ok("User account enabled"));
+    }
+
+    /// <summary>
+    /// Preview what data would be cloned from one user to another (dry run)
+    /// </summary>
+    [HttpPost("clone-user-data/preview")]
+    [ProducesResponseType(typeof(ApiResponse<ClonePreviewResponse>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ApiErrorResponse), StatusCodes.Status400BadRequest)]
+    public async Task<IActionResult> PreviewCloneUserData(
+        [FromBody] CloneUserDataRequest request,
+        CancellationToken cancellationToken)
+    {
+        if (request.SourceUserId == request.TargetUserId)
+        {
+            return BadRequest(ApiErrorResponse.Create(
+                "INVALID_REQUEST",
+                "Source and target users cannot be the same"));
+        }
+
+        try
+        {
+            var preview = await _cloneService.PreviewCloneAsync(
+                request.SourceUserId,
+                request.TargetUserId,
+                cancellationToken);
+
+            return Ok(ApiResponse<ClonePreviewResponse>.Ok(preview));
+        }
+        catch (ArgumentException ex)
+        {
+            return BadRequest(ApiErrorResponse.Create("VALIDATION_ERROR", ex.Message));
+        }
+    }
+
+    /// <summary>
+    /// Clone all data from one user to another (admin only).
+    /// WARNING: This will DELETE all existing data for the target user!
+    /// </summary>
+    [HttpPost("clone-user-data")]
+    [ProducesResponseType(typeof(ApiResponse<CloneUserDataResponse>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ApiErrorResponse), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(ApiErrorResponse), StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> CloneUserData(
+        [FromBody] CloneUserDataRequest request,
+        CancellationToken cancellationToken)
+    {
+        var currentUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+        // Validation
+        if (request.SourceUserId == request.TargetUserId)
+        {
+            return BadRequest(ApiErrorResponse.Create(
+                "INVALID_REQUEST",
+                "Source and target users cannot be the same"));
+        }
+
+        if (!request.ConfirmOverwrite)
+        {
+            return BadRequest(ApiErrorResponse.Create(
+                "CONFIRMATION_REQUIRED",
+                "Set confirmOverwrite to true to proceed. WARNING: This will DELETE all target user data!"));
+        }
+
+        try
+        {
+            var result = await _cloneService.CloneUserDataAsync(
+                request.SourceUserId,
+                request.TargetUserId,
+                currentUserId!,
+                cancellationToken);
+
+            _logger.LogInformation(
+                "Admin {AdminUserId} cloned data from user {SourceUserId} to {TargetUserId}",
+                currentUserId, request.SourceUserId, request.TargetUserId);
+
+            return Ok(ApiResponse<CloneUserDataResponse>.Ok(result, "User data cloned successfully"));
+        }
+        catch (ArgumentException ex)
+        {
+            return BadRequest(ApiErrorResponse.Create("VALIDATION_ERROR", ex.Message));
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Clone user data failed from {SourceUserId} to {TargetUserId}",
+                request.SourceUserId, request.TargetUserId);
+            return StatusCode(500, ApiErrorResponse.Create("CLONE_FAILED", "An error occurred while cloning user data"));
+        }
     }
 
     private static string GenerateTemporaryPassword()

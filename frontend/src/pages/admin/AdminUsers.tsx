@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import { adminService } from '../../services/admin.service';
-import type { UserListItem, PaginationInfo } from '../../types/admin';
+import type { UserListItem, PaginationInfo, ClonePreviewResponse, CloneUserDataResponse, DataCounts } from '../../types/admin';
+import { Modal } from '../../components/ui/modal';
 import { Button } from '../../components/ui/button';
 import { Input } from '../../components/ui/input';
 import { Card, CardContent, CardHeader, CardTitle } from '../../components/ui/card';
@@ -14,6 +15,25 @@ export function AdminUsers() {
   const [error, setError] = useState<string | null>(null);
   const [actionLoading, setActionLoading] = useState<string | null>(null);
   const [tempPassword, setTempPassword] = useState<{ userId: string; password: string } | null>(null);
+  const [cloneModal, setCloneModal] = useState<{
+    isOpen: boolean;
+    sourceUser: UserListItem | null;
+    step: 'select' | 'preview' | 'loading' | 'success';
+    targetUserId: string;
+    preview: ClonePreviewResponse | null;
+    result: CloneUserDataResponse | null;
+    confirmChecked: boolean;
+    error: string | null;
+  }>({
+    isOpen: false,
+    sourceUser: null,
+    step: 'select',
+    targetUserId: '',
+    preview: null,
+    result: null,
+    confirmChecked: false,
+    error: null,
+  });
 
   const fetchUsers = useCallback(async (page = 1, searchQuery = '') => {
     setIsLoading(true);
@@ -104,6 +124,116 @@ export function AdminUsers() {
       setActionLoading(null);
     }
   };
+
+  const handleOpenCloneModal = (user: UserListItem) => {
+    setCloneModal({
+      isOpen: true,
+      sourceUser: user,
+      step: 'select',
+      targetUserId: '',
+      preview: null,
+      result: null,
+      confirmChecked: false,
+      error: null,
+    });
+  };
+
+  const handleCloseCloneModal = () => {
+    setCloneModal({
+      isOpen: false,
+      sourceUser: null,
+      step: 'select',
+      targetUserId: '',
+      preview: null,
+      result: null,
+      confirmChecked: false,
+      error: null,
+    });
+  };
+
+  const handlePreviewClone = async () => {
+    if (!cloneModal.sourceUser || !cloneModal.targetUserId) return;
+
+    setCloneModal(prev => ({ ...prev, step: 'loading', error: null }));
+
+    try {
+      const response = await adminService.previewCloneUserData(
+        cloneModal.sourceUser.userId,
+        cloneModal.targetUserId
+      );
+
+      if (response.success && response.data) {
+        setCloneModal(prev => ({
+          ...prev,
+          step: 'preview',
+          preview: response.data!,
+        }));
+      } else {
+        setCloneModal(prev => ({
+          ...prev,
+          step: 'select',
+          error: response.error?.description || 'Failed to fetch preview',
+        }));
+      }
+    } catch {
+      setCloneModal(prev => ({
+        ...prev,
+        step: 'select',
+        error: 'Failed to fetch preview',
+      }));
+    }
+  };
+
+  const handleExecuteClone = async () => {
+    if (!cloneModal.sourceUser || !cloneModal.targetUserId) return;
+
+    setCloneModal(prev => ({ ...prev, step: 'loading', error: null }));
+
+    try {
+      const response = await adminService.cloneUserData(
+        cloneModal.sourceUser.userId,
+        cloneModal.targetUserId
+      );
+
+      if (response.success && response.data) {
+        setCloneModal(prev => ({
+          ...prev,
+          step: 'success',
+          result: response.data!,
+        }));
+        fetchUsers(pagination?.currentPage || 1, search);
+      } else {
+        setCloneModal(prev => ({
+          ...prev,
+          step: 'preview',
+          error: response.error?.description || 'Clone operation failed',
+        }));
+      }
+    } catch {
+      setCloneModal(prev => ({
+        ...prev,
+        step: 'preview',
+        error: 'Clone operation failed',
+      }));
+    }
+  };
+
+  const DataCountsList = ({ counts }: { counts: DataCounts }) => (
+    <ul className="text-sm space-y-1">
+      {counts.rifleSetups > 0 && <li>Rifle Setups: {counts.rifleSetups}</li>}
+      {counts.ammunition > 0 && <li>Ammunition: {counts.ammunition}</li>}
+      {counts.ammoLots > 0 && <li>Ammo Lots: {counts.ammoLots}</li>}
+      {counts.savedLocations > 0 && <li>Saved Locations: {counts.savedLocations}</li>}
+      {counts.rangeSessions > 0 && <li>Range Sessions: {counts.rangeSessions}</li>}
+      {counts.dopeEntries > 0 && <li>Dope Entries: {counts.dopeEntries}</li>}
+      {counts.chronoSessions > 0 && <li>Chrono Sessions: {counts.chronoSessions}</li>}
+      {counts.velocityReadings > 0 && <li>Velocity Readings: {counts.velocityReadings}</li>}
+      {counts.groupEntries > 0 && <li>Group Entries: {counts.groupEntries}</li>}
+      {counts.groupMeasurements > 0 && <li>Group Measurements: {counts.groupMeasurements}</li>}
+      {counts.images > 0 && <li>Images: {counts.images}</li>}
+      {counts.hasUserPreferences && <li>User Preferences</li>}
+    </ul>
+  );
 
   return (
     <div className="container mx-auto px-4 py-8">
@@ -224,6 +354,14 @@ export function AdminUsers() {
                             {user.isAdmin ? 'Remove Admin' : 'Make Admin'}
                           </Button>
                           <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => handleOpenCloneModal(user)}
+                            disabled={actionLoading === user.userId}
+                          >
+                            Clone Data
+                          </Button>
+                          <Button
                             variant="destructive"
                             size="sm"
                             onClick={() => handleDisableUser(user.userId, user.email)}
@@ -268,6 +406,156 @@ export function AdminUsers() {
           )}
         </CardContent>
       </Card>
+
+      {/* Clone User Data Modal */}
+      <Modal
+        isOpen={cloneModal.isOpen}
+        onClose={handleCloseCloneModal}
+        title={cloneModal.step === 'success' ? 'Clone Complete' : 'Clone User Data'}
+        size="lg"
+        closeOnBackdrop={cloneModal.step !== 'loading'}
+        closeOnEscape={cloneModal.step !== 'loading'}
+      >
+        {/* Step 1: Select Target User */}
+        {cloneModal.step === 'select' && (
+          <div className="space-y-4">
+            <p>
+              Clone all data from <strong>{cloneModal.sourceUser?.email}</strong> to another user.
+            </p>
+
+            {cloneModal.error && (
+              <Alert variant="destructive">
+                <AlertDescription>{cloneModal.error}</AlertDescription>
+              </Alert>
+            )}
+
+            <div>
+              <label className="block text-sm font-medium mb-1">Target User</label>
+              <select
+                className="w-full rounded-md border border-gray-300 dark:border-gray-600 dark:bg-gray-800 px-3 py-2"
+                value={cloneModal.targetUserId}
+                onChange={(e) => setCloneModal(prev => ({ ...prev, targetUserId: e.target.value }))}
+              >
+                <option value="">Select a user...</option>
+                {users
+                  .filter(u => u.userId !== cloneModal.sourceUser?.userId && !u.isAdmin)
+                  .map(u => (
+                    <option key={u.userId} value={u.userId}>
+                      {u.email}
+                    </option>
+                  ))}
+              </select>
+            </div>
+
+            <div className="flex justify-end gap-3 pt-4">
+              <Button variant="outline" onClick={handleCloseCloneModal}>
+                Cancel
+              </Button>
+              <Button onClick={handlePreviewClone} disabled={!cloneModal.targetUserId}>
+                Preview
+              </Button>
+            </div>
+          </div>
+        )}
+
+        {/* Loading State */}
+        {cloneModal.step === 'loading' && (
+          <div className="flex flex-col items-center py-8">
+            <div className="h-8 w-8 animate-spin rounded-full border-4 border-gray-300 border-t-blue-600" />
+            <p className="mt-4 text-gray-600 dark:text-gray-400">Processing...</p>
+          </div>
+        )}
+
+        {/* Step 2: Preview & Confirm */}
+        {cloneModal.step === 'preview' && cloneModal.preview && (
+          <div className="space-y-4">
+            {cloneModal.error && (
+              <Alert variant="destructive">
+                <AlertDescription>{cloneModal.error}</AlertDescription>
+              </Alert>
+            )}
+
+            <div className="grid grid-cols-2 gap-4">
+              <div className="rounded border p-4">
+                <h4 className="font-medium text-green-700 dark:text-green-400">Data to Copy</h4>
+                <p className="text-sm text-gray-500 dark:text-gray-400 mb-2">
+                  From: {cloneModal.preview.sourceUserEmail}
+                </p>
+                <DataCountsList counts={cloneModal.preview.sourceDataToCopy} />
+              </div>
+              <div className="rounded border p-4 border-red-200 bg-red-50 dark:border-red-800 dark:bg-red-900/20">
+                <h4 className="font-medium text-red-700 dark:text-red-400">Data to Delete</h4>
+                <p className="text-sm text-gray-500 dark:text-gray-400 mb-2">
+                  From: {cloneModal.preview.targetUserEmail}
+                </p>
+                <DataCountsList counts={cloneModal.preview.targetDataToDelete} />
+              </div>
+            </div>
+
+            <Alert variant="warning">
+              <AlertDescription>
+                This action will <strong>permanently delete</strong> all data for{' '}
+                {cloneModal.preview.targetUserEmail} and replace it with data from{' '}
+                {cloneModal.preview.sourceUserEmail}.
+              </AlertDescription>
+            </Alert>
+
+            <label className="flex items-center gap-2">
+              <input
+                type="checkbox"
+                checked={cloneModal.confirmChecked}
+                onChange={(e) => setCloneModal(prev => ({ ...prev, confirmChecked: e.target.checked }))}
+                className="rounded"
+              />
+              <span className="text-sm">I understand this will delete all target user data</span>
+            </label>
+
+            <div className="flex justify-end gap-3 pt-4">
+              <Button
+                variant="outline"
+                onClick={() => setCloneModal(prev => ({ ...prev, step: 'select' }))}
+              >
+                Back
+              </Button>
+              <Button
+                variant="destructive"
+                onClick={handleExecuteClone}
+                disabled={!cloneModal.confirmChecked}
+              >
+                Clone Data
+              </Button>
+            </div>
+          </div>
+        )}
+
+        {/* Success State */}
+        {cloneModal.step === 'success' && cloneModal.result && (
+          <div className="space-y-4">
+            <Alert variant="success">
+              <AlertDescription>Data cloned successfully!</AlertDescription>
+            </Alert>
+
+            <div className="text-sm space-y-1">
+              <p>
+                <strong>Duration:</strong> {cloneModal.result.durationMs}ms
+              </p>
+              <p>
+                <strong>Items Copied:</strong>
+              </p>
+              <ul className="list-disc list-inside ml-4">
+                <li>Rifle Setups: {cloneModal.result.statistics.rifleSetupsCopied}</li>
+                <li>Ammunition: {cloneModal.result.statistics.ammunitionCopied}</li>
+                <li>Range Sessions: {cloneModal.result.statistics.rangeSessionsCopied}</li>
+                <li>Images: {cloneModal.result.statistics.imagesCopied}</li>
+              </ul>
+            </div>
+
+            <div className="flex justify-end pt-4">
+              <Button onClick={handleCloseCloneModal}>Close</Button>
+            </div>
+          </div>
+        )}
+      </Modal>
     </div>
   );
 }

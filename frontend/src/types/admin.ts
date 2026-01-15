@@ -63,3 +63,65 @@ export interface ImageStatsData {
   storageSizeBytes: number;
   storageSizeFormatted: string;
 }
+
+// Clone user data types
+export interface CloneUserDataRequest {
+  sourceUserId: string;
+  targetUserId: string;
+  confirmOverwrite: boolean;
+}
+
+export interface CloneUserDataResponse {
+  success: boolean;
+  sourceUserId: string;
+  targetUserId: string;
+  statistics: CloneStatistics;
+  completedAt: string;
+  durationMs: number;
+}
+
+export interface ClonePreviewResponse {
+  sourceUserId: string;
+  targetUserId: string;
+  sourceUserEmail: string;
+  targetUserEmail: string;
+  targetDataToDelete: DataCounts;
+  sourceDataToCopy: DataCounts;
+}
+
+export interface CloneStatistics {
+  rifleSetupsCopied: number;
+  ammunitionCopied: number;
+  ammoLotsCopied: number;
+  savedLocationsCopied: number;
+  rangeSessionsCopied: number;
+  dopeEntriesCopied: number;
+  chronoSessionsCopied: number;
+  velocityReadingsCopied: number;
+  groupEntriesCopied: number;
+  groupMeasurementsCopied: number;
+  imagesCopied: number;
+  imageBytesCopied: number;
+  userPreferencesCopied: boolean;
+  rifleSetupsDeleted: number;
+  ammunitionDeleted: number;
+  ammoLotsDeleted: number;
+  savedLocationsDeleted: number;
+  rangeSessionsDeleted: number;
+  imagesDeleted: number;
+}
+
+export interface DataCounts {
+  rifleSetups: number;
+  ammunition: number;
+  ammoLots: number;
+  savedLocations: number;
+  rangeSessions: number;
+  dopeEntries: number;
+  chronoSessions: number;
+  velocityReadings: number;
+  groupEntries: number;
+  groupMeasurements: number;
+  images: number;
+  hasUserPreferences: boolean;
+}

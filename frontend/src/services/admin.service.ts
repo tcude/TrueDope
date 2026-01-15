@@ -7,6 +7,8 @@ import type {
   ResetPasswordResponse,
   PaginatedResponse,
   SystemStats,
+  ClonePreviewResponse,
+  CloneUserDataResponse,
 } from '../types/admin';
 
 export interface GetUsersParams {
@@ -52,6 +54,28 @@ export const adminService = {
 
   async getSystemStats(): Promise<ApiResponse<SystemStats>> {
     const response = await api.get<ApiResponse<SystemStats>>('/admin/stats');
+    return response.data;
+  },
+
+  async previewCloneUserData(
+    sourceUserId: string,
+    targetUserId: string
+  ): Promise<ApiResponse<ClonePreviewResponse>> {
+    const response = await api.post<ApiResponse<ClonePreviewResponse>>(
+      '/admin/clone-user-data/preview',
+      { sourceUserId, targetUserId }
+    );
+    return response.data;
+  },
+
+  async cloneUserData(
+    sourceUserId: string,
+    targetUserId: string
+  ): Promise<ApiResponse<CloneUserDataResponse>> {
+    const response = await api.post<ApiResponse<CloneUserDataResponse>>(
+      '/admin/clone-user-data',
+      { sourceUserId, targetUserId, confirmOverwrite: true }
+    );
     return response.data;
   },
 };
